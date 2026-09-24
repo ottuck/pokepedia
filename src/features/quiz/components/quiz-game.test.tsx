@@ -201,6 +201,36 @@ describe("QuizGame", () => {
     ).toBeInTheDocument();
   });
 
+  it("recovers from a crashed request instead of hanging on “getting ready”", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    actions.startQuiz.mockRejectedValueOnce(new Error("500"));
+    renderGame();
+
+    await user.click(screen.getByRole("button", { name: "게임 시작" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "문제가 생겼어요",
+    );
+    expect(screen.getByRole("button", { name: "게임 시작" })).toBeEnabled();
+  });
+
+  it("lets the player retry an answer after a server error", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    actions.submitAnswer.mockResolvedValueOnce({
+      ok: false,
+      code: "server_error",
+    });
+    await startGame(user);
+
+    await user.keyboard("1");
+    await user.type(screen.getByRole("textbox"), "피카츄{Enter}");
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "문제가 생겼어요",
+    );
+    expect(screen.getByRole("textbox")).toBeEnabled();
+  });
+
   it("stays in the lobby with a message when a guest session cannot start", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     actions.startQuiz.mockResolvedValueOnce({

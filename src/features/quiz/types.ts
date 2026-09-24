@@ -75,7 +75,9 @@ export type QuizErrorCode =
   | "sign_in_failed"
   | "invalid_input"
   | "not_found"
-  | "conflict";
+  | "conflict"
+  /** Anything unexpected; the cause is logged on the server, never sent to the browser. */
+  | "server_error";
 
 /** Server Action result: codes, never messages; the UI translates them. */
 export type ActionResult<T> =

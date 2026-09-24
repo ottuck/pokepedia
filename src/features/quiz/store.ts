@@ -8,7 +8,24 @@ import {
   submitAnswer,
 } from "./actions";
 import type { StickerVariant } from "./rules";
-import type { PokemonReveal, QuizErrorCode, RoundView, RunView } from "./types";
+import type {
+  ActionResult,
+  PokemonReveal,
+  QuizErrorCode,
+  RoundView,
+  RunView,
+} from "./types";
+
+/** A failed request (network, server crash) becomes an error code instead of a rejection. */
+async function call<T>(
+  action: () => Promise<ActionResult<T>>,
+): Promise<ActionResult<T>> {
+  try {
+    return await action();
+  } catch {
+    return { ok: false, code: "server_error" };
+  }
+}
 
 /**
  * Battle flow. The server decides every outcome; phases only sequence how the client plays
@@ -84,7 +101,7 @@ export const useQuizStore = create<QuizStore>((set, get) => {
       code === "round_not_active" ||
       code === "not_found"
     ) {
-      const resumed = await startQuiz({ locale });
+      const resumed = await call(() => startQuiz({ locale }));
       if (resumed.ok)
         set({
           run: resumed.data.run,
@@ -101,7 +118,7 @@ export const useQuizStore = create<QuizStore>((set, get) => {
 
     async start(locale) {
       set({ ...initial, phase: "starting" });
-      const result = await startQuiz({ locale });
+      const result = await call(() => startQuiz({ locale }));
       if (!result.ok) return set({ phase: "lobby", error: result.code });
       set({ run: result.data.run, round: result.data.round, phase: "intro" });
     },
@@ -119,7 +136,9 @@ export const useQuizStore = create<QuizStore>((set, get) => {
       if (!round || phase !== "answering" || answer.trim() === "") return;
       set({ phase: "judging", error: null });
 
-      const result = await submitAnswer({ roundId: round.id, answer, locale });
+      const result = await call(() =>
+        submitAnswer({ roundId: round.id, answer, locale }),
+      );
       if (!result.ok) return recover(result.code, locale);
       const data = result.data;
 
@@ -154,7 +173,9 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     async hint(locale) {
       const { round, phase } = get();
       if (!round || phase !== "menu" || round.hintUsed) return;
-      const result = await requestHint({ roundId: round.id, locale });
+      const result = await call(() =>
+        requestHint({ roundId: round.id, locale }),
+      );
       if (!result.ok) return recover(result.code, locale);
       set({ run: result.data.run, round: result.data.round });
     },
@@ -162,7 +183,9 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     async skip(locale) {
       const { round, phase } = get();
       if (!round || phase !== "menu") return;
-      const result = await skipQuizRound({ roundId: round.id, locale });
+      const result = await call(() =>
+        skipQuizRound({ roundId: round.id, locale }),
+      );
       if (!result.ok) return recover(result.code, locale);
       set({
         run: result.data.run,
@@ -174,7 +197,7 @@ export const useQuizStore = create<QuizStore>((set, get) => {
 
     async flee(locale) {
       if (get().phase !== "menu") return;
-      const result = await fleeQuiz({ locale });
+      const result = await call(() => fleeQuiz({ locale }));
       if (!result.ok) return recover(result.code, locale);
       set({
         run: result.data.run,
