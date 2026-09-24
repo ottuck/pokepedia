@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { dotGothic, galmuri } from "../fonts";
 
 /** The legacy Pokédex device: red body, indicator lights, and a blue screen. */
 export function PokedexFrame({ children }: { children: ReactNode }) {
@@ -10,7 +11,9 @@ export function PokedexFrame({ children }: { children: ReactNode }) {
         <span className="size-3 rounded-full bg-volt" />
         <span className="size-3 rounded-full bg-green-400" />
       </div>
-      <div className="overflow-hidden rounded-3xl border-4 border-ink/20 bg-dex-screen">
+      <div
+        className={`${galmuri.variable} ${dotGothic.variable} overflow-hidden rounded-3xl border-4 border-ink/20 bg-dex-screen font-pixel`}
+      >
         {children}
       </div>
     </div>

@@ -39,7 +39,7 @@ export function GameOver() {
             transition={{ ...spring.gentle, delay: index * 0.1 }}
           >
             <dt className="text-xs text-muted">{label}</dt>
-            <dd className="font-mono text-2xl font-black">{value}</dd>
+            <dd className="text-2xl font-black tabular-nums">{value}</dd>
           </m.div>
         ))}
       </dl>

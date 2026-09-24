@@ -42,6 +42,10 @@
 
   /* Korean glyph shapes first; Japanese pages flip the order (see :lang(ja)). */
   --font-sans: var(--font-noto-kr), var(--font-noto-jp), system-ui, sans-serif;
+  /* Battle screen (features/quiz/fonts.ts); variables exist only inside the Pokédex frame. */
+  --font-pixel:
+    var(--font-galmuri), var(--font-dotgothic), var(--font-noto-kr),
+    var(--font-noto-jp), system-ui, sans-serif;
 }
 
 body {
@@ -52,4 +56,11 @@ body {
 
 :lang(ja) body {
   font-family: var(--font-noto-jp), var(--font-noto-kr), system-ui, sans-serif;
+}
+
+/* Japanese pages: DotGothic16 for Latin and digits too, so a line does not mix two pixel fonts. */
+:lang(ja) .font-pixel {
+  font-family:
+    var(--font-dotgothic), var(--font-galmuri), var(--font-noto-jp), system-ui,
+    sans-serif;
 }
