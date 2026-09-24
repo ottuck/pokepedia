@@ -162,7 +162,7 @@ private.pokemon_quiz (pokemon_id pk, silhouette_path text unique not null, answe
 public.sync_pokemon_catalog(p_abilities, p_pokemon, p_pokemon_abilities, p_quiz jsonb)
 
 -- 사용자
-profile (id uuid pk → auth.users on delete cascade, nickname 2–20자, avatar_path, created_at)  -- signup trigger
+profile (id uuid pk → auth.users on delete cascade, nickname 2–20자, created_at)  -- signup trigger, 아바타는 Google 메타데이터 사용
 
 -- 게임
 quiz_run   (id, user_id, status active|finished, end_reason fainted|fled, score, combo, best_combo,
@@ -193,6 +193,16 @@ my_stats view (security_invoker = true)
 | 게임 RPC                                | EXECUTE 없음 — `revoke execute ... from public, anon, authenticated` |
 
 계층: `proxy.ts`(세션 갱신·locale) → Server Action / RSC(`getClaims()`로 사용자 확인) → RLS(최종 방어선).
+
+## 인증
+
+- 도감은 로그인 없이 쓴다. 퀴즈 PLAY 시 세션이 없으면 **익명 로그인**(퀴즈 PR에서 연결).
+- Google: 비로그인 사용자는 `signInWithOAuth`, **게스트는 `linkIdentity`**로 같은 user id에 Google을 붙여 컬렉션을 유지한다.
+- `/auth/callback`(Route Handler, proxy 제외): PKCE code → 세션 cookie 교환 후 `next`로 이동. `next`는 같은 origin 경로만 허용(`//evil`, `/\evil` 차단). 실패는 `/[locale]/auth/error?code=`로 보낸다(`identity_already_exists`: 이미 다른 계정에 연결된 Google).
+- 헤더 계정 영역은 **client island**다. layout에서 cookie를 읽으면 모든 정적 페이지가 요청마다 렌더링되므로, 브라우저에서 `getClaims()`로 세션을 읽고 profile은 RLS 아래에서 조회한다.
+- profile은 `auth.users` insert trigger(`private.create_profile_for_new_user`, security definer)가 만든다. 기본 닉네임 `Trainer-XXXX`(언어 중립). 본인만 조회, `nickname` 컬럼만 수정 가능.
+- 원격 설정은 대시보드에서 한다(`config.toml`의 auth 설정은 GitHub 연동으로 배포되지 않음): Anonymous sign-ins, Manual linking, Google provider, Site URL, Redirect URLs(production, preview 와일드카드).
+- Could: 이미 있는 Google 계정으로 로그인할 때 게스트 컬렉션 병합, 오래된 익명 계정 정리 cron, CAPTCHA.
 
 ## 7. 게임 API (Server Actions)
 

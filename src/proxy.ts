@@ -12,6 +12,7 @@ export default async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Everything except API routes, Next internals, Vercel internals, and files with an extension.
-  matcher: "/((?!api|_next|_vercel|.*\\..*).*)",
+  // Everything except API routes, the OAuth callback (it sets the session itself and must not
+  // get a locale prefix), Next internals, Vercel internals, and files with an extension.
+  matcher: "/((?!api|auth/callback|_next|_vercel|.*\\..*).*)",
 };

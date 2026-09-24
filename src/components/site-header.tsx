@@ -1,4 +1,5 @@
 import { Link } from "@/i18n/navigation";
+import { AccountMenu } from "@/features/auth/components/account-menu";
 import { LocaleSwitcher } from "./locale-switcher";
 
 export function SiteHeader() {
@@ -17,7 +18,10 @@ export function SiteHeader() {
         </span>
         Pokepedia
       </Link>
-      <LocaleSwitcher />
+      <div className="flex items-center gap-2">
+        <LocaleSwitcher />
+        <AccountMenu />
+      </div>
     </header>
   );
 }

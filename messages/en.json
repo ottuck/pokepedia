@@ -70,5 +70,23 @@
     "title": "Nothing to see here",
     "description": "This page moved or never existed.",
     "backHome": "Back to home"
+  },
+  "auth": {
+    "signInWithGoogle": "Sign in with Google",
+    "accountMenu": "Account menu",
+    "guestAccount": "Playing as a guest",
+    "googleAccount": "Google account",
+    "guestNotice": "Guest progress lives only in this browser. Save it to Google to keep playing on any device.",
+    "saveWithGoogle": "Save to Google account",
+    "guestSignOutWarning": "Guest progress can’t be recovered after you leave. Leave anyway?",
+    "leaveGuest": "Leave guest mode",
+    "signOut": "Sign out",
+    "errors": {
+      "title": "Couldn’t sign you in",
+      "identityAlreadyExists": "This Google account is already linked to another Pokepedia account. Leave guest mode, then sign in with Google.",
+      "accessDenied": "Google sign-in was cancelled.",
+      "generic": "Try again in a moment.",
+      "backHome": "Back to Pokédex"
+    }
   }
 }

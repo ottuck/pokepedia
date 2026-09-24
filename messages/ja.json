@@ -70,5 +70,23 @@
     "title": "ここには何もないようです",
     "description": "ページが移動したか、存在しません。",
     "backHome": "ホームへ"
+  },
+  "auth": {
+    "signInWithGoogle": "Googleでログイン",
+    "accountMenu": "アカウントメニュー",
+    "guestAccount": "ゲストでプレイ中",
+    "googleAccount": "Googleアカウント",
+    "guestNotice": "ゲストの記録はこのブラウザにしか残りません。Googleアカウントに保存すると、ほかの端末でも続きから遊べます。",
+    "saveWithGoogle": "Googleアカウントに保存",
+    "guestSignOutWarning": "ゲストで集めた記録は、ぬけると元に戻せません。ぬけますか？",
+    "leaveGuest": "ゲストをやめる",
+    "signOut": "ログアウト",
+    "errors": {
+      "title": "ログインできませんでした",
+      "identityAlreadyExists": "このGoogleアカウントは、すでに別のPokepediaアカウントにつながっています。ゲストをやめてからGoogleでログインしてください。",
+      "accessDenied": "Googleログインがキャンセルされました。",
+      "generic": "しばらくしてからもう一度お試しください。",
+      "backHome": "ずかんへ"
+    }
   }
 }
