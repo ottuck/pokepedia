@@ -208,27 +208,25 @@ my_stats view (security_invoker = true)
 
 ## 7. 게임 API (Server Actions)
 
-Zod 입력 검증, `{ ok: true, ... } | { ok: false, code }` 반환. 에러는 코드로, 문구는 클라이언트 locale로.
+`features/quiz/actions.ts`. Zod 입력 검증, 사용자는 항상 세션에서(`getClaims().sub`), 결과는 `{ ok: true, data } | { ok: false, code }`(문구는 클라이언트가 번역).
 
-| Action                              | 동작                                                                                           |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `startRun()`                        | 세션 없으면 익명 로그인. 진행 중 run이 있으면 이어하기, 없으면 run + 첫 round                  |
-| `submitAnswer({ roundId, answer })` | wrong `{hp}` / cleared `{pokemon, scoreGained, combo, sticker}` / fainted `{pokemon, summary}` |
-| `useHint({ roundId })`              | 힌트                                                                                           |
-| `skipRound({ roundId })`            | 새 round                                                                                       |
-| `nextRound({ runId })`              | 클리어 후 다음 문제                                                                            |
-| `fleeRun({ runId })`                | 결과 요약                                                                                      |
+| Action                                      | 동작                                                                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `startQuiz({ locale })`                     | 세션 없으면 익명 로그인. 진행 중 run이 있으면 이어하기, 없으면 run + 첫 round                                       |
+| `submitAnswer({ roundId, answer, locale })` | wrong `{ run, round }` / fainted `{ run, revealed }` / cleared `{ run, revealed, scoreGained, sticker, nextRound }` |
+| `requestHint({ roundId, locale })`          | 이름 절반 공개, 콤보 리셋                                                                                           |
+| `skipQuizRound({ roundId, locale })`        | 스킵한 포켓몬 공개 + 다음 round                                                                                     |
+| `fleeQuiz({ locale })`                      | 진행 중 run 종료 + 정답 공개                                                                                        |
 
-`submitAnswer` 내부 — "TS가 판단, SQL이 원자적 커밋":
+구조 — "TS가 판단, SQL이 원자적 커밋":
 
-1. `getClaims()` → userId
-2. secret-key client로 round·run 조회 (본인 + active). `private` 스키마는 Data API에 노출되지 않으므로 정답 키·실루엣은 service_role 전용 RPC로 읽는다
-3. `rules.ts`: `judge(normalize(answer), answerKeys)` → `resolveRound(state, judgement, rng)`
-4. 오답(hp 남음): `update ... where id = $1 and status = 'active' and attempts = $expected`
-5. 클리어/실패: `rpc('resolve_round')` — 같은 guard로 round UPDATE + run UPDATE + `user_sticker` UPSERT, 한 트랜잭션
-
-정규화: NFKC → 소문자 → 공백·구두점·♂♀ 제거 → 히라가나→가타카나. 문제 선택: run 내 중복 제외 랜덤.
-Route Handler는 `/auth/callback`만 사용한다.
+- `service.ts`: 저장소에서 신뢰할 수 있는 상태를 읽고 `rules.ts`를 적용해 전이를 계산한다. 저장소는 인터페이스(`repository.ts`)라서 단위 테스트는 in-memory 구현으로, 통합 테스트는 실제 Supabase 구현(`repository.supabase.ts`)으로 돈다.
+- 브라우저로 가는 round에는 포켓몬 id·이름이 없다. 실루엣(opaque 파일명)과 이름 마스크뿐이다.
+- RPC(모두 service_role 전용): `quiz_round_secret`(정답 키·실루엣, private 스키마), `quiz_start_run`, `quiz_commit`.
+- `quiz_commit` 한 번에: round 갱신(`version` 낙관적 잠금) → run 갱신 → 스티커 +1 → 다음 round 생성. 정답과 다음 문제 생성이 같은 트랜잭션이라 "클리어했는데 다음 문제가 없는" 상태가 없다. 같은 답을 동시에 두 번 보내면 하나만 적용되고 나머지는 `conflict`.
+- 도망가기는 진행 중 round를 `skipped`로 닫고 run을 `fled`로 끝낸다.
+- 난수(다음 포켓몬, 색違い)는 서버의 CSPRNG(`crypto.getRandomValues`).
+- `supabase/seed.sql`: 로컬·CI용 최소 카탈로그(3마리). production에는 적용되지 않는다.
 
 ## 8. 렌더링 전략
 

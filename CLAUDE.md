@@ -15,6 +15,7 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 - `pnpm sync:pokemon` — PokeAPI → local Supabase (catalog + images, idempotent, cached in `.cache/`).
   Remote only when asked: `pnpm sync:pokemon --env-file .env.remote.local --yes`
   The dex is prerendered at build time, so a remote sync only shows after the next deploy.
+- `supabase/seed.sql` seeds a 3-Pokémon catalog for local/CI (`db reset`); run the sync for the full dex
 - `pnpm test:db` — RLS/grant/RPC tests against local Supabase (writes fixtures; local DB only)
 - Node 24 (`.nvmrc`). Package manager: pnpm (version pinned by `packageManager`).
 - Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),

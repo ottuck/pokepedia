@@ -191,11 +191,194 @@ export type Database = {
         }
         Relationships: []
       }
+      quiz_round: {
+        Row: {
+          attempts: number
+          created_at: string
+          hint_used: boolean
+          hp: number
+          id: string
+          pokemon_id: number
+          resolved_at: string | null
+          run_id: string
+          score_gained: number | null
+          seq: number
+          status: Database["public"]["Enums"]["quiz_round_status"]
+          sticker_variant: Database["public"]["Enums"]["sticker_variant"] | null
+          user_id: string
+          version: number
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          hint_used?: boolean
+          hp: number
+          id?: string
+          pokemon_id: number
+          resolved_at?: string | null
+          run_id: string
+          score_gained?: number | null
+          seq: number
+          status?: Database["public"]["Enums"]["quiz_round_status"]
+          sticker_variant?:
+            | Database["public"]["Enums"]["sticker_variant"]
+            | null
+          user_id: string
+          version?: number
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          hint_used?: boolean
+          hp?: number
+          id?: string
+          pokemon_id?: number
+          resolved_at?: string | null
+          run_id?: string
+          score_gained?: number | null
+          seq?: number
+          status?: Database["public"]["Enums"]["quiz_round_status"]
+          sticker_variant?:
+            | Database["public"]["Enums"]["sticker_variant"]
+            | null
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_round_pokemon_id_fkey"
+            columns: ["pokemon_id"]
+            isOneToOne: false
+            referencedRelation: "pokemon"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_round_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_run"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_run: {
+        Row: {
+          best_combo: number
+          combo: number
+          end_reason: Database["public"]["Enums"]["quiz_run_end_reason"] | null
+          finished_at: string | null
+          id: string
+          rounds_cleared: number
+          score: number
+          skips_left: number
+          started_at: string
+          status: Database["public"]["Enums"]["quiz_run_status"]
+          user_id: string
+        }
+        Insert: {
+          best_combo?: number
+          combo?: number
+          end_reason?: Database["public"]["Enums"]["quiz_run_end_reason"] | null
+          finished_at?: string | null
+          id?: string
+          rounds_cleared?: number
+          score?: number
+          skips_left: number
+          started_at?: string
+          status?: Database["public"]["Enums"]["quiz_run_status"]
+          user_id: string
+        }
+        Update: {
+          best_combo?: number
+          combo?: number
+          end_reason?: Database["public"]["Enums"]["quiz_run_end_reason"] | null
+          finished_at?: string | null
+          id?: string
+          rounds_cleared?: number
+          score?: number
+          skips_left?: number
+          started_at?: string
+          status?: Database["public"]["Enums"]["quiz_run_status"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_sticker: {
+        Row: {
+          first_obtained_at: string
+          last_obtained_at: string
+          pokemon_id: number
+          quantity: number
+          user_id: string
+          variant: Database["public"]["Enums"]["sticker_variant"]
+        }
+        Insert: {
+          first_obtained_at?: string
+          last_obtained_at?: string
+          pokemon_id: number
+          quantity: number
+          user_id: string
+          variant: Database["public"]["Enums"]["sticker_variant"]
+        }
+        Update: {
+          first_obtained_at?: string
+          last_obtained_at?: string
+          pokemon_id?: number
+          quantity?: number
+          user_id?: string
+          variant?: Database["public"]["Enums"]["sticker_variant"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_sticker_pokemon_id_fkey"
+            columns: ["pokemon_id"]
+            isOneToOne: false
+            referencedRelation: "pokemon"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      quiz_commit: {
+        Args: {
+          p_expected_version: number
+          p_next_hp?: number
+          p_next_pokemon_id?: number
+          p_round: Json
+          p_round_id: string
+          p_run: Json
+          p_sticker_variant?: Database["public"]["Enums"]["sticker_variant"]
+          p_user_id: string
+        }
+        Returns: {
+          next_round_id: string
+          sticker_quantity: number
+        }[]
+      }
+      quiz_round_secret: {
+        Args: { p_round_id: string; p_user_id: string }
+        Returns: {
+          answer_keys: string[]
+          pokemon_id: number
+          silhouette_path: string
+        }[]
+      }
+      quiz_start_run: {
+        Args: {
+          p_hp: number
+          p_pokemon_id: number
+          p_skips: number
+          p_user_id: string
+        }
+        Returns: {
+          round_id: string
+          run_id: string
+        }[]
+      }
       sync_pokemon_catalog: {
         Args: {
           p_abilities: Json
@@ -226,6 +409,10 @@ export type Database = {
         | "dark"
         | "steel"
         | "fairy"
+      quiz_round_status: "active" | "cleared" | "failed" | "skipped"
+      quiz_run_end_reason: "fainted" | "fled"
+      quiz_run_status: "active" | "finished"
+      sticker_variant: "normal" | "shiny"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -373,6 +560,10 @@ export const Constants = {
         "steel",
         "fairy",
       ],
+      quiz_round_status: ["active", "cleared", "failed", "skipped"],
+      quiz_run_end_reason: ["fainted", "fled"],
+      quiz_run_status: ["active", "finished"],
+      sticker_variant: ["normal", "shiny"],
     },
   },
 } as const

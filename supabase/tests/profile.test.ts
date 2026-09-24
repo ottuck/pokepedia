@@ -1,13 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { adminClient, anonClient } from "./clients";
-
-/** A fresh anonymous session: the way every player starts. */
-async function anonymousPlayer() {
-  const client = anonClient();
-  const { data, error } = await client.auth.signInAnonymously();
-  if (error || !data.user) throw error ?? new Error("no user");
-  return { client, userId: data.user.id };
-}
+import { adminClient, anonClient, anonymousPlayer } from "./clients";
 
 describe("profile", () => {
   it("is created with a default nickname when an anonymous user signs up", async () => {
