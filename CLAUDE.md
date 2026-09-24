@@ -9,8 +9,11 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 ## Commands
 
 - `pnpm dev` — dev server
-- `pnpm lint` / `pnpm typecheck` / `pnpm format:check` / `ppnpm test`
+- `pnpm lint` / `pnpm typecheck` / `pnpm format:check` / `pnpm test`
+- `pnpm supabase start` / `pnpm supabase status -o env` / `pnpm supabase db reset` — local Supabase (Docker)
 - Node 24 (`.nvmrc`). Package manager: pnpm (version pinned by `packageManager`).
+- Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
+  `admin.ts` (secret key, bypasses RLS — server only), `proxy.ts` (session refresh only).
 
 ## Principles
 

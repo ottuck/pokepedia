@@ -17,11 +17,12 @@ Vercel
 ```bash
 nvm use            # Node 24
 pnpm install
-cp .env.example .env.local
+pnpm supabase start      # needs Docker: local Postgres, Auth, Storage
+cp .env.example .env.local   # fill keys from `pnpm supabase status -o env`
 pnpm dev
 ```
 
-Checks: `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `ppnpm test`.
+Checks: `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `pnpm test`.
 
 Design and architecture decisions: [docs/architecture.md](docs/architecture.md).
 
