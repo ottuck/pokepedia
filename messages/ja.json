@@ -88,5 +88,94 @@
       "generic": "しばらくしてからもう一度お試しください。",
       "backHome": "ずかんへ"
     }
+  },
+  "nav": {
+    "dex": "ずかん",
+    "quiz": "クイズ",
+    "main": "メインメニュー"
+  },
+  "quiz": {
+    "metaTitle": "シルエットクイズ",
+    "title": "だれだ？",
+    "subtitle": "シルエットを見てなまえを当てて、シールを集めよう。韓国語・英語・日本語のどのなまえでも正解です。",
+    "play": "スタート",
+    "starting": "じゅんびちゅう…",
+    "rules": {
+      "fight": {
+        "title": "たたかう",
+        "body": "なまえを入力してこうげき。まちがえるとHPが1へり、3回まちがえるとおしまい。"
+      },
+      "item": {
+        "title": "どうぐ",
+        "body": "なまえの半分を見せます。コンボが切れて、点数が半分になります。"
+      },
+      "pokemon": {
+        "title": "ポケモン",
+        "body": "ほかのポケモンに入れかえます。1回のゲームで3回まで。"
+      },
+      "run": {
+        "title": "にげる",
+        "body": "ゲームを終えて結果を見ます。"
+      }
+    },
+    "hud": {
+      "score": "スコア",
+      "combo": "コンボ",
+      "skips": "スキップ",
+      "round": "{seq}ひきめ",
+      "hp": "HP {hp}/3",
+      "shinyChance": "色違いの確率 {percent}%"
+    },
+    "menu": {
+      "label": "こうどうを選ぶ",
+      "fight": "たたかう",
+      "item": "どうぐ",
+      "pokemon": "ポケモン",
+      "run": "にげる"
+    },
+    "message": {
+      "appeared": "あっ！ やせいの ポケモンが とびだしてきた！",
+      "skipped": "さっきのポケモンは {name}。あたらしい ポケモンが あらわれた！",
+      "menu": "どうする？",
+      "answering": "なまえを入力してください。",
+      "judging": "こうげき！",
+      "wrong": "こうかは いまひとつの ようだ…",
+      "correct": "せいかい！ {name}！",
+      "fainted": "めのまえが まっくらに なった… こたえは {name}！"
+    },
+    "hint": "ヒント",
+    "unknownName": "なぞのポケモン",
+    "answer": {
+      "label": "ポケモンのなまえ",
+      "placeholder": "ポケモンのなまえ",
+      "submit": "こうげき！",
+      "cancel": "キャンセル"
+    },
+    "reward": {
+      "newSticker": "あたらしいシール！",
+      "duplicate": "シール ×{quantity}",
+      "shiny": "色違いのシール！",
+      "scoreGained": "+{score}てん",
+      "continue": "つぎのポケモン"
+    },
+    "gameover": {
+      "fainted": "トレーナーは たおれてしまった！",
+      "fled": "うまく にげきれた！",
+      "answer": "さいごのポケモンは {name}",
+      "score": "スコア",
+      "roundsCleared": "当てたポケモン",
+      "bestCombo": "さいこうコンボ",
+      "stickers": "今回あつめたシール",
+      "noStickers": "今回はシールを集められませんでした。",
+      "playAgain": "もういちど",
+      "toDex": "ずかんへ"
+    },
+    "errors": {
+      "sign_in_failed": "ゲストで始められませんでした。しばらくしてからもう一度お試しください。",
+      "conflict": "別のタブでゲームが進んだため、最新の状態を読みこみました。",
+      "no_skips_left": "スキップはもう使えません。",
+      "hint_already_used": "ヒントはもう使いました。",
+      "generic": "問題が起きました。もう一度お試しください。"
+    }
   }
 }

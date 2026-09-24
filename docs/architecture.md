@@ -228,6 +228,15 @@ my_stats view (security_invoker = true)
 - 난수(다음 포켓몬, 색違い)는 서버의 CSPRNG(`crypto.getRandomValues`).
 - `supabase/seed.sql`: 로컬·CI용 최소 카탈로그(3마리). production에는 적용되지 않는다.
 
+### 퀴즈 화면
+
+- `/[locale]/quiz`는 정적 셸이고 게임은 client island(`QuizGame`)다.
+- Zustand `useQuizStore`: 서버 액션을 호출하고 결과를 저장한다. phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 결과를 어떤 순서로 연출할지만 정한다. 판정은 항상 서버.
+- 자동으로 넘어가는 phase(intro/hit/reveal)는 `BattleStage`가 타이머로 `advance()`한다. reduced motion이면 대기 시간을 줄인다.
+- 레거시 조작: 2×2 메뉴(싸운다/아이템/포켓몬/도망간다), 방향키 이동(roving tabindex), 숫자 1–4 단축키, 입력창 Esc.
+- 연출: 실루엣 등장(spring), 오답 시 HP 패널 흔들림, 정답 시 flash + 실루엣→아트워크, 스티커 카드 낙하·뒤집기(색違い는 홀로그램 광택), 콤보 pop.
+- 새로고침하면 로비로 돌아오고, 시작을 누르면 서버의 진행 중 run을 이어한다.
+
 ## 8. 렌더링 전략
 
 | Route                         | 렌더링      | 경계                                                                      |

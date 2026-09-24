@@ -1,0 +1,40 @@
+"use client";
+
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
+
+const ITEMS = [
+  {
+    href: "/",
+    key: "dex",
+    match: (path: string) => path === "/" || path.startsWith("/pokemon"),
+  },
+  {
+    href: "/quiz",
+    key: "quiz",
+    match: (path: string) => path.startsWith("/quiz"),
+  },
+] as const;
+
+export function MainNav() {
+  const t = useTranslations("nav");
+  const pathname = usePathname();
+
+  return (
+    <nav aria-label={t("main")}>
+      <ul className="flex gap-1 text-sm font-bold">
+        {ITEMS.map(({ href, key, match }) => (
+          <li key={key}>
+            <Link
+              href={href}
+              aria-current={match(pathname) ? "page" : undefined}
+              className="rounded-full px-3 py-1.5 text-muted hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-white"
+            >
+              {t(key)}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}

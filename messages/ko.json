@@ -88,5 +88,94 @@
       "generic": "잠시 후 다시 시도해 주세요.",
       "backHome": "도감으로"
     }
+  },
+  "nav": {
+    "dex": "도감",
+    "quiz": "퀴즈",
+    "main": "메인 메뉴"
+  },
+  "quiz": {
+    "metaTitle": "실루엣 퀴즈",
+    "title": "이 포켓몬은 누구일까?",
+    "subtitle": "실루엣을 보고 이름을 맞혀 띠부씰을 모으세요. 한국어·영어·일본어 이름 모두 정답이에요.",
+    "play": "게임 시작",
+    "starting": "준비 중…",
+    "rules": {
+      "fight": {
+        "title": "싸운다",
+        "body": "이름을 입력해서 공격해요. 틀리면 HP가 1 줄고, 3번 틀리면 게임이 끝나요."
+      },
+      "item": {
+        "title": "아이템",
+        "body": "이름의 절반을 보여줘요. 콤보가 끊기고 점수가 절반이 돼요."
+      },
+      "pokemon": {
+        "title": "포켓몬",
+        "body": "다른 포켓몬으로 바꿔요. 한 판에 3번까지 쓸 수 있어요."
+      },
+      "run": {
+        "title": "도망간다",
+        "body": "게임을 끝내고 결과를 봐요."
+      }
+    },
+    "hud": {
+      "score": "점수",
+      "combo": "콤보",
+      "skips": "스킵",
+      "round": "{seq}번째 포켓몬",
+      "hp": "HP {hp}/3",
+      "shinyChance": "색이 다른 포켓몬 확률 {percent}%"
+    },
+    "menu": {
+      "label": "행동 선택",
+      "fight": "싸운다",
+      "item": "아이템",
+      "pokemon": "포켓몬",
+      "run": "도망간다"
+    },
+    "message": {
+      "appeared": "앗! 야생의 포켓몬이 나타났다!",
+      "skipped": "방금 포켓몬은 {name}. 새로운 포켓몬이 나타났다!",
+      "menu": "무엇을 할까?",
+      "answering": "이름을 입력하세요.",
+      "judging": "공격!",
+      "wrong": "효과가 없는 것 같다…",
+      "correct": "정답! {name}!",
+      "fainted": "눈앞이 캄캄해졌다… 정답은 {name}!"
+    },
+    "hint": "힌트",
+    "unknownName": "정체불명의 포켓몬",
+    "answer": {
+      "label": "포켓몬 이름",
+      "placeholder": "포켓몬 이름",
+      "submit": "공격!",
+      "cancel": "취소"
+    },
+    "reward": {
+      "newSticker": "새 띠부씰!",
+      "duplicate": "띠부씰 ×{quantity}",
+      "shiny": "색이 다른 띠부씰!",
+      "scoreGained": "+{score}점",
+      "continue": "다음 포켓몬"
+    },
+    "gameover": {
+      "fainted": "트레이너가 쓰러졌다!",
+      "fled": "무사히 도망쳤다!",
+      "answer": "마지막 포켓몬은 {name}",
+      "score": "점수",
+      "roundsCleared": "맞힌 포켓몬",
+      "bestCombo": "최고 콤보",
+      "stickers": "이번에 모은 띠부씰",
+      "noStickers": "이번엔 띠부씰을 모으지 못했어요.",
+      "playAgain": "다시 하기",
+      "toDex": "도감 보기"
+    },
+    "errors": {
+      "sign_in_failed": "게스트로 시작하지 못했어요. 잠시 후 다시 시도해 주세요.",
+      "conflict": "다른 창에서 게임이 진행돼서 최신 상태로 불러왔어요.",
+      "no_skips_left": "스킵을 모두 썼어요.",
+      "hint_already_used": "이미 힌트를 썼어요.",
+      "generic": "문제가 생겼어요. 다시 시도해 주세요."
+    }
   }
 }
