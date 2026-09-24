@@ -39,3 +39,11 @@ export async function authenticatedClient() {
   if (error) throw error;
   return client;
 }
+
+/** A fresh anonymous session: the way every player starts. */
+export async function anonymousPlayer() {
+  const client = anonClient();
+  const { data, error } = await client.auth.signInAnonymously();
+  if (error || !data.user) throw error ?? new Error("no user");
+  return { client, userId: data.user.id };
+}
