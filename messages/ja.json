@@ -92,7 +92,8 @@
   "nav": {
     "dex": "ずかん",
     "quiz": "クイズ",
-    "main": "メインメニュー"
+    "main": "メインメニュー",
+    "collection": "コレクション"
   },
   "quiz": {
     "metaTitle": "シルエットクイズ",
@@ -168,7 +169,8 @@
       "stickers": "今回あつめたシール",
       "noStickers": "今回はシールを集められませんでした。",
       "playAgain": "もういちど",
-      "toDex": "ずかんへ"
+      "toDex": "ずかんへ",
+      "toCollection": "コレクションへ"
     },
     "errors": {
       "sign_in_failed": "ゲストで始められませんでした。しばらくしてからもう一度お試しください。",
@@ -176,6 +178,30 @@
       "no_skips_left": "スキップはもう使えません。",
       "hint_already_used": "ヒントはもう使いました。",
       "generic": "問題が起きました。もう一度お試しください。"
+    }
+  },
+  "collection": {
+    "title": "マイコレクション",
+    "progressLabel": "あつめた数",
+    "collected": "あつめたポケモン",
+    "shiny": "色違いのポケモン",
+    "missing": "まだあつめていないポケモン",
+    "shinyBadge": "色違い",
+    "quantity": "ふつう{normal}まい、色違い{shiny}まい",
+    "emptyTitle": "まだシールがありません",
+    "emptyBody": "クイズでポケモンを当てると、そのポケモンのシールがもらえます。",
+    "toQuiz": "クイズであそぶ",
+    "filters": {
+      "label": "表示",
+      "all": "すべて",
+      "collected": "あつめた",
+      "missing": "まだ",
+      "shiny": "色違い",
+      "empty": "あてはまるシールがありません。"
+    },
+    "guest": {
+      "notice": "ゲストのコレクションはこのブラウザにだけ保存されます。Googleアカウントに保存すると、ほかの端末でも見られます。",
+      "save": "Googleアカウントに保存"
     }
   }
 }

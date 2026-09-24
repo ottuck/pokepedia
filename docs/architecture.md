@@ -255,6 +255,14 @@ my_stats view (security_invoker = true)
 - Motion: `LazyMotion`으로 애니메이션 엔진을 지연 로딩(`domMax`, layout 애니메이션 필요), `MotionConfig reducedMotion="user"`, spring 프리셋은 `lib/motion.ts`.
 - 타입 색은 `features/pokemon/types.ts`가 단일 출처(base/soft/ink, 대비 테스트). 컴포넌트는 CSS 변수(`--type`, `--type-soft`, `--type-ink`, `--type-2`)로 소비한다.
 
+### 컬렉션
+
+- `/[locale]/collection`은 **요청마다 서버 렌더링**한다(세션 cookie를 읽기 때문). 응답은 `Cache-Control: private, no-store`.
+- 스티커는 사용자 세션의 server client로 읽어서 RLS가 본인 것만 돌려준다(secret key 불필요).
+- 151칸 전체를 보여주고 미획득은 `?` 카드(레거시 빈 슬롯). 색이 다른 스티커가 있으면 색이 다른 아트워크와 금색 테두리.
+- 필터(전체/모은 것/못 모은 것/색이 다른)는 클라이언트에서, 카드는 도감처럼 서버 렌더링 결과를 prop으로 넘긴다.
+- 게스트는 Google 저장 배너를 본다(`linkIdentity`).
+
 ## 9. i18n
 
 - next-intl, `app/[locale]/…`, locales `ko`(기본)·`en`·`ja`, `localePrefix: 'always'`

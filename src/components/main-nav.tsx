@@ -14,6 +14,11 @@ const ITEMS = [
     key: "quiz",
     match: (path: string) => path.startsWith("/quiz"),
   },
+  {
+    href: "/collection",
+    key: "collection",
+    match: (path: string) => path.startsWith("/collection"),
+  },
 ] as const;
 
 export function MainNav() {
