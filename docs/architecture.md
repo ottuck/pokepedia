@@ -73,14 +73,32 @@ Round : hp = 3, hint 1회
 | Vercel Production | remote `pokepedia`            | main 배포                                              |
 | Vercel Preview    | remote `pokepedia` (동일)     | PR 확인용. **DB를 변경하는 작업을 자동 실행하지 않음** |
 
+### 배포 파이프라인
+
+```
+feature branch → PR ─┬─ GitHub CI (lint / typecheck / format / test)
+                     └─ Vercel Preview build
+                → Claude self-review → 위험도 판단 ─ 저위험: Claude squash merge
+                                                  └ 고위험: 사용자 승인 후 merge
+main ─┬─ Vercel Production 자동 배포
+      └─ Supabase GitHub integration: 신규 migrations 자동 적용
+      → post-deploy 확인 (배포 상태 + production smoke test)
+```
+
+위험도 분류와 merge 조건은 `CLAUDE.md` § Merge policy가 기준이다.
+
 ### DB 변경 흐름
 
-```
-local: migration 작성 → supabase db reset → RLS/RPC 테스트 → PR
-merge 후 (수동, 명시적으로):  npx supabase db push   /   seed 스크립트 실행
-```
+| 대상                                              | 적용 방식                                                                   |
+| ------------------------------------------------- | --------------------------------------------------------------------------- |
+| Schema (`supabase/migrations`)                    | local 검증 → PR → **main merge 시 Supabase integration이 자동 적용**        |
+| Pokémon 데이터·이미지 (`scripts/sync-pokemon.ts`) | **수동**, 사용자가 명시적으로 요청할 때만 remote에 실행 (idempotent upsert) |
+| 사용자 데이터                                     | 앱을 통해서만. 대량 변경·삭제는 사용자 승인                                 |
 
-- Vercel build/deploy 단계에 migration·seed·reset을 넣지 않는다.
+- migration은 현재 배포된 코드와 호환되어야 한다 (expand → 코드 전환 → contract). merge 후 Vercel과 Supabase는 병렬로 배포되므로 순서가 보장되지 않는다.
+- DB 롤백은 하지 않는다. 문제가 생기면 새 migration으로 수정한다 (forward fix).
+- Vercel build/deploy 단계에 migration·seed·reset을 넣지 않는다. production에서 seed file은 자동 적용되지 않는다.
+- PR별 Supabase Preview Branching은 유료 기능이라 사용하지 않는다 (PR의 `Supabase Preview: skipping`은 정상). 대신 migration은 CI에서 local Supabase로 검증한다 (첫 migration PR에서 추가).
 - Preview는 production 데이터를 공유한다. Preview에서의 게임 플레이는 실제 데이터가 된다는 점을 전제로 한다.
 - Preview URL에서 OAuth를 쓰려면 Supabase Auth Redirect URLs에 Vercel preview 패턴을 추가한다.
 
