@@ -275,7 +275,8 @@ my_stats view (security_invoker = true)
 ## 10. UI
 
 - 톤: 도감·상세·컬렉션 = 밝고 컬러풀한 카드 / 퀴즈·마이페이지 = Pokédex 프레임 + 픽셀 폰트 배틀 UI
-- 토큰: 브랜드(`dex-red`, `dex-screen`, `volt`), 타입 18색 × `{base, soft, ink}`, rarity, 시맨틱(`surface`, `ink`, `muted`) — 다크모드는 값 교체만으로
+- 토큰: 브랜드(`dex-red`, `dex-screen`, `volt`, 고정 어두운색 `charcoal`), 타입 18색 × `{base, soft, ink, softDark, inkDark}`, rarity, 시맨틱(`surface`, `card`, `ink`, `muted`, `danger`)
+- 다크모드: 테마가 바뀌는 토큰은 모두 `light-dark(라이트, 다크)`로 정의하고, 테마 전환은 `color-scheme`만 바꾼다(`dark:` 변형을 쓰지 않음). 기본은 시스템 설정이고, 헤더 토글(시스템 → 라이트 → 다크)을 누르면 `localStorage.theme`과 `<html data-theme>`에 기록한다. 페이지가 정적이라 `<head>`의 인라인 스크립트가 첫 페인트 전에 `data-theme`을 적용한다(깜빡임 방지). 타입 색도 `typeStyle`이 `light-dark()` 값으로 넘기고, 다크 대비(AA)는 테스트로 지킨다. 테마와 무관한 기기 부품(퀴즈 HUD, 보상 배경막, 몬스터볼 로고)은 고정색을 쓴다.
 - 폰트: 본문 Noto Sans KR/JP, 배틀 Galmuri(ko/en) / DotGothic16(ja)
 - 에셋: 게임에서 추출한 래스터 이미지 재사용 금지. 트레이너 등은 자체 SVG. 포켓몬 아트워크만 예외 (팬 프로젝트 고지)
 - Motion: spring 프리셋 3개(`snappy`, `bouncy`, `gentle`), `LazyMotion`, `useReducedMotion` 대응

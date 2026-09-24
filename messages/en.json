@@ -245,5 +245,11 @@
     "emptyTitle": "Nothing here yet",
     "emptyBody": "Play a quiz game to get a guest account and start your record.",
     "toQuiz": "Play the quiz"
+  },
+  "theme": {
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark",
+    "switch": "Theme: {current} (click to change)"
   }
 }
