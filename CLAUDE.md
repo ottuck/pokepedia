@@ -8,10 +8,10 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 
 ## Commands
 
-- `npm run dev` — dev server
-- `npm run lint` / `npm run typecheck` / `npm run format:check` / `npm test`
-- `npx supabase start` / `npx supabase status -o env` / `npx supabase db reset` — local Supabase (Docker)
-- Node 24 (`.nvmrc`). Package manager: npm.
+- `pnpm dev` — dev server
+- `pnpm lint` / `pnpm typecheck` / `pnpm format:check` / `pnpm test`
+- `pnpm supabase start` / `pnpm supabase status -o env` / `pnpm supabase db reset` — local Supabase (Docker)
+- Node 24 (`.nvmrc`). Package manager: pnpm (version pinned by `packageManager`).
 - Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
   `admin.ts` (secret key, bypasses RLS — server only), `proxy.ts` (session refresh only).
 
@@ -33,12 +33,12 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 - Keys: publishable key (`sb_publishable_…`) for browser/SSR, secret key (`sb_secret_…`)
   server-only. Do not use legacy `anon` / `service_role` JWT keys.
 - One remote project (`pokepedia`) serves Vercel Production and Preview. Local development
-  uses `npx supabase start`.
+  uses `pnpm supabase start`.
 - **Migrations deploy automatically**: the Supabase GitHub integration applies new
   `supabase/migrations/*` to the remote project when they land on main. Merging a migration
   PR _is_ deploying it.
 - Verify migrations, RLS, RPCs and seed changes against local Supabase first
-  (`npx supabase db reset`). Never edit an already-merged migration; add a new one.
+  (`pnpm supabase db reset`). Never edit an already-merged migration; add a new one.
 - Migrations must be backward-compatible with the currently deployed code (expand →
   migrate code → contract). Vercel and Supabase deploy in parallel after merge, so there is
   no guaranteed order.
@@ -55,8 +55,8 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 - Keep commits logically scoped; never one huge commit for a whole phase.
 - One PR per coherent feature; aim for < ~400 changed lines excluding migrations,
   generated types, lockfiles and messages/*.json.
-- Before committing: `npm run lint && npm run typecheck && npm test` (relevant scope);
-  before opening a PR also `npm run build`.
+- Before committing: `pnpm lint && pnpm typecheck && pnpm test` (relevant scope);
+  before opening a PR also `pnpm build`.
 - Never commit secrets (.env*, secret keys, SILHOUETTE_SECRET, wallets).
 - Dependent work: branch from the unmerged branch and note "Depends on #N" in the PR.
 
