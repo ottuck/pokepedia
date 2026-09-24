@@ -5,7 +5,17 @@
   },
   "dex": {
     "title": "도감",
-    "count": "{count}마리"
+    "count": "{count}마리",
+    "searchLabel": "포켓몬 검색",
+    "searchPlaceholder": "이름 또는 번호",
+    "typeFilterLabel": "타입",
+    "allTypes": "전체",
+    "sortLabel": "정렬",
+    "sortNumber": "번호순",
+    "sortName": "이름순",
+    "resultCount": "{total}마리 중 {count}마리",
+    "emptyTitle": "조건에 맞는 포켓몬이 없어요",
+    "resetFilters": "필터 초기화"
   },
   "types": {
     "normal": "노말",

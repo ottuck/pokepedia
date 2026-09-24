@@ -5,7 +5,17 @@
   },
   "dex": {
     "title": "ずかん",
-    "count": "{count}ひき"
+    "count": "{count}ひき",
+    "searchLabel": "ポケモンをさがす",
+    "searchPlaceholder": "なまえ・ばんごう",
+    "typeFilterLabel": "タイプ",
+    "allTypes": "すべて",
+    "sortLabel": "ならびかえ",
+    "sortNumber": "ばんごう順",
+    "sortName": "なまえ順",
+    "resultCount": "{total}ひき中 {count}ひき",
+    "emptyTitle": "条件に合うポケモンがいません",
+    "resetFilters": "条件をリセット"
   },
   "types": {
     "normal": "ノーマル",
