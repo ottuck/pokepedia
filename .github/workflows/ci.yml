@@ -25,3 +25,30 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm format:check
       - run: pnpm test
+
+  # Migrations deploy to production on merge, so they are verified here first.
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Start local Supabase (applies all migrations)
+        run: pnpm supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,realtime
+      - name: Lint database schema
+        run: pnpm supabase db lint --level warning --fail-on warning
+      - name: Generated types match the migrations
+        run: pnpm db:types && git diff --exit-code src/lib/supabase/database.types.ts
+      - name: Export local keys
+        run: |
+          pnpm --silent supabase status -o env > .supabase.env
+          set -a; . ./.supabase.env; set +a
+          echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY" >> "$GITHUB_ENV"
+          echo "SUPABASE_SECRET_KEY=$SECRET_KEY" >> "$GITHUB_ENV"
+      - name: RLS and RPC permission tests
+        run: pnpm test:db
