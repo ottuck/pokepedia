@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
-import { z } from "zod";
+import * as z from "zod/mini";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/browser";
 import { onAccountChange } from "../account-events";
@@ -19,9 +19,11 @@ type AccountState =
     };
 
 // Google puts the picture in user_metadata; anything unexpected is simply ignored.
-const metadataSchema = z
-  .object({ avatar_url: z.url().optional(), picture: z.url().optional() })
-  .catch({});
+// zod/mini: this header island is on every page, and classic zod is ~90 KB gzipped.
+const metadataSchema = z.catch(
+  z.object({ avatar_url: z.optional(z.url()), picture: z.optional(z.url()) }),
+  {},
+);
 
 /**
  * Header account area. A client island on purpose: the header is in the root layout, and
