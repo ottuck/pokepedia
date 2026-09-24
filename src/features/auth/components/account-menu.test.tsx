@@ -1,8 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../../messages/ko.json";
+import { announceAccountChange } from "../account-events";
 import { AccountMenu } from "./account-menu";
 
 type Claims = {
@@ -143,5 +144,19 @@ describe("AccountMenu", () => {
     expect(confirm).not.toHaveBeenCalled();
     expect(auth.signOut).toHaveBeenCalledOnce();
     expect(screen.queryByText("Google 계정에 저장")).not.toBeInTheDocument();
+  });
+
+  it("picks up a guest session created on the server", async () => {
+    auth.claims = null;
+    renderMenu();
+    await screen.findByRole("button", { name: "Google로 로그인" });
+
+    // The quiz's first game signs in through a Server Action, invisible to onAuthStateChange.
+    auth.claims = { is_anonymous: true };
+    act(() => announceAccountChange());
+
+    expect(
+      await screen.findByRole("button", { name: "계정 메뉴" }),
+    ).toHaveTextContent("Trainer-1A2B");
   });
 });

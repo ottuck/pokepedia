@@ -1,4 +1,5 @@
 import type { Locale } from "next-intl";
+import { announceAccountChange } from "@/features/auth/account-events";
 import { create } from "zustand";
 import {
   fleeQuiz,
@@ -120,6 +121,8 @@ export const useQuizStore = create<QuizStore>((set, get) => {
       set({ ...initial, phase: "starting" });
       const result = await call(() => startQuiz({ locale }));
       if (!result.ok) return set({ phase: "lobby", error: result.code });
+      // A first game signs the player in as a guest on the server; tell the header.
+      announceAccountChange();
       set({ run: result.data.run, round: result.data.round, phase: "intro" });
     },
 

@@ -5,6 +5,7 @@ import { useEffect, useId, useState } from "react";
 import { z } from "zod";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/browser";
+import { onAccountChange } from "../account-events";
 import { continueWithGoogle } from "../google";
 
 type AccountState =
@@ -67,7 +68,11 @@ export function AccountMenu() {
         setTimeout(() => void load(), 0);
       }
     });
-    return () => subscription.subscription.unsubscribe();
+    const stopListening = onAccountChange(() => void load());
+    return () => {
+      subscription.subscription.unsubscribe();
+      stopListening();
+    };
   }, []);
 
   if (account.status === "loading") {
