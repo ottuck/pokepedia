@@ -17,6 +17,32 @@
     "emptyTitle": "조건에 맞는 포켓몬이 없어요",
     "resetFilters": "필터 초기화"
   },
+  "detail": {
+    "backToDex": "도감으로",
+    "height": "키",
+    "weight": "몸무게",
+    "abilities": "특성",
+    "hiddenAbility": "숨겨진 특성",
+    "baseStats": "기본 능력치",
+    "total": "합계",
+    "stats": {
+      "hp": "HP",
+      "attack": "공격",
+      "defense": "방어",
+      "special_attack": "특수공격",
+      "special_defense": "특수방어",
+      "speed": "스피드"
+    },
+    "evolution": "진화",
+    "evolutionLevel": "Lv. {level}",
+    "evolutionTrade": "통신교환",
+    "evolutionOther": "특별한 조건",
+    "noEvolution": "진화하지 않는 포켓몬이에요",
+    "previous": "이전 포켓몬",
+    "next": "다음 포켓몬",
+    "legendary": "전설의 포켓몬",
+    "mythical": "환상의 포켓몬"
+  },
   "types": {
     "normal": "노말",
     "fire": "불꽃",
