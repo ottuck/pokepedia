@@ -6,7 +6,9 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { artworkUrl } from "@/features/pokemon/assets";
+import { ArtworkViewer } from "@/features/pokemon/components/detail/artwork-viewer";
 import { EvolutionLine } from "@/features/pokemon/components/detail/evolution-line";
+import { MyStickerBadge } from "@/features/pokemon/components/detail/my-sticker-badge";
 import { StatBars } from "@/features/pokemon/components/detail/stat-bars";
 import { TypeBadge } from "@/features/pokemon/components/type-badge";
 import { buildEvolutionStages } from "@/features/pokemon/evolution";
@@ -62,6 +64,9 @@ export async function generateMetadata({
   };
 }
 
+const ARTWORK_SIZES =
+  "(min-width: 1024px) 400px, (min-width: 768px) 40vw, 90vw";
+
 export default async function PokemonDetailPage({
   params,
 }: PageProps<"/[locale]/pokemon/[id]">) {
@@ -105,13 +110,26 @@ export default async function PokemonDetailPage({
               className="absolute size-3/4 rounded-full bg-white/40"
             />
             <div className="relative size-4/5">
-              <Image
-                src={artworkUrl(pokemon.artwork_path)}
-                alt={name}
-                fill
-                preload
-                sizes="(min-width: 1024px) 400px, (min-width: 768px) 40vw, 90vw"
-                className="object-contain drop-shadow-xl"
+              <ArtworkViewer
+                normal={
+                  <Image
+                    src={artworkUrl(pokemon.artwork_path)}
+                    alt={name}
+                    fill
+                    preload
+                    sizes={ARTWORK_SIZES}
+                    className="object-contain drop-shadow-xl"
+                  />
+                }
+                shiny={
+                  <Image
+                    src={artworkUrl(pokemon.shiny_artwork_path)}
+                    alt={t("shinyAlt", { name })}
+                    fill
+                    sizes={ARTWORK_SIZES}
+                    className="object-contain drop-shadow-xl"
+                  />
+                }
               />
             </div>
           </div>
@@ -136,6 +154,7 @@ export default async function PokemonDetailPage({
                 </span>
               )}
             </div>
+            <MyStickerBadge pokemonId={pokemon.id} />
           </header>
 
           <p className="leading-relaxed">{pokemon[`description_${locale}`]}</p>
