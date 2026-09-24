@@ -45,8 +45,8 @@ export function StickerCard({ pokemon, holding, locale }: Props) {
     <Link
       href={`/pokemon/${pokemon.id}`}
       style={typeStyle(pokemon.type_1, pokemon.type_2)}
-      className={`group relative flex aspect-[3/4] flex-col rounded-2xl border-4 bg-white p-2 shadow-sm transition-transform hover:scale-105 hover:-rotate-2 motion-reduce:transition-none ${
-        shiny ? "border-volt shadow-volt/40" : "border-white ring-1 ring-ink/10"
+      className={`group relative flex aspect-[3/4] flex-col rounded-2xl border-4 bg-card p-2 shadow-sm transition-transform hover:scale-105 hover:-rotate-2 motion-reduce:transition-none ${
+        shiny ? "border-volt shadow-volt/40" : "border-card ring-1 ring-ink/10"
       }`}
     >
       <div className="flex items-baseline justify-between gap-1">

@@ -94,7 +94,7 @@ export default async function PokemonDetailPage({
         ← {t("backToDex")}
       </Link>
 
-      <article className="overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-ink/5 md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+      <article className="overflow-hidden rounded-[2rem] bg-card shadow-sm ring-1 ring-ink/5 md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
         {/* Type-colored backdrop: the legacy detail page's signature gradient. */}
         {/* The gradient fills the whole column; the artwork stays a square pinned at the top,
             so a long info column does not blow the image up. */}
@@ -177,7 +177,7 @@ export default async function PokemonDetailPage({
         </div>
       </article>
 
-      <section className="mt-8 rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-ink/5">
+      <section className="mt-8 rounded-[2rem] bg-card p-6 shadow-sm ring-1 ring-ink/5">
         <h2 className="mb-4 text-center text-sm font-bold text-muted">
           {t("evolution")}
         </h2>
@@ -263,7 +263,7 @@ function PagerLink({
     <Link
       href={`/pokemon/${entry.id}`}
       rel={isNext ? "next" : "prev"}
-      className={`rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-ink/5 transition-colors hover:ring-(--type) ${isNext ? "col-start-2 text-right" : ""}`}
+      className={`rounded-2xl bg-card px-4 py-3 shadow-sm ring-1 ring-ink/5 transition-colors hover:ring-(--type) ${isNext ? "col-start-2 text-right" : ""}`}
     >
       <span className="block text-xs text-muted">
         {isNext ? `${label} →` : `← ${label}`}

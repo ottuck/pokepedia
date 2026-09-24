@@ -2,23 +2,43 @@
 
 /*
  * Design tokens (see docs/architecture.md § Design tokens).
- * Semantic tokens live on :root so dark mode can later swap values only.
+ * Every themed token is `light-dark(light, dark)`: the value follows `color-scheme`, so switching
+ * the theme only changes `color-scheme` (system by default, or `data-theme` set by ThemeScript).
  */
 :root {
-  --surface: #fffdf7;
-  --ink: #1f1d1a;
-  --muted: #6b665e;
+  color-scheme: light dark;
+
+  --surface: light-dark(#fffdf7, #141318);
+  /* Raised surfaces: cards, panels, message boxes. Keep in sync with DARK_CARD in types.test.ts. */
+  --card: light-dark(#ffffff, #1f1e24);
+  --ink: light-dark(#1f1d1a, #f1ede4);
+  --muted: light-dark(#6b665e, #a8a298);
+  /* Error text; dex-red is too dim for small text on dark cards. */
+  --danger: light-dark(#b8322a, #ff8a80);
+  --dex-screen: light-dark(#a9cbff, #3d6099);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 @theme inline {
   /* Brand — Pokédex body, Pokédex screen, Pikachu yellow (legacy #c54431 / #9bc2fd / #ecc22e) */
   --color-dex-red: #d8433a;
-  --color-dex-screen: #a9cbff;
+  --color-dex-screen: var(--dex-screen);
   --color-volt: #f5c542;
+  /* Fixed dark for device parts that stay dark in both themes (the quiz HUD). */
+  --color-charcoal: #1f1d1a;
 
   --color-surface: var(--surface);
+  --color-card: var(--card);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-danger: var(--danger);
 
   /* Korean glyph shapes first; Japanese pages flip the order (see :lang(ja)). */
   --font-sans: var(--font-noto-kr), var(--font-noto-jp), system-ui, sans-serif;

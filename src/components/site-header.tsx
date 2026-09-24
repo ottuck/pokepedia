@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { AccountMenu } from "@/features/auth/components/account-menu";
 import { LocaleSwitcher } from "./locale-switcher";
+import { ThemeToggle } from "./theme-toggle";
 import { MainNav } from "./main-nav";
 
 export function SiteHeader() {
@@ -25,6 +26,7 @@ export function SiteHeader() {
       </div>
       <div className="flex items-center gap-2">
         <LocaleSwitcher />
+        <ThemeToggle />
         <AccountMenu />
       </div>
     </header>

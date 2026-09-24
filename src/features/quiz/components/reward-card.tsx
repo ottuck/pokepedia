@@ -19,7 +19,7 @@ export function RewardCard() {
 
   return (
     <m.div
-      className="absolute inset-0 z-10 flex items-center justify-center bg-ink/50 p-4 backdrop-blur-sm"
+      className="absolute inset-0 z-10 flex items-center justify-center bg-charcoal/50 p-4 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -37,7 +37,7 @@ export function RewardCard() {
           transition={spring.bouncy}
         >
           <m.div
-            className="relative rounded-3xl border-[6px] border-white bg-white p-3 shadow-2xl [transform-style:preserve-3d]"
+            className="relative rounded-3xl border-[6px] border-card bg-card p-3 shadow-2xl [transform-style:preserve-3d]"
             initial={{ rotateY: 180 }}
             animate={{ rotateY: 0 }}
             transition={{ delay: shiny ? 0.9 : 0.4, duration: 0.6 }}
@@ -80,7 +80,7 @@ export function RewardCard() {
         </m.div>
 
         <m.p
-          className="rounded-full bg-white px-4 py-1 text-sm font-black"
+          className="rounded-full bg-card px-4 py-1 text-sm font-black"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ ...spring.bouncy, delay: 1 }}
@@ -90,7 +90,7 @@ export function RewardCard() {
             : sticker.isNew
               ? t("newSticker")
               : t("duplicate", { quantity: sticker.quantity })}
-          <span className="ml-2 text-dex-red">
+          <span className="ml-2 text-danger">
             {t("scoreGained", { score: scoreGained })}
           </span>
         </m.p>

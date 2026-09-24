@@ -33,7 +33,7 @@ export function GameOver() {
         {stats.map(({ label, value }, index) => (
           <m.div
             key={label}
-            className="rounded-2xl bg-white/80 p-3"
+            className="rounded-2xl bg-card/80 p-3"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ ...spring.gentle, delay: index * 0.1 }}
@@ -53,7 +53,7 @@ export function GameOver() {
             {stickers.map(({ revealed, variant }, index) => (
               <li
                 key={`${revealed.id}-${index}`}
-                className={`relative size-16 rounded-xl border-4 bg-white ${variant === "shiny" ? "border-volt" : "border-white"}`}
+                className={`relative size-16 rounded-xl border-4 bg-card ${variant === "shiny" ? "border-volt" : "border-card"}`}
               >
                 <Image
                   src={revealed.artworkUrl}
@@ -73,13 +73,13 @@ export function GameOver() {
           type="button"
           autoFocus
           onClick={() => void start(locale)}
-          className="rounded-full bg-ink px-6 py-2 font-black text-white"
+          className="rounded-full bg-ink px-6 py-2 font-black text-surface"
         >
           {t("playAgain")}
         </button>
         <Link
           href="/collection"
-          className="rounded-full bg-white px-6 py-2 font-black"
+          className="rounded-full bg-card px-6 py-2 font-black"
         >
           {t("toCollection")}
         </Link>

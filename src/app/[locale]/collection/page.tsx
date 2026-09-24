@@ -61,12 +61,12 @@ export default async function CollectionPage() {
       {mine.isAnonymous && <GuestSaveBanner />}
 
       {summary.collected === 0 && (
-        <div className="mb-6 flex flex-col items-center gap-3 rounded-2xl bg-white p-8 text-center ring-1 ring-ink/5">
+        <div className="mb-6 flex flex-col items-center gap-3 rounded-2xl bg-card p-8 text-center ring-1 ring-ink/5">
           <p className="text-lg font-bold">{t("emptyTitle")}</p>
           <p className="text-sm text-muted">{t("emptyBody")}</p>
           <Link
             href="/quiz"
-            className="rounded-full bg-ink px-5 py-2 text-sm font-bold text-white"
+            className="rounded-full bg-ink px-5 py-2 text-sm font-bold text-surface"
           >
             {t("toQuiz")}
           </Link>
@@ -94,7 +94,7 @@ function Progress({
   tone: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white p-4 ring-1 ring-ink/5">
+    <div className="rounded-2xl bg-card p-4 ring-1 ring-ink/5">
       <div className="mb-2 flex items-baseline justify-between">
         <span className="text-sm font-bold">{label}</span>
         <span className="font-mono text-lg font-black">

@@ -89,7 +89,7 @@ export function AccountMenu() {
       <button
         type="button"
         onClick={() => void continueWithGoogle(false, router)}
-        className="flex h-9 items-center gap-2 rounded-full border-2 border-ink/10 bg-white px-3 text-sm font-semibold hover:border-ink/30"
+        className="flex h-9 items-center gap-2 rounded-full border-2 border-ink/10 bg-card px-3 text-sm font-semibold hover:border-ink/30"
       >
         <GoogleMark />
         <span className="sr-only sm:not-sr-only">{t("signInWithGoogle")}</span>
@@ -114,7 +114,7 @@ export function AccountMenu() {
       <div
         id={menuId}
         popover="auto"
-        className="fixed inset-auto top-16 right-4 m-0 w-64 rounded-2xl bg-white p-3 text-sm shadow-xl ring-1 ring-ink/10"
+        className="fixed inset-auto top-16 right-4 m-0 w-64 rounded-2xl bg-card p-3 text-sm shadow-xl ring-1 ring-ink/10"
       >
         <p className="truncate px-2 font-bold">{nickname}</p>
         <p className="px-2 pb-2 text-xs text-muted">
