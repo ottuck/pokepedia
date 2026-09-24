@@ -48,3 +48,6 @@ supabase/.temp
 
 # pokeapi raw cache used by the seed script
 .cache
+
+# supabase CLI local state
+supabase/.branches
