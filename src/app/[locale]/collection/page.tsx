@@ -58,7 +58,7 @@ export default async function CollectionPage() {
         />
       </section>
 
-      {mine.isAnonymous && <GuestSaveBanner />}
+      {mine.isAnonymous && <GuestSaveBanner className="mb-6" />}
 
       {summary.collected === 0 && (
         <div className="mb-6 flex flex-col items-center gap-3 rounded-2xl bg-card p-8 text-center ring-1 ring-ink/5">
