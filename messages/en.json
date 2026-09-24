@@ -88,5 +88,94 @@
       "generic": "Try again in a moment.",
       "backHome": "Back to Pokédex"
     }
+  },
+  "nav": {
+    "dex": "Pokédex",
+    "quiz": "Quiz",
+    "main": "Main menu"
+  },
+  "quiz": {
+    "metaTitle": "Silhouette quiz",
+    "title": "Who’s that Pokémon?",
+    "subtitle": "Name the Pokémon from its silhouette to collect stickers. Korean, English, and Japanese names all count.",
+    "play": "Play",
+    "starting": "Getting ready…",
+    "rules": {
+      "fight": {
+        "title": "Fight",
+        "body": "Type the name to attack. A wrong guess costs 1 HP; three misses end the game."
+      },
+      "item": {
+        "title": "Item",
+        "body": "Reveals half the name. Breaks your combo and halves the points."
+      },
+      "pokemon": {
+        "title": "Pokémon",
+        "body": "Switches to another Pokémon. Up to 3 times per game."
+      },
+      "run": {
+        "title": "Run",
+        "body": "Ends the game and shows your results."
+      }
+    },
+    "hud": {
+      "score": "Score",
+      "combo": "Combo",
+      "skips": "Skips",
+      "round": "Pokémon #{seq}",
+      "hp": "HP {hp}/3",
+      "shinyChance": "Shiny chance {percent}%"
+    },
+    "menu": {
+      "label": "Choose an action",
+      "fight": "Fight",
+      "item": "Item",
+      "pokemon": "Pokémon",
+      "run": "Run"
+    },
+    "message": {
+      "appeared": "A wild Pokémon appeared!",
+      "skipped": "That was {name}. A new Pokémon appeared!",
+      "menu": "What will you do?",
+      "answering": "Type its name.",
+      "judging": "Attack!",
+      "wrong": "It’s not very effective…",
+      "correct": "Correct! It’s {name}!",
+      "fainted": "You blacked out… It was {name}!"
+    },
+    "hint": "Hint",
+    "unknownName": "Unknown Pokémon",
+    "answer": {
+      "label": "Pokémon name",
+      "placeholder": "Pokémon name",
+      "submit": "Attack!",
+      "cancel": "Cancel"
+    },
+    "reward": {
+      "newSticker": "New sticker!",
+      "duplicate": "Sticker ×{quantity}",
+      "shiny": "Shiny sticker!",
+      "scoreGained": "+{score}",
+      "continue": "Next Pokémon"
+    },
+    "gameover": {
+      "fainted": "The trainer fainted!",
+      "fled": "Got away safely!",
+      "answer": "The last one was {name}",
+      "score": "Score",
+      "roundsCleared": "Pokémon named",
+      "bestCombo": "Best combo",
+      "stickers": "Stickers this game",
+      "noStickers": "No stickers this time.",
+      "playAgain": "Play again",
+      "toDex": "Go to Pokédex"
+    },
+    "errors": {
+      "sign_in_failed": "Couldn’t start a guest session. Try again in a moment.",
+      "conflict": "The game moved on in another tab, so it was reloaded.",
+      "no_skips_left": "No skips left.",
+      "hint_already_used": "Hint already used.",
+      "generic": "Something went wrong. Try again."
+    }
   }
 }
