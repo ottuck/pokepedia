@@ -11,6 +11,8 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 - `pnpm dev` — dev server
 - `pnpm lint` / `pnpm typecheck` / `pnpm format:check` / `pnpm test`
 - `pnpm supabase start` / `pnpm supabase status -o env` / `pnpm supabase db reset` — local Supabase (Docker)
+- `pnpm db:types` — regenerate `src/lib/supabase/database.types.ts` after a migration (CI fails on drift)
+- `pnpm test:db` — RLS/grant/RPC tests against local Supabase (writes fixtures; local DB only)
 - Node 24 (`.nvmrc`). Package manager: pnpm (version pinned by `packageManager`).
 - Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
   `admin.ts` (secret key, bypasses RLS — server only), `proxy.ts` (session refresh only).
@@ -59,6 +61,11 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
   before opening a PR also `pnpm build`.
 - Never commit secrets (.env*, secret keys, SILHOUETTE_SECRET, wallets).
 - Dependent work: branch from the unmerged branch and note "Depends on #N" in the PR.
+- Git text (commit messages, PR title/body) in natural Korean; branch names and technical terms
+  stay English.
+- Every PR: assignee `ottuck`, one type label (`enhancement`, `bug`, `documentation`, `chore`,
+  `refactor`, `test`) plus relevant `area: *` labels (`db`, `data`, `i18n`, `auth`, `ui`, `quiz`,
+  `infra`), and `needs-approval` when the merge policy requires it. Create a label if none fits.
 
 ## Merge policy (risk-based autonomy)
 

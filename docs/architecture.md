@@ -126,7 +126,8 @@ PokeAPI ──(로컬에서 1회 실행) scripts/sync-pokemon.ts
 ```
 
 - 실루엣 key = `HMAC-SHA256(SILHOUETTE_SECRET, id)` 앞 16자리
-- 버킷: `pokemon-artwork`(public, `normal/025.webp`, `shiny/025.webp`), `quiz-silhouette`(public, `{opaque}.webp`), `avatars`(Should)
+- 버킷: `pokemon-artwork`(public, `normal/025.webp`, `shiny/025.webp`), `quiz-silhouette`(public, `{opaque}.webp`), `avatars`(Should). `config.toml`에 선언하고 GitHub 연동이 production에 생성한다. storage.objects 정책이 없으므로 목록 조회·쓰기는 secret key만 가능
+- DB 반영은 `sync_pokemon_catalog` RPC 한 번으로 한다 (부분 반영 방지)
 - 설명: 언어별 최신 버전 flavor text, 제어문자 정리
 - 진화: 체인을 1–151로 절단 (2세대 이후 분기·prebaby 제외)
 - opaque key는 "개발자도구로 바로 보이지 않는" 수준의 방어다. 매핑표를 직접 만드는 것까지는 막지 않는다 (랭킹 도입 시 재검토).
@@ -152,6 +153,9 @@ pokemon_ability (pokemon_id, ability_id, slot, is_hidden, pk (pokemon_id, slot))
 
 -- 퀴즈 비밀 데이터: private 스키마 (Data API 비노출)
 private.pokemon_quiz (pokemon_id pk, silhouette_path text unique not null, answer_keys text[] not null)
+
+-- 동기화: 전체 카탈로그를 한 트랜잭션으로 upsert (service_role 전용, idempotent)
+public.sync_pokemon_catalog(p_abilities, p_pokemon, p_pokemon_abilities, p_quiz jsonb)
 
 -- 사용자
 profile (id uuid pk → auth.users on delete cascade, nickname 2–20자, avatar_path, created_at)  -- signup trigger
@@ -202,7 +206,7 @@ Zod 입력 검증, `{ ok: true, ... } | { ok: false, code }` 반환. 에러는 �
 `submitAnswer` 내부 — "TS가 판단, SQL이 원자적 커밋":
 
 1. `getClaims()` → userId
-2. secret-key client로 round·run·`private.pokemon_quiz` 조회 (본인 + active)
+2. secret-key client로 round·run 조회 (본인 + active). `private` 스키마는 Data API에 노출되지 않으므로 정답 키·실루엣은 service_role 전용 RPC로 읽는다
 3. `rules.ts`: `judge(normalize(answer), answerKeys)` → `resolveRound(state, judgement, rng)`
 4. 오답(hp 남음): `update ... where id = $1 and status = 'active' and attempts = $expected`
 5. 클리어/실패: `rpc('resolve_round')` — 같은 guard로 round UPDATE + run UPDATE + `user_sticker` UPSERT, 한 트랜잭션
