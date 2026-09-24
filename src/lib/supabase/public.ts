@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import { publicEnv } from "@/lib/env/public";
 import type { Database } from "./database.types";
+import { createRetryingFetch } from "./retrying-fetch";
 
 /**
  * Anonymous client with no session or cookies, for public catalog reads. Because it never
@@ -10,6 +11,9 @@ export function createPublicClient() {
   return createClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
     publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-    { auth: { persistSession: false, autoRefreshToken: false } },
+    {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: createRetryingFetch() },
+    },
   );
 }
