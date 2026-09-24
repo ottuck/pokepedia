@@ -45,7 +45,7 @@ export function BattleStage() {
         </div>
         <PokemonStage />
       </div>
-      <div className="grid gap-3 border-t-4 border-ink/15 bg-white/60 p-3 sm:grid-cols-[1fr_16rem] sm:p-4">
+      <div className="grid gap-3 border-t-4 border-ink/15 bg-card/60 p-3 sm:grid-cols-[1fr_16rem] sm:p-4">
         <MessageBox />
         <BattleMenu />
       </div>
@@ -64,7 +64,7 @@ function Hud() {
   const chance = Math.round(shinyChance(run.combo + 1, round.hintUsed) * 100);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-ink/85 px-4 py-2 text-sm font-bold text-white sm:px-8">
+    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-charcoal/85 px-4 py-2 text-sm font-bold text-white sm:px-8">
       <span>
         {t("score")}{" "}
         <m.span
@@ -117,7 +117,7 @@ function EnemyPanel() {
         : null;
 
   return (
-    <div className="max-w-64 rounded-2xl rounded-bl-none border-4 border-ink/80 bg-white px-4 py-2 shadow">
+    <div className="max-w-64 rounded-2xl rounded-bl-none border-4 border-ink/80 bg-card px-4 py-2 shadow">
       <p
         aria-live="polite"
         className="font-mono text-xl font-black tracking-widest"
@@ -142,7 +142,7 @@ function PlayerPanel() {
       // Hit: the trainer's panel shakes (legacy counter-attack).
       animate={phase === "hit" ? { x: [0, -12, 12, -8, 8, 0] } : { x: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-fit rounded-2xl rounded-tr-none border-4 border-ink/80 bg-white px-4 py-2 shadow"
+      className="w-fit rounded-2xl rounded-tr-none border-4 border-ink/80 bg-card px-4 py-2 shadow"
     >
       <p className="sr-only">{t("hp", { hp: round.hp })}</p>
       <div aria-hidden className="flex gap-1 text-2xl">
@@ -255,7 +255,7 @@ function MessageBox() {
           event.preventDefault();
           void answer(value, locale).then(() => setValue(""));
         }}
-        className="flex flex-col gap-2 rounded-2xl border-4 border-ink/80 bg-white p-3"
+        className="flex flex-col gap-2 rounded-2xl border-4 border-ink/80 bg-card p-3"
       >
         <label htmlFor={inputId} className="text-sm font-semibold">
           {t("message.answering")}
@@ -309,7 +309,7 @@ function MessageBox() {
     message = t("message.correct", { name: reward.revealed.name });
 
   return (
-    <div className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border-4 border-ink/80 bg-white p-3">
+    <div className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border-4 border-ink/80 bg-card p-3">
       <p aria-live="polite" className="text-base font-bold">
         {message}
       </p>
@@ -389,7 +389,7 @@ function BattleMenu() {
           onFocus={() => setFocused(index)}
           onClick={() => act(item)}
           aria-disabled={disabled[item]}
-          className="rounded-xl border-4 border-ink/80 bg-white px-3 py-3 text-left font-black transition-colors hover:bg-volt/30 focus-visible:bg-volt/40 focus-visible:outline-none aria-disabled:cursor-not-allowed aria-disabled:opacity-40"
+          className="rounded-xl border-4 border-ink/80 bg-card px-3 py-3 text-left font-black transition-colors hover:bg-volt/30 focus-visible:bg-volt/40 focus-visible:outline-none aria-disabled:cursor-not-allowed aria-disabled:opacity-40"
         >
           <span aria-hidden className="mr-1 text-dex-red">
             ▸

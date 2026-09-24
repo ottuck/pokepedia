@@ -42,7 +42,7 @@ export function DexToolbar({ filters, types, onChange }: Props) {
             placeholder={t("searchPlaceholder")}
             autoComplete="off"
             enterKeyHint="search"
-            className="h-11 w-full rounded-full border-2 border-ink/10 bg-white px-5 text-base transition-colors outline-none placeholder:text-muted focus:border-dex-red"
+            className="h-11 w-full rounded-full border-2 border-ink/10 bg-card px-5 text-base transition-colors outline-none placeholder:text-muted focus:border-dex-red"
           />
         </div>
         <label htmlFor={sortId} className="sr-only">
@@ -54,7 +54,7 @@ export function DexToolbar({ filters, types, onChange }: Props) {
           onChange={(event) =>
             onChange({ sort: event.target.value as SortOption })
           }
-          className="h-11 shrink-0 rounded-full border-2 border-ink/10 bg-white px-3 text-sm font-medium outline-none focus:border-dex-red sm:px-4"
+          className="h-11 shrink-0 rounded-full border-2 border-ink/10 bg-card px-3 text-sm font-medium outline-none focus:border-dex-red sm:px-4"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option} value={option}>
@@ -115,7 +115,7 @@ function TypeChip({
       className={
         type
           ? // Pressed uses ink, not base: white on base fails contrast for light types (electric, ice).
-            "shrink-0 rounded-full border-2 border-(--type) bg-(--type-soft) px-3 py-1 text-sm font-semibold text-(--type-ink) transition-colors aria-pressed:border-(--type-ink) aria-pressed:bg-(--type-ink) aria-pressed:text-white"
+            "shrink-0 rounded-full border-2 border-(--type) bg-(--type-soft) px-3 py-1 text-sm font-semibold text-(--type-ink) transition-colors aria-pressed:border-(--type-ink) aria-pressed:bg-(--type-ink) aria-pressed:text-(--type-soft)"
           : "shrink-0 rounded-full border-2 border-ink px-3 py-1 text-sm font-semibold transition-colors aria-pressed:bg-ink aria-pressed:text-surface"
       }
     >

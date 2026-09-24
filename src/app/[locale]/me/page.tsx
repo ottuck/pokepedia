@@ -27,12 +27,12 @@ export default async function MyPage() {
   if (!me) {
     return (
       <main className="mx-auto w-full max-w-3xl px-4 pb-16">
-        <div className="flex flex-col items-center gap-3 rounded-2xl bg-white p-10 text-center ring-1 ring-ink/5">
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-card p-10 text-center ring-1 ring-ink/5">
           <h1 className="text-2xl font-black">{t("emptyTitle")}</h1>
           <p className="text-sm text-muted">{t("emptyBody")}</p>
           <Link
             href="/quiz"
-            className="rounded-full bg-ink px-5 py-2 text-sm font-bold text-white"
+            className="rounded-full bg-ink px-5 py-2 text-sm font-bold text-surface"
           >
             {t("toQuiz")}
           </Link>
@@ -82,7 +82,7 @@ export default async function MyPage() {
             <div
               key={label}
               // Five cards: the last one spans the row in the two-column phone layout.
-              className="rounded-2xl bg-white p-4 ring-1 ring-ink/5 last:col-span-2 sm:last:col-span-1"
+              className="rounded-2xl bg-card p-4 ring-1 ring-ink/5 last:col-span-2 sm:last:col-span-1"
             >
               <dt className="text-xs font-bold text-muted">{label}</dt>
               <dd className="font-mono text-2xl font-black">{value}</dd>
@@ -115,7 +115,7 @@ export default async function MyPage() {
                 <li key={`${pokemon_id}-${variant}`}>
                   <Link
                     href={`/pokemon/${pokemon_id}`}
-                    className={`flex flex-col items-center gap-1 rounded-xl border-4 bg-white p-1 text-center ${shiny ? "border-volt" : "border-white"}`}
+                    className={`flex flex-col items-center gap-1 rounded-xl border-4 bg-card p-1 text-center ${shiny ? "border-volt" : "border-card"}`}
                   >
                     <span className="relative aspect-square w-full">
                       <Image
@@ -151,7 +151,7 @@ export default async function MyPage() {
         {me.recentRuns.length === 0 ? (
           <p className="text-sm text-muted">{t("noRuns")}</p>
         ) : (
-          <ol className="divide-y divide-ink/5 rounded-2xl bg-white ring-1 ring-ink/5">
+          <ol className="divide-y divide-ink/5 rounded-2xl bg-card ring-1 ring-ink/5">
             {me.recentRuns.map((run) => (
               <li
                 key={run.id}

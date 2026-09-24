@@ -22,7 +22,7 @@ export function Lobby() {
 
       <dl className="grid w-full max-w-xl grid-cols-1 gap-3 text-left sm:grid-cols-2">
         {RULES.map((rule) => (
-          <div key={rule} className="rounded-2xl bg-white/70 p-4">
+          <div key={rule} className="rounded-2xl bg-card/70 p-4">
             <dt className="font-bold">{t(`rules.${rule}.title`)}</dt>
             <dd className="mt-1 text-sm text-ink/70">
               {t(`rules.${rule}.body`)}
@@ -37,7 +37,7 @@ export function Lobby() {
         type="button"
         onClick={() => void start(locale)}
         disabled={starting}
-        className="rounded-full bg-ink px-10 py-3 text-lg font-black text-white shadow-lg transition hover:scale-105 disabled:opacity-60 motion-reduce:transition-none"
+        className="rounded-full bg-ink px-10 py-3 text-lg font-black text-surface shadow-lg transition hover:scale-105 disabled:opacity-60 motion-reduce:transition-none"
       >
         {starting ? t("starting") : t("play")}
       </button>

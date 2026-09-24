@@ -15,7 +15,7 @@ export function GuestSaveBanner() {
       <button
         type="button"
         onClick={() => void continueWithGoogle(true, router)}
-        className="shrink-0 rounded-full bg-ink px-4 py-2 text-sm font-bold text-white"
+        className="shrink-0 rounded-full bg-ink px-4 py-2 text-sm font-bold text-surface"
       >
         {t("save")}
       </button>

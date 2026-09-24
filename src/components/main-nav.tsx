@@ -33,7 +33,7 @@ export function MainNav() {
             <Link
               href={href}
               aria-current={match(pathname) ? "page" : undefined}
-              className="rounded-full px-3 py-1.5 text-muted hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-white"
+              className="rounded-full px-3 py-1.5 text-muted hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-surface"
             >
               {t(key)}
             </Link>

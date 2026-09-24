@@ -27,7 +27,7 @@ export function PokemonCard({ pokemon, locale, eager = false }: Props) {
       style={typeStyle(pokemon.type_1, pokemon.type_2)}
       className="group block rounded-3xl bg-linear-to-br from-(--type) to-(--type-2) p-[3px] transition duration-300 ease-out outline-none hover:-translate-y-1 hover:shadow-[0_14px_32px_-10px_var(--type)] focus-visible:ring-4 focus-visible:ring-(--type)/50 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
-      <article className="flex h-full flex-col rounded-[21px] bg-white px-3 pt-2 pb-3">
+      <article className="flex h-full flex-col rounded-[21px] bg-card px-3 pt-2 pb-3">
         <span className="font-mono text-xs font-bold text-(--type-ink)">
           {formatDexNumber(pokemon.id)}
         </span>

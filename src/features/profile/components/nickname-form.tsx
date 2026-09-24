@@ -65,12 +65,12 @@ export function NicknameForm({ nickname }: { nickname: string }) {
           autoComplete="nickname"
           aria-invalid={error ? true : undefined}
           aria-describedby="nickname-help"
-          className="h-11 min-w-0 flex-1 rounded-xl border-2 border-ink/10 bg-white px-3 text-lg font-bold focus:border-ink focus:outline-none sm:max-w-xs"
+          className="h-11 min-w-0 flex-1 rounded-xl border-2 border-ink/10 bg-card px-3 text-lg font-bold focus:border-ink focus:outline-none sm:max-w-xs"
         />
         <button
           type="submit"
           disabled={pending}
-          className="h-11 rounded-full bg-ink px-5 font-bold text-white disabled:opacity-50"
+          className="h-11 rounded-full bg-ink px-5 font-bold text-surface disabled:opacity-50"
         >
           {pending ? t("saving") : t("save")}
         </button>
@@ -85,7 +85,7 @@ export function NicknameForm({ nickname }: { nickname: string }) {
       <p
         id="nickname-help"
         role={error ? "alert" : undefined}
-        className={`text-sm ${error ? "font-bold text-dex-red" : "text-muted"}`}
+        className={`text-sm ${error ? "font-bold text-danger" : "text-muted"}`}
       >
         {error
           ? t(`errors.${error}`)

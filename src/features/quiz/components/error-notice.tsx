@@ -21,7 +21,7 @@ export function ErrorNotice() {
   return (
     <p
       role="alert"
-      className="rounded-xl bg-white/80 px-3 py-2 text-sm font-medium text-dex-red"
+      className="rounded-xl bg-card/80 px-3 py-2 text-sm font-medium text-danger"
     >
       {t(key)}
     </p>

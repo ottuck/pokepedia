@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 import { Constants } from "@/lib/supabase/database.types";
 import { TYPE_COLORS } from "./types";
 
+/** `--card` in the dark theme (globals.css): type ink also sits directly on cards. */
+const DARK_CARD = "#1f1e24";
+
 // WCAG 2.x relative luminance and contrast ratio.
 function luminance(hex: string): number {
   const [r, g, b] = [1, 3, 5].map((i) => {
@@ -29,6 +32,14 @@ describe("TYPE_COLORS", () => {
     "%s ink text is readable on its soft background (AA)",
     (_, { soft, ink }) => {
       expect(contrast(ink, soft)).toBeGreaterThanOrEqual(4.5);
+    },
+  );
+
+  it.each(Object.entries(TYPE_COLORS))(
+    "%s dark-theme ink is readable on its soft background and on a card (AA)",
+    (_, { softDark, inkDark }) => {
+      expect(contrast(inkDark, softDark)).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(inkDark, DARK_CARD)).toBeGreaterThanOrEqual(4.5);
     },
   );
 });
