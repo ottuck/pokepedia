@@ -28,7 +28,7 @@
 - **상세**: 아트워크·번호·이름·타입·키/몸무게·설명·타입 그라데이션 배경 [L], 분류·능력치·특성·진화(1세대 내)·이전/다음 [R]
 - **퀴즈**: 싸운다/아이템/포켓몬/도망간다 + 방향키 [L], round HP 3 [L], 힌트(이름 절반) [L], 스킵 [L], 서버 판정·3개 언어 정답 허용·점수/콤보 HUD·등장/정답/오답/게임오버 연출 [R]
 - **보상/컬렉션**: 스티커 지급 [L], shiny variant [R], `N / 151` + `?` 미획득 카드 [L], 수량·Shiny 수집률·획득 연출 [R]
-- **계정**: 익명 → Google 연결 [R], 마이페이지 닉네임 [L] + 통계(플레이 수·정답률·최고 점수·최고 콤보·최근 획득) [R]
+- **계정**: 익명 → Google 연결 [R], 마이페이지 닉네임 [L] + 통계(플레이 수·클리어율·최고 점수·최고 콤보·최근 획득) [R]
 - **공통**: ko/en/ja [L], Pokédex 프레임 모티프 [L], 반응형
 
 ### Should
@@ -239,12 +239,12 @@ my_stats view (security_invoker = true)
 
 ## 8. 렌더링 전략
 
-| Route                         | 렌더링      | 경계                                                                      |
-| ----------------------------- | ----------- | ------------------------------------------------------------------------- |
-| `/[locale]`                   | 정적 (캐시) | RSC가 slim list → `PokedexExplorer`(C)가 필터·검색·정렬·layout 애니메이션 |
-| `/[locale]/pokemon/[id]`      | SSG 151 × 3 | 대부분 RSC, `StatBars`만 C                                                |
-| `/[locale]/quiz`              | 동적        | 서버 셸 + `QuizGame`(C, Zustand)                                          |
-| `/[locale]/collection`, `/me` | 동적        | RSC 조회 + 카드 연출 C                                                    |
+| Route                                  | 렌더링      | 경계                                                                      |
+| -------------------------------------- | ----------- | ------------------------------------------------------------------------- |
+| `/[locale]`                            | 정적 (캐시) | RSC가 slim list → `PokedexExplorer`(C)가 필터·검색·정렬·layout 애니메이션 |
+| `/[locale]/pokemon/[id]`               | SSG 151 × 3 | 대부분 RSC, `StatBars`만 C                                                |
+| `/[locale]/quiz`                       | 동적        | 서버 셸 + `QuizGame`(C, Zustand)                                          |
+| `/[locale]/collection`, `/[locale]/me` | 동적        | RSC 조회 + 카드 연출 C                                                    |
 
 - 도감 데이터는 cookie 없는 public client(`lib/supabase/public.ts`)로 읽고, 페이지는 **빌드 시 locale별로 prerender**한다. 카탈로그는 sync할 때만 바뀌므로 **remote sync 후에는 재배포**해야 화면에 반영된다.
 - Cache Components(`"use cache"`)는 아직 켜지 않는다. 정적 페이지 안에 사용자별 영역(상세의 "내 스티커" 배지 등)이 필요해질 때 도입을 검토한다.
@@ -257,7 +257,8 @@ my_stats view (security_invoker = true)
 
 ### 컬렉션
 
-- `/[locale]/collection`은 **요청마다 서버 렌더링**한다(세션 cookie를 읽기 때문). 응답은 `Cache-Control: private, no-store`.
+- `/[locale]/collection`, `/[locale]/me`는 **요청마다 서버 렌더링**한다(세션 cookie를 읽기 때문). 응답은 `Cache-Control: private, no-store`.
+- 마이페이지 통계는 본인 세션 + RLS로 읽는 count/정렬 쿼리로 계산한다(새 권한 없음). 클리어율 = 맞힌 라운드 ÷ (맞힌 + 실패한 라운드), 스킵·도망 라운드는 제외. 답 단위 정답률은 집계 RPC(새 GRANT)가 필요해서 보류.
 - 스티커는 사용자 세션의 server client로 읽어서 RLS가 본인 것만 돌려준다(secret key 불필요).
 - 151칸 전체를 보여주고 미획득은 `?` 카드(레거시 빈 슬롯). 색이 다른 스티커가 있으면 색이 다른 아트워크와 금색 테두리.
 - 필터(전체/모은 것/못 모은 것/색이 다른)는 클라이언트에서, 카드는 도감처럼 서버 렌더링 결과를 prop으로 넘긴다.

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 import { z } from "zod";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/browser";
 import { onAccountChange } from "../account-events";
 import { continueWithGoogle } from "../google";
@@ -120,6 +120,15 @@ export function AccountMenu() {
         <p className="px-2 pb-2 text-xs text-muted">
           {isAnonymous ? t("guestAccount") : t("googleAccount")}
         </p>
+
+        <Link
+          href="/me"
+          // Client navigation keeps the header mounted, so close the popover by hand.
+          onClick={() => document.getElementById(menuId)?.hidePopover()}
+          className="mb-2 block rounded-xl px-2 py-2 font-semibold hover:bg-ink/5"
+        >
+          {t("myPage")}
+        </Link>
 
         {isAnonymous && (
           <>

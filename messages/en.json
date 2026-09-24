@@ -87,7 +87,8 @@
       "accessDenied": "Google sign-in was cancelled.",
       "generic": "Try again in a moment.",
       "backHome": "Back to Pokédex"
-    }
+    },
+    "myPage": "My page"
   },
   "nav": {
     "dex": "Pokédex",
@@ -203,5 +204,46 @@
       "notice": "A guest collection lives only in this browser. Save it to Google to see it on any device.",
       "save": "Save to Google account"
     }
+  },
+  "me": {
+    "title": "My page",
+    "guestAccount": "Playing as a guest",
+    "googleAccount": "Google account",
+    "nickname": {
+      "label": "Nickname",
+      "edit": "Change nickname",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "help": "Use {min}–{max} characters.",
+      "errors": {
+        "invalid_nickname": "Nicknames must be 2–20 characters, not counting leading or trailing spaces.",
+        "not_signed_in": "Your session expired. Refresh the page and try again.",
+        "server_error": "Couldn’t save. Please try again in a moment."
+      }
+    },
+    "stats": {
+      "title": "Quiz record",
+      "plays": "Games",
+      "bestScore": "Best score",
+      "bestCombo": "Best combo",
+      "clearRate": "Clear rate",
+      "collected": "Pokémon collected"
+    },
+    "recentStickers": "Latest stickers",
+    "noStickers": "No stickers yet.",
+    "toCollection": "See full collection",
+    "shiny": "shiny",
+    "recentRuns": "Recent games",
+    "noRuns": "No finished games yet.",
+    "runScore": "{score} pts",
+    "runDetail": "Named {cleared} · best combo {combo}",
+    "endReason": {
+      "fainted": "Fainted",
+      "fled": "Ran away"
+    },
+    "emptyTitle": "Nothing here yet",
+    "emptyBody": "Play a quiz game to get a guest account and start your record.",
+    "toQuiz": "Play the quiz"
   }
 }

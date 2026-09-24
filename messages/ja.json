@@ -87,7 +87,8 @@
       "accessDenied": "Googleログインがキャンセルされました。",
       "generic": "しばらくしてからもう一度お試しください。",
       "backHome": "ずかんへ"
-    }
+    },
+    "myPage": "マイページ"
   },
   "nav": {
     "dex": "ずかん",
@@ -203,5 +204,46 @@
       "notice": "ゲストのコレクションはこのブラウザにだけ保存されます。Googleアカウントに保存すると、ほかの端末でも見られます。",
       "save": "Googleアカウントに保存"
     }
+  },
+  "me": {
+    "title": "マイページ",
+    "guestAccount": "ゲストでプレイ中",
+    "googleAccount": "Googleアカウント",
+    "nickname": {
+      "label": "ニックネーム",
+      "edit": "ニックネームを変更",
+      "save": "保存",
+      "saving": "保存中…",
+      "cancel": "キャンセル",
+      "help": "{min}〜{max}文字で入力してください。",
+      "errors": {
+        "invalid_nickname": "ニックネームは前後の空白を除いて2〜20文字にしてください。",
+        "not_signed_in": "セッションが切れました。再読み込みしてからもう一度お試しください。",
+        "server_error": "保存できませんでした。しばらくしてからもう一度お試しください。"
+      }
+    },
+    "stats": {
+      "title": "クイズの記録",
+      "plays": "プレイ回数",
+      "bestScore": "最高スコア",
+      "bestCombo": "最高コンボ",
+      "clearRate": "クリア率",
+      "collected": "集めたポケモン"
+    },
+    "recentStickers": "最近集めたシール",
+    "noStickers": "まだシールがありません。",
+    "toCollection": "コレクションをすべて見る",
+    "shiny": "色違い",
+    "recentRuns": "最近のゲーム",
+    "noRuns": "まだ終わったゲームがありません。",
+    "runScore": "{score}点",
+    "runDetail": "{cleared}匹正解・最高コンボ {combo}",
+    "endReason": {
+      "fainted": "たおれた",
+      "fled": "にげた"
+    },
+    "emptyTitle": "まだ記録がありません",
+    "emptyBody": "クイズを1回プレイすると、ゲストアカウントが作られて記録が残ります。",
+    "toQuiz": "クイズで遊ぶ"
   }
 }
