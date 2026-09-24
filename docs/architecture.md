@@ -230,6 +230,7 @@ Route Handler는 `/auth/callback`만 사용한다.
 - 도감 데이터는 cookie 없는 public client(`lib/supabase/public.ts`)로 읽고, 페이지는 **빌드 시 locale별로 prerender**한다. 카탈로그는 sync할 때만 바뀌므로 **remote sync 후에는 재배포**해야 화면에 반영된다.
 - Cache Components(`"use cache"`)는 아직 켜지 않는다. 정적 페이지 안에 사용자별 영역(상세의 "내 스티커" 배지 등)이 필요해질 때 도입을 검토한다.
 - 이미지는 `next/image` 최적화를 쓴다(Storage public URL만 `remotePatterns` 허용). 브라우저에는 webp로 변환·리사이즈되어 원본 대비 약 절반 크기. 로컬 Supabase(127.0.0.1)를 가리킬 때만 `dangerouslyAllowLocalIP`를 켠다.
+- 상세 페이지: layout이 `locale`, page가 `id`를 생성(top-down)해 151 × 3 = 453페이지를 빌드 시 생성한다. `dynamicParams = false`라 목록 밖 id는 DB 조회 없이 404. 조회 함수는 React `cache`로 감싸 `generateMetadata`와 페이지가 같은 쿼리를 한 번만 실행한다. 진화 라인은 목록 쿼리(`evolves_from_id`, `evolution`)로 계산하고 jsonb `evolution`은 Zod로 읽는다.
 - 도감 탐색: 서버가 카드 151장을 렌더링해 `cards` prop으로 `PokedexExplorer`(C)에 넘기고, 클라이언트는 어떤 카드를 어떤 순서로 보일지만 정한다(카드 렌더링 코드가 클라이언트 번들에 들어가지 않음). `useSearchParams` 때문에 Explorer는 Suspense 아래에서 클라이언트 렌더링되고, fallback은 필터 없는 전체 그리드라 prerender HTML에 카드가 모두 들어간다.
 - 필터 상태: URL(`?q=&type=&sort=`)로 초기화 → 이후 로컬 state가 기준, URL은 `history.replaceState`로 따라간다(IME 입력과 충돌 방지, 뒤로가기 오염 방지). URL 값은 Zod로 검증하고 잘못된 값은 기본값으로.
 - Motion: `LazyMotion`으로 애니메이션 엔진을 지연 로딩(`domMax`, layout 애니메이션 필요), `MotionConfig reducedMotion="user"`, spring 프리셋은 `lib/motion.ts`.

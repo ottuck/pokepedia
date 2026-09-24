@@ -17,6 +17,32 @@
     "emptyTitle": "条件に合うポケモンがいません",
     "resetFilters": "条件をリセット"
   },
+  "detail": {
+    "backToDex": "ずかんへ",
+    "height": "たかさ",
+    "weight": "おもさ",
+    "abilities": "とくせい",
+    "hiddenAbility": "かくれとくせい",
+    "baseStats": "きほんのうりょく",
+    "total": "ごうけい",
+    "stats": {
+      "hp": "HP",
+      "attack": "こうげき",
+      "defense": "ぼうぎょ",
+      "special_attack": "とくこう",
+      "special_defense": "とくぼう",
+      "speed": "すばやさ"
+    },
+    "evolution": "しんか",
+    "evolutionLevel": "Lv. {level}",
+    "evolutionTrade": "つうしんこうかん",
+    "evolutionOther": "とくべつなじょうけん",
+    "noEvolution": "しんかしないポケモンです",
+    "previous": "まえのポケモン",
+    "next": "つぎのポケモン",
+    "legendary": "でんせつのポケモン",
+    "mythical": "まぼろしのポケモン"
+  },
   "types": {
     "normal": "ノーマル",
     "fire": "ほのお",

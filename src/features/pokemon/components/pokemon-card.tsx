@@ -1,12 +1,13 @@
 import Image from "next/image";
 import type { Locale } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { artworkUrl } from "../assets";
 import { formatDexNumber, localizedName } from "../format";
 import type { PokedexEntry } from "../queries";
 import { typeStyle } from "../types";
 import { TypeBadge } from "./type-badge";
 
-// Must match the grid columns in PokemonGrid so the browser picks a right-sized image.
+// Must match GRID_CLASS in pokedex-explorer.tsx so the browser picks a right-sized image.
 const ARTWORK_SIZES =
   "(min-width: 1280px) 180px, (min-width: 1024px) 18vw, (min-width: 768px) 23vw, (min-width: 640px) 31vw, 46vw";
 
@@ -21,11 +22,12 @@ export function PokemonCard({ pokemon, locale, eager = false }: Props) {
   const name = localizedName(pokemon, locale);
 
   return (
-    <article
+    <Link
+      href={`/pokemon/${pokemon.id}`}
       style={typeStyle(pokemon.type_1, pokemon.type_2)}
-      className="group rounded-3xl bg-linear-to-br from-(--type) to-(--type-2) p-[3px] transition duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_14px_32px_-10px_var(--type)] motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+      className="group block rounded-3xl bg-linear-to-br from-(--type) to-(--type-2) p-[3px] transition duration-300 ease-out outline-none hover:-translate-y-1 hover:shadow-[0_14px_32px_-10px_var(--type)] focus-visible:ring-4 focus-visible:ring-(--type)/50 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
-      <div className="flex h-full flex-col rounded-[21px] bg-white px-3 pt-2 pb-3">
+      <article className="flex h-full flex-col rounded-[21px] bg-white px-3 pt-2 pb-3">
         <span className="font-mono text-xs font-bold text-(--type-ink)">
           {formatDexNumber(pokemon.id)}
         </span>
@@ -37,7 +39,8 @@ export function PokemonCard({ pokemon, locale, eager = false }: Props) {
           />
           <Image
             src={artworkUrl(pokemon.artwork_path)}
-            alt={name}
+            // The name is already the link text; repeating it here would be read twice.
+            alt=""
             fill
             sizes={ARTWORK_SIZES}
             loading={eager ? "eager" : "lazy"}
@@ -50,7 +53,7 @@ export function PokemonCard({ pokemon, locale, eager = false }: Props) {
           <TypeBadge type={pokemon.type_1} />
           {pokemon.type_2 && <TypeBadge type={pokemon.type_2} />}
         </div>
-      </div>
-    </article>
+      </article>
+    </Link>
   );
 }

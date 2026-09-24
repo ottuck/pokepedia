@@ -17,6 +17,32 @@
     "emptyTitle": "No Pokémon match these filters",
     "resetFilters": "Reset filters"
   },
+  "detail": {
+    "backToDex": "Back to Pokédex",
+    "height": "Height",
+    "weight": "Weight",
+    "abilities": "Abilities",
+    "hiddenAbility": "Hidden ability",
+    "baseStats": "Base stats",
+    "total": "Total",
+    "stats": {
+      "hp": "HP",
+      "attack": "Attack",
+      "defense": "Defense",
+      "special_attack": "Sp. Atk",
+      "special_defense": "Sp. Def",
+      "speed": "Speed"
+    },
+    "evolution": "Evolution",
+    "evolutionLevel": "Lv. {level}",
+    "evolutionTrade": "Trade",
+    "evolutionOther": "Special condition",
+    "noEvolution": "This Pokémon does not evolve",
+    "previous": "Previous Pokémon",
+    "next": "Next Pokémon",
+    "legendary": "Legendary Pokémon",
+    "mythical": "Mythical Pokémon"
+  },
   "types": {
     "normal": "Normal",
     "fire": "Fire",
