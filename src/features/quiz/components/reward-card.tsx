@@ -72,7 +72,7 @@ export function RewardCard() {
               <p id="reward-title" className="font-black">
                 {revealed.name}
               </p>
-              <p className="font-mono text-xs text-muted">
+              <p className="text-xs text-muted tabular-nums">
                 {formatDexNumber(revealed.id)}
               </p>
             </div>

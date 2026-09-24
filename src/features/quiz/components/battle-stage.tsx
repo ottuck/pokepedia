@@ -71,7 +71,7 @@ function Hud() {
           key={run.score}
           initial={{ scale: 1.4 }}
           animate={{ scale: 1 }}
-          className="inline-block font-mono"
+          className="inline-block tabular-nums"
         >
           {run.score.toLocaleString()}
         </m.span>
@@ -83,7 +83,7 @@ function Hud() {
           initial={{ scale: run.combo > 0 ? 1.8 : 1 }}
           animate={{ scale: 1 }}
           transition={spring.bouncy}
-          className="inline-block font-mono"
+          className="inline-block tabular-nums"
         >
           ×{run.combo}
         </m.span>
@@ -120,7 +120,7 @@ function EnemyPanel() {
     <div className="max-w-64 rounded-2xl rounded-bl-none border-4 border-ink/80 bg-card px-4 py-2 shadow">
       <p
         aria-live="polite"
-        className="font-mono text-xl font-black tracking-widest"
+        className="text-xl font-black tracking-widest tabular-nums"
       >
         {revealedName ?? round.hint ?? round.mask}
       </p>

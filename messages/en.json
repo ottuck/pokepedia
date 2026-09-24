@@ -251,5 +251,8 @@
     "light": "Light",
     "dark": "Dark",
     "switch": "Theme: {current} (click to change)"
+  },
+  "common": {
+    "loading": "Loading…"
   }
 }

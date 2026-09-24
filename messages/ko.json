@@ -251,5 +251,8 @@
     "light": "라이트",
     "dark": "다크",
     "switch": "화면 테마: {current} (눌러서 바꾸기)"
+  },
+  "common": {
+    "loading": "불러오는 중…"
   }
 }
