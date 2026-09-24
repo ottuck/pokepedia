@@ -43,6 +43,9 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
   PR _is_ deploying it.
 - Verify migrations, RLS, RPCs and seed changes against local Supabase first
   (`pnpm supabase db reset`). Never edit an already-merged migration; add a new one.
+- New tables get no privileges by default (`api.auto_expose_new_tables = false`, same as
+  remote). Every migration must GRANT exactly what `anon`, `authenticated` and `service_role`
+  need; after changing migrations run `pnpm supabase db reset` so local matches a fresh remote.
 - Migrations must be backward-compatible with the currently deployed code (expand →
   migrate code → contract). Vercel and Supabase deploy in parallel after merge, so there is
   no guaranteed order.
