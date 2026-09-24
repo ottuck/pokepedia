@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "title": "Pokepedia",
+    "description": "Gen 1 Pokédex, silhouette quiz, and sticker collection"
+  },
+  "home": {
+    "badge": "Gen 1 · #001–151",
+    "tagline": "Pokédex · Silhouette quiz · Sticker collection"
+  },
+  "localeSwitcher": {
+    "label": "Language"
+  },
+  "notFound": {
+    "title": "Nothing to see here",
+    "description": "This page moved or never existed.",
+    "backHome": "Back to home"
+  }
+}

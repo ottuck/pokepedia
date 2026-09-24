@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "title": "Pokepedia",
+    "description": "第1世代ポケモン図鑑・シルエットクイズ・シールコレクション"
+  },
+  "home": {
+    "badge": "第1世代 · #001–151",
+    "tagline": "図鑑 · シルエットクイズ · シールコレクション"
+  },
+  "localeSwitcher": {
+    "label": "言語"
+  },
+  "notFound": {
+    "title": "ここには何もないようです",
+    "description": "ページが移動したか、存在しません。",
+    "backHome": "ホームへ"
+  }
+}

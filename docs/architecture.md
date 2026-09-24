@@ -224,6 +224,7 @@ Route Handler는 `/auth/callback`만 사용한다.
 ## 9. i18n
 
 - next-intl, `app/[locale]/…`, locales `ko`(기본)·`en`·`ja`, `localePrefix: 'always'`
+- locale은 `next/root-params`로 읽는다 (Next 16.3+). `setRequestLocale`은 deprecated라 쓰지 않는다. URL 밖의 404는 `global-not-found`, locale 안의 404는 `[locale]/not-found`
 - `messages/{ko,en,ja}.json`: `nav.*`, `dex.*`, `quiz.battle.*`, `quiz.result.*`, `collection.*`, `errors.<code>`
 - 포켓몬 컬럼 선택 helper `localize(row, 'name', locale)`
 - 한국어 조사(이/가)는 받침 판별 helper
