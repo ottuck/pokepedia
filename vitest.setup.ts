@@ -5,3 +5,6 @@ import { afterEach } from "vitest";
 afterEach(() => {
   cleanup();
 });
+
+// jsdom does not implement layout APIs.
+Element.prototype.scrollIntoView ??= () => {};

@@ -5,7 +5,17 @@
   },
   "dex": {
     "title": "Pokédex",
-    "count": "{count} Pokémon"
+    "count": "{count} Pokémon",
+    "searchLabel": "Search Pokémon",
+    "searchPlaceholder": "Name or number",
+    "typeFilterLabel": "Type",
+    "allTypes": "All",
+    "sortLabel": "Sort",
+    "sortNumber": "Number",
+    "sortName": "Name",
+    "resultCount": "{count} of {total}",
+    "emptyTitle": "No Pokémon match these filters",
+    "resetFilters": "Reset filters"
   },
   "types": {
     "normal": "Normal",
