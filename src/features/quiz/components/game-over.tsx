@@ -77,8 +77,11 @@ export function GameOver() {
         >
           {t("playAgain")}
         </button>
-        <Link href="/" className="rounded-full bg-white px-6 py-2 font-black">
-          {t("toDex")}
+        <Link
+          href="/collection"
+          className="rounded-full bg-white px-6 py-2 font-black"
+        >
+          {t("toCollection")}
         </Link>
       </div>
     </div>

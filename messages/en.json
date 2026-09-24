@@ -92,7 +92,8 @@
   "nav": {
     "dex": "Pokédex",
     "quiz": "Quiz",
-    "main": "Main menu"
+    "main": "Main menu",
+    "collection": "Collection"
   },
   "quiz": {
     "metaTitle": "Silhouette quiz",
@@ -168,7 +169,8 @@
       "stickers": "Stickers this game",
       "noStickers": "No stickers this time.",
       "playAgain": "Play again",
-      "toDex": "Go to Pokédex"
+      "toDex": "Go to Pokédex",
+      "toCollection": "View collection"
     },
     "errors": {
       "sign_in_failed": "Couldn’t start a guest session. Try again in a moment.",
@@ -176,6 +178,30 @@
       "no_skips_left": "No skips left.",
       "hint_already_used": "Hint already used.",
       "generic": "Something went wrong. Try again."
+    }
+  },
+  "collection": {
+    "title": "My collection",
+    "progressLabel": "Progress",
+    "collected": "Pokémon collected",
+    "shiny": "Shiny Pokémon",
+    "missing": "Not collected yet",
+    "shinyBadge": "Shiny",
+    "quantity": "{normal} normal, {shiny} shiny",
+    "emptyTitle": "No stickers yet",
+    "emptyBody": "Name a Pokémon in the quiz to get its sticker.",
+    "toQuiz": "Play the quiz",
+    "filters": {
+      "label": "Show",
+      "all": "All",
+      "collected": "Collected",
+      "missing": "Missing",
+      "shiny": "Shiny",
+      "empty": "No stickers here."
+    },
+    "guest": {
+      "notice": "A guest collection lives only in this browser. Save it to Google to see it on any device.",
+      "save": "Save to Google account"
     }
   }
 }

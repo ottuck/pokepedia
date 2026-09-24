@@ -3,7 +3,7 @@ import { cache } from "react";
 import { createPublicClient } from "@/lib/supabase/public";
 
 const LIST_COLUMNS =
-  "id, name_ko, name_en, name_ja, type_1, type_2, artwork_path, evolves_from_id, evolution" as const;
+  "id, name_ko, name_en, name_ja, type_1, type_2, artwork_path, shiny_artwork_path, evolves_from_id, evolution" as const;
 
 /**
  * The whole Gen 1 dex, slim columns only, ordered by dex number. Also carries the evolution
