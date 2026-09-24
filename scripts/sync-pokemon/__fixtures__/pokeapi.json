@@ -1,0 +1,837 @@
+{
+  "species25": {
+    "id": 25,
+    "name": "pikachu",
+    "names": [
+      {
+        "name": "ピカチュウ",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "name": "피카츄",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "name": "Pikachu",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "name": "Pikachu",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "name": "ピカチュウ",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "genera": [
+      {
+        "genus": "ねずみポケモン",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "genus": "쥐포켓몬",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "genus": "Pokémon Souris",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "genus": "Mouse Pokémon",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "genus": "ねずみポケモン",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "flavor_text_entries": [
+      {
+        "flavor_text": "만들어 내는 전기가 강력한\n피카츄일수록 볼의 주머니가\n부드럽고 잘 늘어난다.",
+        "language": {
+          "name": "ko"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "서로의 꼬리를 붙여서\n전기를 흐르게 하는 게\n피카츄 사이의 인사법이다.",
+        "language": {
+          "name": "ko"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "When Pikachu meet, they’ll touch their tails\ntogether and exchange electricity through them\nas a form of greeting.",
+        "language": {
+          "name": "en"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "Possesses cheek sacs in which it stores electricity. This clever\nforest-dweller roasts tough berries with an electric shock before\nconsuming them.",
+        "language": {
+          "name": "en"
+        },
+        "version": {
+          "name": "legends-arceus"
+        }
+      },
+      {
+        "flavor_text": "つくる　電気が　強力な\nピカチュウほど　ほっぺの　袋は\n軟らかく　よく　伸びるぞ。",
+        "language": {
+          "name": "ja"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "おたがいの　しっぽを　くっつけて\n電気を　流しあうのが\nピカチュウ　同士の　挨拶だ。",
+        "language": {
+          "name": "ja"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "Plus la puissance électrique de Pikachu est élevée,\nplus les poches de ses joues sont extensibles.",
+        "language": {
+          "name": "fr"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "Les Pikachu se disent bonjour en se frottant\nla queue et en y faisant passer du courant\nélectrique.",
+        "language": {
+          "name": "fr"
+        },
+        "version": {
+          "name": "shield"
+        }
+      }
+    ],
+    "is_legendary": false,
+    "is_mythical": false,
+    "evolves_from_species": {
+      "name": "pichu",
+      "url": "https://pokeapi.co/api/v2/pokemon-species/172/"
+    },
+    "evolution_chain": {
+      "url": "https://pokeapi.co/api/v2/evolution-chain/10/"
+    }
+  },
+  "species26": {
+    "id": 26,
+    "name": "raichu",
+    "names": [
+      {
+        "name": "ライチュウ",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "name": "라이츄",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "name": "Raichu",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "name": "Raichu",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "name": "ライチュウ",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "genera": [
+      {
+        "genus": "ねずみポケモン",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "genus": "쥐포켓몬",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "genus": "Pokémon Souris",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "genus": "Mouse Pokémon",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "genus": "ねずみポケモン",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "flavor_text_entries": [
+      {
+        "flavor_text": "긴 꼬리가 어스가 되어\n몸을 지키기 때문에 자신은\n고전압에도 마비되지 않는다.",
+        "language": {
+          "name": "ko"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "전기 주머니가 텅 비면\n꼬리를 똑바로 세워서\n공기 중의 전기를 모은다.",
+        "language": {
+          "name": "ko"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "If its electric pouches run empty, it raises its tail\nto gather electricity from the atmosphere.",
+        "language": {
+          "name": "en"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "It can discharge bursts of electricity exceeding 100,000 volts—\na single strike with that amount of power would incapacitate one\nof the Copperajah of my homeland.",
+        "language": {
+          "name": "en"
+        },
+        "version": {
+          "name": "legends-arceus"
+        }
+      },
+      {
+        "flavor_text": "長い　しっぽが　アースになって\n身を　守るため　自分自身は\n高電圧にも　痺れないのだ。",
+        "language": {
+          "name": "ja"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "電気袋が　空っぽに　なると\nしっぽを　まっすぐ　立てて\n空気中の　電気を　集める。",
+        "language": {
+          "name": "ja"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "Sa longue queue agit comme une prise de terre\nqui l’empêche d’être affecté par le courant\nà haute tension accumulé dans son corps.",
+        "language": {
+          "name": "fr"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "Si ses joues sont à court d’énergie, il lève la queue\net capte l’électricité contenue dans l’atmosphère.",
+        "language": {
+          "name": "fr"
+        },
+        "version": {
+          "name": "shield"
+        }
+      }
+    ],
+    "is_legendary": false,
+    "is_mythical": false,
+    "evolves_from_species": {
+      "name": "pikachu",
+      "url": "https://pokeapi.co/api/v2/pokemon-species/25/"
+    },
+    "evolution_chain": {
+      "url": "https://pokeapi.co/api/v2/evolution-chain/10/"
+    }
+  },
+  "species122": {
+    "id": 122,
+    "name": "mr-mime",
+    "names": [
+      {
+        "name": "バリヤード",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "name": "마임맨",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "name": "M. Mime",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "name": "Mr. Mime",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "name": "バリヤード",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "genera": [
+      {
+        "genus": "バリアーポケモン",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "genus": "배리어포켓몬",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "genus": "Pokémon Bloqueur",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "genus": "Barrier Pokémon",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "genus": "バリアーポケモン",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "flavor_text_entries": [
+      {
+        "flavor_text": "커다란 손바닥은 팬터마임을\n하기 위해 발달했다고\n생각하는 학자도 많다.",
+        "language": {
+          "name": "ko"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "팬터마임이 특기다. 손가락에서\n내보내는 파동으로 벽을 만들어\n갖은 공격으로부터 몸을 지킨다.",
+        "language": {
+          "name": "ko"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "It’s known for its top-notch pantomime skills.\nIt protects itself from all sorts of attacks by\nemitting auras from its fingers to create walls.",
+        "language": {
+          "name": "en"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "The behavior of this clown-like Pokémon reminds one of\npantomime. It creates invisible walls using a force emitted\nfrom its fingertips.",
+        "language": {
+          "name": "en"
+        },
+        "version": {
+          "name": "legends-arceus"
+        }
+      },
+      {
+        "flavor_text": "大きな　手のひらは　パントマイムを\nするために　発達　したと\n考える　学者も　多い。",
+        "language": {
+          "name": "ja"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "パントマイムが　得意。　指から\n出した　波動で　壁を　つくり\nあまたの　攻撃から　身を守る。",
+        "language": {
+          "name": "ja"
+        },
+        "version": {
+          "name": "shield"
+        }
+      },
+      {
+        "flavor_text": "De nombreux savants pensent que ses mains\nse sont développées pour faire de la pantomime.",
+        "language": {
+          "name": "fr"
+        },
+        "version": {
+          "name": "sword"
+        }
+      },
+      {
+        "flavor_text": "Son talent pour le mime est indéniable.\nIl émet des ondes du bout des doigts pour créer\nun mur qui le protège de nombreuses attaques.",
+        "language": {
+          "name": "fr"
+        },
+        "version": {
+          "name": "shield"
+        }
+      }
+    ],
+    "is_legendary": false,
+    "is_mythical": false,
+    "evolves_from_species": {
+      "name": "mime-jr",
+      "url": "https://pokeapi.co/api/v2/pokemon-species/439/"
+    },
+    "evolution_chain": {
+      "url": "https://pokeapi.co/api/v2/evolution-chain/57/"
+    }
+  },
+  "pokemon25": {
+    "id": 25,
+    "height": 4,
+    "weight": 60,
+    "types": [
+      {
+        "slot": 1,
+        "type": {
+          "name": "electric",
+          "url": "https://pokeapi.co/api/v2/type/13/"
+        }
+      }
+    ],
+    "stats": [
+      {
+        "base_stat": 35,
+        "stat": {
+          "name": "hp"
+        }
+      },
+      {
+        "base_stat": 55,
+        "stat": {
+          "name": "attack"
+        }
+      },
+      {
+        "base_stat": 40,
+        "stat": {
+          "name": "defense"
+        }
+      },
+      {
+        "base_stat": 50,
+        "stat": {
+          "name": "special-attack"
+        }
+      },
+      {
+        "base_stat": 50,
+        "stat": {
+          "name": "special-defense"
+        }
+      },
+      {
+        "base_stat": 90,
+        "stat": {
+          "name": "speed"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "is_hidden": false,
+        "slot": 1,
+        "ability": {
+          "name": "static",
+          "url": "https://pokeapi.co/api/v2/ability/9/"
+        }
+      },
+      {
+        "is_hidden": true,
+        "slot": 3,
+        "ability": {
+          "name": "lightning-rod",
+          "url": "https://pokeapi.co/api/v2/ability/31/"
+        }
+      }
+    ],
+    "sprites": {
+      "other": {
+        "official-artwork": {
+          "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/25.png",
+          "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
+        }
+      }
+    }
+  },
+  "pokemon26": {
+    "id": 26,
+    "height": 8,
+    "weight": 300,
+    "types": [
+      {
+        "slot": 1,
+        "type": {
+          "name": "electric",
+          "url": "https://pokeapi.co/api/v2/type/13/"
+        }
+      }
+    ],
+    "stats": [
+      {
+        "base_stat": 60,
+        "stat": {
+          "name": "hp"
+        }
+      },
+      {
+        "base_stat": 90,
+        "stat": {
+          "name": "attack"
+        }
+      },
+      {
+        "base_stat": 55,
+        "stat": {
+          "name": "defense"
+        }
+      },
+      {
+        "base_stat": 90,
+        "stat": {
+          "name": "special-attack"
+        }
+      },
+      {
+        "base_stat": 80,
+        "stat": {
+          "name": "special-defense"
+        }
+      },
+      {
+        "base_stat": 110,
+        "stat": {
+          "name": "speed"
+        }
+      }
+    ],
+    "abilities": [
+      {
+        "is_hidden": false,
+        "slot": 1,
+        "ability": {
+          "name": "static",
+          "url": "https://pokeapi.co/api/v2/ability/9/"
+        }
+      },
+      {
+        "is_hidden": true,
+        "slot": 3,
+        "ability": {
+          "name": "lightning-rod",
+          "url": "https://pokeapi.co/api/v2/ability/31/"
+        }
+      }
+    ],
+    "sprites": {
+      "other": {
+        "official-artwork": {
+          "front_shiny": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/26.png",
+          "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png"
+        }
+      }
+    }
+  },
+  "chain10": {
+    "id": 10,
+    "chain": {
+      "species": {
+        "name": "pichu"
+      },
+      "evolution_details": [],
+      "evolves_to": [
+        {
+          "species": {
+            "name": "pikachu"
+          },
+          "evolution_details": [
+            {
+              "trigger": {
+                "name": "level-up",
+                "url": "https://pokeapi.co/api/v2/evolution-trigger/1/"
+              },
+              "min_level": null,
+              "item": null,
+              "is_default": true
+            }
+          ],
+          "evolves_to": [
+            {
+              "species": {
+                "name": "raichu"
+              },
+              "evolution_details": [
+                {
+                  "trigger": {
+                    "name": "use-item",
+                    "url": "https://pokeapi.co/api/v2/evolution-trigger/3/"
+                  },
+                  "min_level": null,
+                  "item": {
+                    "name": "thunder-stone"
+                  },
+                  "is_default": true
+                },
+                {
+                  "trigger": {
+                    "name": "use-item",
+                    "url": "https://pokeapi.co/api/v2/evolution-trigger/3/"
+                  },
+                  "min_level": null,
+                  "item": {
+                    "name": "thunder-stone"
+                  },
+                  "is_default": true
+                }
+              ],
+              "evolves_to": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "itemThunderStone": {
+    "name": "thunder-stone",
+    "names": [
+      {
+        "name": "かみなりのいし",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "name": "천둥의돌",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "name": "Pierre Foudre",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "name": "Thunder Stone",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "name": "かみなりのいし",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ]
+  },
+  "ability9": {
+    "id": 9,
+    "name": "static",
+    "names": [
+      {
+        "name": "せいでんき",
+        "language": {
+          "name": "ja-hrkt",
+          "url": "https://pokeapi.co/api/v2/language/1/"
+        }
+      },
+      {
+        "name": "정전기",
+        "language": {
+          "name": "ko",
+          "url": "https://pokeapi.co/api/v2/language/3/"
+        }
+      },
+      {
+        "name": "Statik",
+        "language": {
+          "name": "fr",
+          "url": "https://pokeapi.co/api/v2/language/5/"
+        }
+      },
+      {
+        "name": "Static",
+        "language": {
+          "name": "en",
+          "url": "https://pokeapi.co/api/v2/language/9/"
+        }
+      },
+      {
+        "name": "せいでんき",
+        "language": {
+          "name": "ja",
+          "url": "https://pokeapi.co/api/v2/language/11/"
+        }
+      }
+    ],
+    "flavor_text_entries": [
+      {
+        "flavor_text": "정전기를 몸에 둘러\n접촉한 상대를\n마비시킬 때가 있다.",
+        "language": {
+          "name": "ko"
+        },
+        "version_group": {
+          "name": "lets-go-pikachu-lets-go-eevee"
+        }
+      },
+      {
+        "flavor_text": "정전기를 몸에 둘러\n접촉한 상대를\n마비시킬 때가 있다.",
+        "language": {
+          "name": "ko"
+        },
+        "version_group": {
+          "name": "sword-shield"
+        }
+      },
+      {
+        "flavor_text": "The Pokémon is charged with static electricity, so\ncontact with it may cause paralysis.",
+        "language": {
+          "name": "en"
+        },
+        "version_group": {
+          "name": "sword-shield"
+        }
+      },
+      {
+        "flavor_text": "The Pokémon is charged with static electricity and may paralyze attackers that make direct contact with it.",
+        "language": {
+          "name": "en"
+        },
+        "version_group": {
+          "name": "scarlet-violet"
+        }
+      },
+      {
+        "flavor_text": "静電気を　体に　まとい\n触った　相手を\nまひさせる　ことがある。",
+        "language": {
+          "name": "ja"
+        },
+        "version_group": {
+          "name": "lets-go-pikachu-lets-go-eevee"
+        }
+      },
+      {
+        "flavor_text": "静電気を　体に　まとい\n触った　相手を\nまひさせる　ことがある。",
+        "language": {
+          "name": "ja"
+        },
+        "version_group": {
+          "name": "sword-shield"
+        }
+      }
+    ]
+  }
+}

@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts",
-    "test:db": "vitest run --config vitest.db.config.mts"
+    "test:db": "vitest run --config vitest.db.config.mts",
+    "sync:pokemon": "tsx scripts/sync-pokemon/index.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -39,8 +40,10 @@
     "jsdom": "^30.1.1",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
+    "sharp": "^0.35.4",
     "supabase": "^2.117.0",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^5.0.1"
