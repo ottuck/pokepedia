@@ -31,8 +31,8 @@ export function LocaleSwitcher() {
                 aria-current={isCurrent ? "page" : undefined}
                 className={
                   isCurrent
-                    ? "block rounded-full bg-surface px-3 py-1 font-medium shadow-sm"
-                    : "block rounded-full px-3 py-1 text-muted hover:text-ink"
+                    ? "block rounded-full bg-surface px-2.5 py-1 font-medium whitespace-nowrap shadow-sm sm:px-3"
+                    : "block rounded-full px-2.5 py-1 whitespace-nowrap text-muted hover:text-ink sm:px-3"
                 }
               >
                 {LOCALE_NAMES[locale]}
