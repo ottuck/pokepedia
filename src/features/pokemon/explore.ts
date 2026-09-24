@@ -1,5 +1,6 @@
 import type { Locale } from "next-intl";
-import { z } from "zod";
+// zod/mini: this module runs in the browser (dex explorer), and classic zod is ~90 KB gzipped.
+import * as z from "zod/mini";
 import { normalizeAnswer } from "@/features/quiz/normalize";
 import { Constants } from "@/lib/supabase/database.types";
 import { localizedName } from "./format";
@@ -32,9 +33,9 @@ export const DEFAULT_FILTERS: DexFilters = {
 // URL params come from users (shared links, hand edits): anything invalid falls back to the
 // default instead of breaking the page.
 const paramsSchema = z.object({
-  q: z.string().max(40).catch(""),
-  type: z.enum(Constants.public.Enums.pokemon_type).nullable().catch(null),
-  sort: z.enum(SORT_OPTIONS).catch("number"),
+  q: z.catch(z.string().check(z.maxLength(40)), ""),
+  type: z.catch(z.nullable(z.enum(Constants.public.Enums.pokemon_type)), null),
+  sort: z.catch(z.enum(SORT_OPTIONS), "number"),
 });
 
 export function parseDexParams(params: URLSearchParams): DexFilters {

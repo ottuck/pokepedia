@@ -271,6 +271,13 @@ my_stats view (security_invoker = true)
 - `messages/{ko,en,ja}.json`: `nav.*`, `dex.*`, `quiz.battle.*`, `quiz.result.*`, `collection.*`, `errors.<code>`
 - 포켓몬 컬럼 선택 helper `localize(row, 'name', locale)`
 - 한국어 조사(이/가)는 받침 판별 helper
+- 클라이언트 메시지: `NextIntlClientProvider`가 locale 메시지 전체를 모든 페이지에 넘긴다. 2026-09-25에 측정한 결과 약 3KB(gzip)로, 페이지 JS(수백 KB)에 비해 작아서 네임스페이스별 전달 최적화는 하지 않는다. 메시지가 30KB(gzip)를 넘으면 다시 검토한다.
+
+### 번들 메모 (2026-09-25 측정, 클라이언트 JS gzip)
+
+- 모든 페이지: react-dom과 Next 런타임 약 69KB, supabase-js(헤더 AccountMenu) 약 66KB, next-intl 약 20KB
+- zod: 클라이언트에 닿는 모듈(env schema, AccountMenu, 도감 탐색, 닉네임)은 `import * as z from "zod/mini"`로 쓴다(81KB → 16KB). 서버 전용 코드는 classic zod를 그대로 쓴다. `import { z }`는 네임스페이스 전체(모든 locale 포함)를 끌어오므로 쓰지 않는다.
+- motion layout 기능(약 43KB)은 LazyMotion으로 나중에 로드한다.
 
 ## 10. UI
 
