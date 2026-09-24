@@ -227,7 +227,10 @@ Route Handler는 `/auth/callback`만 사용한다.
 | `/[locale]/quiz`              | 동적        | 서버 셸 + `QuizGame`(C, Zustand)                                          |
 | `/[locale]/collection`, `/me` | 동적        | RSC 조회 + 카드 연출 C                                                    |
 
-도감 데이터는 cookie 없는 Supabase client + Cache Components(`"use cache"`, `cacheLife`, `cacheTag('pokemon')`)로 캐시한다. 세부 API는 `node_modules/next/dist/docs` 기준.
+- 도감 데이터는 cookie 없는 public client(`lib/supabase/public.ts`)로 읽고, 페이지는 **빌드 시 locale별로 prerender**한다. 카탈로그는 sync할 때만 바뀌므로 **remote sync 후에는 재배포**해야 화면에 반영된다.
+- Cache Components(`"use cache"`)는 아직 켜지 않는다. 정적 페이지 안에 사용자별 영역(상세의 "내 스티커" 배지 등)이 필요해질 때 도입을 검토한다.
+- 이미지는 `next/image` 최적화를 쓴다(Storage public URL만 `remotePatterns` 허용). 브라우저에는 webp로 변환·리사이즈되어 원본 대비 약 절반 크기. 로컬 Supabase(127.0.0.1)를 가리킬 때만 `dangerouslyAllowLocalIP`를 켠다.
+- 타입 색은 `features/pokemon/types.ts`가 단일 출처(base/soft/ink, 대비 테스트). 컴포넌트는 CSS 변수(`--type`, `--type-soft`, `--type-ink`, `--type-2`)로 소비한다.
 
 ## 9. i18n
 
