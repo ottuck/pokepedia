@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "title": "Pokepedia",
+    "description": "1세대 포켓몬 도감, 실루엣 퀴즈, 띠부씰 컬렉션"
+  },
+  "home": {
+    "badge": "1세대 · #001–151",
+    "tagline": "도감 · 실루엣 퀴즈 · 띠부씰 컬렉션"
+  },
+  "localeSwitcher": {
+    "label": "언어"
+  },
+  "notFound": {
+    "title": "앗, 여기엔 아무것도 없어요",
+    "description": "주소가 바뀌었거나 없는 페이지예요.",
+    "backHome": "홈으로"
+  }
+}
