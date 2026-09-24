@@ -125,6 +125,10 @@ PokeAPI ──(로컬에서 1회 실행) scripts/sync-pokemon.ts
   ④ Storage 업로드 + DB upsert (idempotent)
 ```
 
+- 실행: `pnpm sync:pokemon` (기본 `.env.local`). remote 대상은 `--env-file .env.remote.local --yes` 없이는 거부한다
+- 이미지 인코딩: webp quality 85, effort 4 (effort 6은 장당 ~75배 느리고 용량은 ~1% 차이). 원본 475px라 확대하지 않는다
+- 코드: `scripts/sync-pokemon/` — `pokeapi.ts`(Zod + 캐시), `transform.ts`(순수 변환, 단위 테스트), `images.ts`(sharp), `index.mts`(실행)
+- 정답 키 정규화는 퀴즈 채점과 같은 `src/features/quiz/normalize.ts`를 쓴다
 - 실루엣 key = `HMAC-SHA256(SILHOUETTE_SECRET, id)` 앞 16자리
 - 버킷: `pokemon-artwork`(public, `normal/025.webp`, `shiny/025.webp`), `quiz-silhouette`(public, `{opaque}.webp`), `avatars`(Should). `config.toml`에 선언하고 GitHub 연동이 production에 생성한다. storage.objects 정책이 없으므로 목록 조회·쓰기는 secret key만 가능
 - DB 반영은 `sync_pokemon_catalog` RPC 한 번으로 한다 (부분 반영 방지)
