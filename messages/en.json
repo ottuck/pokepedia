@@ -3,9 +3,29 @@
     "title": "Pokepedia",
     "description": "Gen 1 Pokédex, silhouette quiz, and sticker collection"
   },
-  "home": {
-    "badge": "Gen 1 · #001–151",
-    "tagline": "Pokédex · Silhouette quiz · Sticker collection"
+  "dex": {
+    "title": "Pokédex",
+    "count": "{count} Pokémon"
+  },
+  "types": {
+    "normal": "Normal",
+    "fire": "Fire",
+    "water": "Water",
+    "electric": "Electric",
+    "grass": "Grass",
+    "ice": "Ice",
+    "fighting": "Fighting",
+    "poison": "Poison",
+    "ground": "Ground",
+    "flying": "Flying",
+    "psychic": "Psychic",
+    "bug": "Bug",
+    "rock": "Rock",
+    "ghost": "Ghost",
+    "dragon": "Dragon",
+    "dark": "Dark",
+    "steel": "Steel",
+    "fairy": "Fairy"
   },
   "localeSwitcher": {
     "label": "Language"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Noto_Sans_JP, Noto_Sans_KR } from "next/font/google";
+import { SiteHeader } from "@/components/site-header";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -29,7 +30,10 @@ export default async function LocaleLayout({
       className={`${notoKr.variable} ${notoJp.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <SiteHeader />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

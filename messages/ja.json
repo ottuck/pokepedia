@@ -3,9 +3,29 @@
     "title": "Pokepedia",
     "description": "第1世代ポケモン図鑑・シルエットクイズ・シールコレクション"
   },
-  "home": {
-    "badge": "第1世代 · #001–151",
-    "tagline": "図鑑 · シルエットクイズ · シールコレクション"
+  "dex": {
+    "title": "ずかん",
+    "count": "{count}ひき"
+  },
+  "types": {
+    "normal": "ノーマル",
+    "fire": "ほのお",
+    "water": "みず",
+    "electric": "でんき",
+    "grass": "くさ",
+    "ice": "こおり",
+    "fighting": "かくとう",
+    "poison": "どく",
+    "ground": "じめん",
+    "flying": "ひこう",
+    "psychic": "エスパー",
+    "bug": "むし",
+    "rock": "いわ",
+    "ghost": "ゴースト",
+    "dragon": "ドラゴン",
+    "dark": "あく",
+    "steel": "はがね",
+    "fairy": "フェアリー"
   },
   "localeSwitcher": {
     "label": "言語"
