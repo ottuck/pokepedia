@@ -45,6 +45,22 @@ async function sessionUserId(): Promise<string | null> {
   return data?.claims.sub ?? null;
 }
 
+/**
+ * Unexpected failures (bad configuration, database outage) become a `server_error` code with
+ * the cause logged server-side, instead of an opaque 500 that leaves the game stuck.
+ */
+async function guarded<T>(
+  name: string,
+  run: () => Promise<ActionResult<T>>,
+): Promise<ActionResult<T>> {
+  try {
+    return await run();
+  } catch (error) {
+    console.error(`[quiz] ${name} failed:`, error);
+    return { ok: false, code: "server_error" };
+  }
+}
+
 const invalid = { ok: false, code: "invalid_input" } as const;
 const unauthenticated = { ok: false, code: "unauthenticated" } as const;
 
@@ -55,56 +71,69 @@ const unauthenticated = { ok: false, code: "unauthenticated" } as const;
 export async function startQuiz(
   input: unknown,
 ): Promise<ActionResult<QuizState>> {
-  const parsed = localeInput.safeParse(input);
-  if (!parsed.success) return invalid;
+  return guarded("startQuiz", async () => {
+    const parsed = localeInput.safeParse(input);
+    if (!parsed.success) return invalid;
 
-  let userId = await sessionUserId();
-  if (!userId) {
-    const supabase = await createClient();
-    const { data, error } = await supabase.auth.signInAnonymously();
-    if (error || !data.user) return { ok: false, code: "sign_in_failed" };
-    userId = data.user.id;
-  }
-  return quizService().startOrResume(userId, parsed.data.locale);
+    let userId = await sessionUserId();
+    if (!userId) {
+      const supabase = await createClient();
+      const { data, error } = await supabase.auth.signInAnonymously();
+      if (error || !data.user) {
+        console.error("[quiz] anonymous sign-in failed:", error?.message);
+        return { ok: false, code: "sign_in_failed" };
+      }
+      userId = data.user.id;
+    }
+    return quizService().startOrResume(userId, parsed.data.locale);
+  });
 }
 
 export async function submitAnswer(
   input: unknown,
 ): Promise<ActionResult<AnswerResult>> {
-  const parsed = answerInput.safeParse(input);
-  if (!parsed.success) return invalid;
-  const userId = await sessionUserId();
-  if (!userId) return unauthenticated;
-  const { roundId, answer, locale } = parsed.data;
-  return quizService().answer(userId, roundId, answer, locale);
+  return guarded("submitAnswer", async () => {
+    const parsed = answerInput.safeParse(input);
+    if (!parsed.success) return invalid;
+    const userId = await sessionUserId();
+    if (!userId) return unauthenticated;
+    const { roundId, answer, locale } = parsed.data;
+    return quizService().answer(userId, roundId, answer, locale);
+  });
 }
 
 export async function requestHint(
   input: unknown,
 ): Promise<ActionResult<{ run: RunView; round: RoundView }>> {
-  const parsed = roundInput.safeParse(input);
-  if (!parsed.success) return invalid;
-  const userId = await sessionUserId();
-  if (!userId) return unauthenticated;
-  return quizService().hint(userId, parsed.data.roundId, parsed.data.locale);
+  return guarded("requestHint", async () => {
+    const parsed = roundInput.safeParse(input);
+    if (!parsed.success) return invalid;
+    const userId = await sessionUserId();
+    if (!userId) return unauthenticated;
+    return quizService().hint(userId, parsed.data.roundId, parsed.data.locale);
+  });
 }
 
 export async function skipQuizRound(
   input: unknown,
 ): Promise<ActionResult<SkipResult>> {
-  const parsed = roundInput.safeParse(input);
-  if (!parsed.success) return invalid;
-  const userId = await sessionUserId();
-  if (!userId) return unauthenticated;
-  return quizService().skip(userId, parsed.data.roundId, parsed.data.locale);
+  return guarded("skipQuizRound", async () => {
+    const parsed = roundInput.safeParse(input);
+    if (!parsed.success) return invalid;
+    const userId = await sessionUserId();
+    if (!userId) return unauthenticated;
+    return quizService().skip(userId, parsed.data.roundId, parsed.data.locale);
+  });
 }
 
 export async function fleeQuiz(
   input: unknown,
 ): Promise<ActionResult<FleeResult>> {
-  const parsed = localeInput.safeParse(input);
-  if (!parsed.success) return invalid;
-  const userId = await sessionUserId();
-  if (!userId) return unauthenticated;
-  return quizService().flee(userId, parsed.data.locale);
+  return guarded("fleeQuiz", async () => {
+    const parsed = localeInput.safeParse(input);
+    if (!parsed.success) return invalid;
+    const userId = await sessionUserId();
+    if (!userId) return unauthenticated;
+    return quizService().flee(userId, parsed.data.locale);
+  });
 }
