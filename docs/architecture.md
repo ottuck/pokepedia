@@ -67,11 +67,11 @@ Round : hp = 3, hint 1회
 
 단일 remote Supabase 프로젝트를 운영한다 (개인 프로젝트 규모).
 
-| 환경              | Supabase                      | 비고                                                   |
-| ----------------- | ----------------------------- | ------------------------------------------------------ |
-| Local             | `npx supabase start` (Docker) | 모든 DB 변경을 먼저 여기서 검증                        |
-| Vercel Production | remote `pokepedia`            | main 배포                                              |
-| Vercel Preview    | remote `pokepedia` (동일)     | PR 확인용. **DB를 변경하는 작업을 자동 실행하지 않음** |
+| 환경              | Supabase                       | 비고                                                   |
+| ----------------- | ------------------------------ | ------------------------------------------------------ |
+| Local             | `pnpm supabase start` (Docker) | 모든 DB 변경을 먼저 여기서 검증                        |
+| Vercel Production | remote `pokepedia`             | main 배포                                              |
+| Vercel Preview    | remote `pokepedia` (동일)      | PR 확인용. **DB를 변경하는 작업을 자동 실행하지 않음** |
 
 ### 배포 파이프라인
 

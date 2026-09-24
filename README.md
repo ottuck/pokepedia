@@ -16,12 +16,12 @@ Vercel
 
 ```bash
 nvm use            # Node 24
-npm install
+pnpm install
 cp .env.example .env.local
-npm run dev
+pnpm dev
 ```
 
-Checks: `npm run lint`, `npm run typecheck`, `npm run format:check`, `npm test`.
+Checks: `pnpm lint`, `pnpm typecheck`, `pnpm format:check`, `ppnpm test`.
 
 Design and architecture decisions: [docs/architecture.md](docs/architecture.md).
 
