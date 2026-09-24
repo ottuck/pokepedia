@@ -70,5 +70,23 @@
     "title": "앗, 여기엔 아무것도 없어요",
     "description": "주소가 바뀌었거나 없는 페이지예요.",
     "backHome": "홈으로"
+  },
+  "auth": {
+    "signInWithGoogle": "Google로 로그인",
+    "accountMenu": "계정 메뉴",
+    "guestAccount": "게스트 플레이 중",
+    "googleAccount": "Google 계정",
+    "guestNotice": "게스트 기록은 이 브라우저에만 있어요. Google 계정에 저장하면 다른 기기에서도 이어서 할 수 있어요.",
+    "saveWithGoogle": "Google 계정에 저장",
+    "guestSignOutWarning": "게스트로 모은 기록은 나가면 되찾을 수 없어요. 그래도 나갈까요?",
+    "leaveGuest": "게스트 나가기",
+    "signOut": "로그아웃",
+    "errors": {
+      "title": "로그인하지 못했어요",
+      "identityAlreadyExists": "이 Google 계정은 이미 다른 Pokepedia 계정에 연결돼 있어요. 게스트에서 나간 뒤 Google로 로그인해 주세요.",
+      "accessDenied": "Google 로그인이 취소됐어요.",
+      "generic": "잠시 후 다시 시도해 주세요.",
+      "backHome": "도감으로"
+    }
   }
 }
