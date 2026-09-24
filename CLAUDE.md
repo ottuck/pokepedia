@@ -10,7 +10,10 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
 
 - `npm run dev` — dev server
 - `npm run lint` / `npm run typecheck` / `npm run format:check` / `npm test`
+- `npx supabase start` / `npx supabase status -o env` / `npx supabase db reset` — local Supabase (Docker)
 - Node 24 (`.nvmrc`). Package manager: npm.
+- Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
+  `admin.ts` (secret key, bypasses RLS — server only), `proxy.ts` (session refresh only).
 
 ## Principles
 
