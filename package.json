@@ -11,7 +11,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts",
+    "test:db": "vitest run --config vitest.db.config.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

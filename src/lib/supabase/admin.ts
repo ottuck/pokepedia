@@ -2,6 +2,7 @@ import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { publicEnv } from "@/lib/env/public";
 import { serverEnv } from "@/lib/env/server";
+import type { Database } from "./database.types";
 
 /**
  * Privileged client using the secret key (Postgres `service_role`): bypasses RLS and can
@@ -9,7 +10,7 @@ import { serverEnv } from "@/lib/env/server";
  * session — never pass client-supplied user ids through it unchecked.
  */
 export function createAdminClient() {
-  return createClient(
+  return createClient<Database>(
     publicEnv.NEXT_PUBLIC_SUPABASE_URL,
     serverEnv.SUPABASE_SECRET_KEY,
     {
