@@ -87,7 +87,8 @@
       "accessDenied": "Google 로그인이 취소됐어요.",
       "generic": "잠시 후 다시 시도해 주세요.",
       "backHome": "도감으로"
-    }
+    },
+    "myPage": "마이페이지"
   },
   "nav": {
     "dex": "도감",
@@ -203,5 +204,46 @@
       "notice": "게스트 컬렉션은 이 브라우저에만 저장돼요. Google 계정에 저장하면 다른 기기에서도 볼 수 있어요.",
       "save": "Google 계정에 저장"
     }
+  },
+  "me": {
+    "title": "마이페이지",
+    "guestAccount": "게스트 플레이 중",
+    "googleAccount": "Google 계정",
+    "nickname": {
+      "label": "닉네임",
+      "edit": "닉네임 변경",
+      "save": "저장",
+      "saving": "저장 중…",
+      "cancel": "취소",
+      "help": "{min}~{max}자로 입력해 주세요.",
+      "errors": {
+        "invalid_nickname": "닉네임은 앞뒤 공백을 빼고 2~20자여야 해요.",
+        "not_signed_in": "세션이 만료됐어요. 새로고침한 뒤 다시 시도해 주세요.",
+        "server_error": "저장하지 못했어요. 잠시 후 다시 시도해 주세요."
+      }
+    },
+    "stats": {
+      "title": "퀴즈 기록",
+      "plays": "플레이",
+      "bestScore": "최고 점수",
+      "bestCombo": "최고 콤보",
+      "clearRate": "클리어율",
+      "collected": "모은 포켓몬"
+    },
+    "recentStickers": "최근 모은 띠부씰",
+    "noStickers": "아직 모은 띠부씰이 없어요.",
+    "toCollection": "컬렉션 전체 보기",
+    "shiny": "색이 다른 포켓몬",
+    "recentRuns": "최근 게임",
+    "noRuns": "아직 끝낸 게임이 없어요.",
+    "runScore": "{score}점",
+    "runDetail": "{cleared}마리 맞힘 · 최고 콤보 {combo}",
+    "endReason": {
+      "fainted": "쓰러짐",
+      "fled": "도망침"
+    },
+    "emptyTitle": "아직 기록이 없어요",
+    "emptyBody": "퀴즈를 한 판 하면 게스트 계정이 만들어지고 기록이 쌓여요.",
+    "toQuiz": "퀴즈 하러 가기"
   }
 }

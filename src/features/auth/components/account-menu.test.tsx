@@ -19,7 +19,10 @@ const auth = {
 };
 
 const push = vi.fn();
-vi.mock("@/i18n/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ push }),
+  Link: ({ href, ...props }: { href: string }) => <a href={href} {...props} />,
+}));
 
 vi.mock("@/lib/supabase/browser", () => ({
   createClient: () => ({
