@@ -17,7 +17,8 @@ Vercel
 ```bash
 nvm use            # Node 24
 npm install
-cp .env.example .env.local
+npx supabase start      # needs Docker: local Postgres, Auth, Storage
+cp .env.example .env.local   # fill keys from `npx supabase status -o env`
 npm run dev
 ```
 
