@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Locale } from "next-intl";
-import { artworkUrl, formatDexNumber, localizedName } from "../format";
+import { artworkUrl } from "../assets";
+import { formatDexNumber, localizedName } from "../format";
 import type { PokedexEntry } from "../queries";
 import { typeStyle } from "../types";
 import { TypeBadge } from "./type-badge";
