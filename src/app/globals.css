@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens (see docs/architecture.md § Design tokens).
+ * Semantic tokens live on :root so dark mode can later swap values only.
+ */
+:root {
+  --surface: #fffdf7;
+  --ink: #1f1d1a;
+  --muted: #6b665e;
+}
+
+@theme inline {
+  /* Brand — Pokédex body, Pokédex screen, Pikachu yellow (legacy #c54431 / #9bc2fd / #ecc22e) */
+  --color-dex-red: #d8433a;
+  --color-dex-screen: #a9cbff;
+  --color-volt: #f5c542;
+
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+}
