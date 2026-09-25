@@ -39,8 +39,6 @@
 
 리더보드, 스티커 3D tilt, OG 이미지, 익명 계정 정리 cron, 익명 컬렉션 병합
 
-제외(2026-09-25 결정): 데일리 챌린지, 즐겨찾기
-
 ### Not Now
 
 Community 채팅, 2세대 이후, 결제/가챠
@@ -213,7 +211,14 @@ my_stats view (security_invoker = true)
   2. 클라이언트가 Google로 `signInWithOAuth`한다(`next=/[locale]/collection`).
   3. `/auth/callback`이 code를 교환한 뒤, 새 세션이 게스트가 **아니면** `guest_merge_redeem`(service_role 전용)을 호출한다. 이 함수가 한 트랜잭션으로 티켓을 소비하고, 게스트의 진행 중 게임을 도망 처리한 뒤 run/round를 옮기고 스티커 수량을 더한다. **그다음에만** Admin API로 게스트 user를 삭제하고 `?merged=1`로 이동한다.
   - 쿠키는 callback에 올 때마다(성공이든 실패든) 지운다. 대상 user는 세션에서만 정하고, 게스트 → Google 방향만 허용한다. 티켓은 1회용이고 만료되면 거부된다(DB 테스트와 권한 변형 테스트로 확인).
-- Could: 오래된 익명 계정 정리 cron, CAPTCHA.
+- **비활성 게스트 자동 정리**: pg_cron이 매일 18:00 UTC(한국 03:00)에 `cleanup_inactive_guests()`를 실행한다. 다음 조건을 **모두** 만족하는 계정만 `auth.users`에서 지우고, profile, 게임, 병합 티켓은 cascade로 함께 지워진다.
+  - 익명(게스트)이다.
+  - 마지막 활동이 60일보다 오래됐다.
+  - **스티커가 0장**이다. 한 장이라도 있으면 기간과 상관없이 지우지 않는다.
+  - 진행 중인 게임이 없다.
+  - "마지막 활동"은 다음 중 가장 늦은 시각이다: 계정 생성(첫 퀴즈), 마지막 로그인, 세션 갱신(로그인 상태로 방문하면 만료된 1시간짜리 토큰을 proxy가 갱신하므로 둘러보기만 해도 기록됨), 마지막 게임 시작·종료.
+  - 함수는 `security definer`이고 service_role만 실행할 수 있다(`p_dry_run`으로 개수만 확인 가능). 한 번에 최대 1000명씩 지운다.
+- Could: CAPTCHA.
 
 ## 7. 게임 API (Server Actions)
 
