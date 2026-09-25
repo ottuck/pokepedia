@@ -1,21 +1,11 @@
-## What
+## 요약
 
-## Why
+<!-- 무엇을 왜 바꿨는지 자연스러운 한국어로. 길어지면 ### 원인 / 설계 / 작업 중 고친 것 같은 소제목을 자유롭게 -->
 
-## Decisions
+## 확인
 
-<!-- 아키텍처에 영향을 준 선택만. 없으면 섹션 삭제 -->
+<!-- 돌린 검사(pnpm check · test:db · test:e2e · build)와 Preview·로컬에서 직접 본 화면 -->
 
-## Risk
+## 위험도
 
-<!-- CLAUDE.md § Merge policy 기준. 예: "Low — UI only" / "Needs approval — adds RLS policies" -->
-
-## Screenshots / Preview
-
-<!-- UI 변경 시 -->
-
-## Test
-
-- [ ] lint / typecheck / unit / build
-- [ ] Vercel Preview에서 변경된 화면 확인
-- [ ] DB 변경 시: local Supabase에서 `db reset` 후 검증 (remote는 merge 시 자동 적용)
+<!-- CLAUDE.md § Merge policy 기준. 예: **Low-risk**: UI만 변경 / **needs-approval**: RLS 정책 추가 -->
