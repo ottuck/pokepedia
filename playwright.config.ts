@@ -3,7 +3,9 @@ import { defineConfig, devices } from "@playwright/test";
 const PORT = 3200;
 
 // One core journey against local Supabase (`pnpm supabase start`). The app reads its keys
-// from .env.local locally; CI exports them from `supabase status -o env` and builds first.
+// from .env.local locally; CI exports them from `supabase status -o env`. It runs on the dev
+// server everywhere: a production build prerenders OG images from Storage artwork, which the
+// seed catalog does not upload.
 export default defineConfig({
   testDir: "e2e",
   // Generous: the dev server compiles each page on first visit.
@@ -17,9 +19,7 @@ export default defineConfig({
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: process.env.CI
-      ? `pnpm start --port ${PORT}`
-      : `pnpm dev --port ${PORT}`,
+    command: `pnpm dev --port ${PORT}`,
     url: `http://localhost:${PORT}/ko`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
