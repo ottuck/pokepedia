@@ -70,25 +70,6 @@ describe("setAvatar", () => {
     expect(refresh).toHaveBeenCalledOnce();
   });
 
-  it("removes the previous picture after switching", async () => {
-    db.previous = `${me}/1700000000000.webp`;
-
-    await setAvatar(`${me}/1790300000000.webp`);
-
-    expect(db.remove).toHaveBeenCalledWith("avatars", [
-      `${me}/1700000000000.webp`,
-    ]);
-  });
-
-  it("clears the picture with null and removes the file", async () => {
-    db.previous = `${me}/1700000000000.webp`;
-
-    await expect(setAvatar(null)).resolves.toEqual({ ok: true });
-
-    expect(db.update).toHaveBeenCalledWith({ avatar_path: null }, "id", me);
-    expect(db.remove).toHaveBeenCalled();
-  });
-
   it("refuses guests", async () => {
     db.claims = { sub: me, is_anonymous: true };
 

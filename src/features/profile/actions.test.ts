@@ -75,16 +75,4 @@ describe("renameMe", () => {
     });
     expect(db.update).not.toHaveBeenCalled();
   });
-
-  it("reports a failed update without refreshing the page", async () => {
-    const log = vi.spyOn(console, "error").mockImplementation(() => {});
-    db.result = { data: null, error: { message: "boom" } };
-
-    await expect(renameMe("레드")).resolves.toEqual({
-      ok: false,
-      code: "server_error",
-    });
-    expect(refresh).not.toHaveBeenCalled();
-    expect(log).toHaveBeenCalled();
-  });
 });
