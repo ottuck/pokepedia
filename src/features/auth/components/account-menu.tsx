@@ -41,7 +41,8 @@ export function AccountMenu() {
       }
       const { data: profile } = await supabase
         .from("profile")
-        .select("nickname, avatar_path")
+        // "*": works before and after the avatars migration (see features/profile/queries.ts).
+        .select("*")
         .maybeSingle();
       setAccount({
         status: "signedIn",

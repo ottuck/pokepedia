@@ -45,7 +45,9 @@ export async function getMyPage() {
   ] = await Promise.all([
     supabase
       .from("profile")
-      .select("nickname, avatar_path")
+      // "*" rather than naming avatar_path: right after a deploy the code can run before the
+      // avatars migration, and naming a missing column would fail the whole page.
+      .select("*")
       .eq("id", userId)
       .maybeSingle(),
     supabase
