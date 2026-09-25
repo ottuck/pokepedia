@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { artworkUrl } from "@/features/pokemon/assets";
-import { ArtworkViewer } from "@/features/pokemon/components/detail/artwork-viewer";
+import { HeroCard } from "@/features/pokemon/components/detail/hero-card";
 import { EvolutionLine } from "@/features/pokemon/components/detail/evolution-line";
 import { MyStickerBadge } from "@/features/pokemon/components/detail/my-sticker-badge";
 import { StatBars } from "@/features/pokemon/components/detail/stat-bars";
@@ -62,8 +62,8 @@ export async function generateMetadata({
   };
 }
 
-const ARTWORK_SIZES =
-  "(min-width: 1024px) 400px, (min-width: 768px) 40vw, 90vw";
+// The artwork fills most of a card at most 20rem wide.
+const ARTWORK_SIZES = "(min-width: 768px) 300px, 80vw";
 
 export default async function PokemonDetailPage({
   params,
@@ -84,6 +84,14 @@ export default async function PokemonDetailPage({
   const previous = list[index - 1];
   const next = list[index + 1];
   const stages = buildEvolutionStages(list, pokemon.id);
+  const height = format.number(pokemon.height_dm / 10, {
+    style: "unit",
+    unit: "meter",
+  });
+  const weight = format.number(pokemon.weight_hg / 10, {
+    style: "unit",
+    unit: "kilogram",
+  });
 
   return (
     <main
@@ -98,38 +106,42 @@ export default async function PokemonDetailPage({
       </Link>
 
       <article className="overflow-hidden rounded-[2rem] bg-card shadow-sm ring-1 ring-ink/5 md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        {/* Type-colored backdrop: the legacy detail page's signature gradient. */}
-        {/* The gradient fills the whole column; the artwork stays a square pinned at the top,
-            so a long info column does not blow the image up. */}
-        <div className="bg-linear-to-br from-(--type) via-(--type-soft) to-(--type-2)">
-          <div className="relative flex aspect-square items-center justify-center md:sticky md:top-0">
-            <div
-              aria-hidden
-              className="absolute size-3/4 rounded-full bg-white/40"
+        {/* The Pokémon card on a soft type-tinted stage; it stays in view while the long info
+            column scrolls on wide screens. */}
+        <div className="bg-linear-to-br from-(--type-soft) via-card to-(--type-soft)">
+          <div className="md:sticky md:top-0">
+            <HeroCard
+              number={formatDexNumber(pokemon.id)}
+              name={name}
+              genus={pokemon[`genus_${locale}`]}
+              types={
+                <>
+                  <TypeBadge type={pokemon.type_1} />
+                  {pokemon.type_2 && <TypeBadge type={pokemon.type_2} />}
+                </>
+              }
+              height={height}
+              weight={weight}
+              normal={
+                <Image
+                  src={artworkUrl(pokemon.artwork_path)}
+                  alt={name}
+                  fill
+                  preload
+                  sizes={ARTWORK_SIZES}
+                  className="object-contain"
+                />
+              }
+              shiny={
+                <Image
+                  src={artworkUrl(pokemon.shiny_artwork_path)}
+                  alt={t("shinyAlt", { name })}
+                  fill
+                  sizes={ARTWORK_SIZES}
+                  className="object-contain"
+                />
+              }
             />
-            <div className="relative size-4/5">
-              <ArtworkViewer
-                normal={
-                  <Image
-                    src={artworkUrl(pokemon.artwork_path)}
-                    alt={name}
-                    fill
-                    preload
-                    sizes={ARTWORK_SIZES}
-                    className="object-contain drop-shadow-xl"
-                  />
-                }
-                shiny={
-                  <Image
-                    src={artworkUrl(pokemon.shiny_artwork_path)}
-                    alt={t("shinyAlt", { name })}
-                    fill
-                    sizes={ARTWORK_SIZES}
-                    className="object-contain drop-shadow-xl"
-                  />
-                }
-              />
-            </div>
           </div>
         </div>
 
@@ -158,20 +170,8 @@ export default async function PokemonDetailPage({
           <p className="leading-relaxed">{pokemon[`description_${locale}`]}</p>
 
           <dl className="grid grid-cols-2 gap-3">
-            <Measure
-              label={t("height")}
-              value={format.number(pokemon.height_dm / 10, {
-                style: "unit",
-                unit: "meter",
-              })}
-            />
-            <Measure
-              label={t("weight")}
-              value={format.number(pokemon.weight_hg / 10, {
-                style: "unit",
-                unit: "kilogram",
-              })}
-            />
+            <Measure label={t("height")} value={height} />
+            <Measure label={t("weight")} value={weight} />
           </dl>
 
           <section>

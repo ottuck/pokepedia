@@ -1,0 +1,346 @@
+/*
+ * The detail page's Pokémon card. usePointerTilt (on .stage, so the floor shadow sees them too) writes --rx/--ry (rotation), --px/--py (pointer
+ * position) and --distance (0 center … 1 corner); everything visual happens here. Type colors
+ * come from typeStyle() on the page (--type, --type-2, --type-soft, --type-ink).
+ *
+ * Depth: the card keeps `transform-style: preserve-3d`, so its layers sit at different
+ * translateZ and shift against each other as it turns. Nothing on .card itself may clip or
+ * blend (overflow, opacity, filter, mix-blend-mode would flatten the 3D), so only the face
+ * layer clips — which also lets the artwork lean slightly out of the frame.
+ */
+
+.stage {
+  position: relative;
+  /* Full width: the card sizes itself as a share of it (and would collapse in a shrink-to-fit box). */
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 2.5rem 1.5rem 3.5rem;
+  perspective: 900px;
+  /* Horizontal drags tilt the card; vertical swipes still scroll the page. */
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.card {
+  --frame: 12px;
+  --radius: 24px;
+  position: relative;
+  width: min(100%, 20rem);
+  aspect-ratio: 5 / 7;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  /* Slow ease back to rest; while tilting, a short linear hop smooths frame-to-frame. */
+  transition: transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.stage[data-tilting] .card {
+  transition: transform 90ms linear;
+}
+
+/* ── Face: frame, window, foil, texture (the only clipped layer) ─────────────────────── */
+
+.face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--color-card);
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--type) 45%, transparent),
+    inset 0 0 0 2px color-mix(in oklab, var(--type) 30%, transparent);
+}
+
+.window {
+  position: absolute;
+  inset: var(--frame) var(--frame) 30% var(--frame);
+  border-radius: calc(var(--radius) - 8px);
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      color-mix(in oklab, var(--type-soft) 70%, white) 0%,
+      transparent 62%
+    ),
+    linear-gradient(
+      150deg,
+      var(--type) 0%,
+      color-mix(in oklab, var(--type) 50%, var(--type-2)) 55%,
+      var(--type-2) 100%
+    );
+  box-shadow: inset 0 2px 12px rgb(0 0 0 / 0.18);
+}
+
+/* Foil: a band of type-tinted light that slides across as the card turns. */
+.foil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* soft-light shows on pastel windows, where color-dodge would wash out. */
+  mix-blend-mode: soft-light;
+  opacity: calc(0.45 + var(--distance, 0) * 0.55);
+  background-image: linear-gradient(
+    115deg,
+    transparent 18%,
+    white 32%,
+    color-mix(in oklab, var(--type) 40%, white) 38%,
+    transparent 48%,
+    white 58%,
+    color-mix(in oklab, var(--type-2) 40%, white) 63%,
+    transparent 76%
+  );
+  background-size: 260% 260%;
+  background-position: var(--px, 50%) var(--py, 50%);
+  transition: opacity 300ms ease;
+}
+
+/* Texture: a faint grain on normal cards, sparkles on shiny ones. */
+.texture {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+  background-image:
+    radial-gradient(circle at 25% 35%, white 0 0.6px, transparent 1.2px),
+    radial-gradient(circle at 70% 80%, white 0 0.6px, transparent 1.2px);
+  background-size:
+    7px 7px,
+    11px 11px;
+}
+
+/* ── Floating layers ─────────────────────────────────────────────────────────────────── */
+
+.aura {
+  position: absolute;
+  inset: 12% 14% 38%;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--type-soft) 80%, white) 0%,
+    color-mix(in oklab, var(--type) 40%, transparent) 45%,
+    transparent 70%
+  );
+  transform: translateZ(20px);
+  opacity: 0.85;
+}
+
+.top {
+  position: absolute;
+  inset: calc(var(--frame) + 10px) calc(var(--frame) + 12px) auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  transform: translateZ(30px);
+}
+
+.number {
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.85);
+  padding: 0.1rem 0.55rem;
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #1f1d1a;
+}
+
+.types {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.art {
+  position: absolute;
+  inset: 11% 6% 30%;
+  transform: translateZ(55px);
+  pointer-events: none;
+}
+
+.artwork {
+  position: absolute;
+  inset: 0;
+  transition: opacity 350ms ease;
+  filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.28));
+}
+
+.bottom {
+  position: absolute;
+  inset: auto var(--frame) calc(var(--frame) + 4px);
+  height: calc(30% - var(--frame) - 8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  text-align: center;
+  transform: translateZ(30px);
+}
+
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1.6rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.genus {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--type-ink);
+}
+
+.measures {
+  display: flex;
+  gap: 1rem;
+  font-family: var(--font-mono, ui-monospace), monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+/* Glare: a soft light that follows the pointer, in front of everything. */
+.glare {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none;
+  background: radial-gradient(
+    farthest-corner circle at var(--px, 50%) var(--py, 50%),
+    rgb(255 255 255 / 0.8) 0%,
+    rgb(255 255 255 / 0.2) 25%,
+    transparent 55%
+  );
+  mix-blend-mode: overlay;
+  transform: translateZ(60px);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+/* Edge: a thin ring of reflected light that swings around the border. */
+.edge {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  padding: 2px;
+  pointer-events: none;
+  background: conic-gradient(
+    from calc(var(--ry, 0deg) * 6 + 200deg) at var(--px, 50%) var(--py, 50%),
+    transparent 0deg,
+    rgb(255 255 255 / 0.9) 40deg,
+    transparent 90deg,
+    transparent 360deg
+  );
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transform: translateZ(1px);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.stage[data-tilting] .glare {
+  opacity: 1;
+}
+
+.stage[data-tilting] .edge {
+  opacity: 0.8;
+}
+
+/* Floor shadow: drifts against the tilt, so the card reads as lifted off the page. */
+.shadow {
+  position: absolute;
+  bottom: 1.25rem;
+  left: 50%;
+  width: min(70%, 14rem);
+  height: 1.5rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.35), transparent);
+  transform: translateX(calc(-50% - var(--tilt-x, 0) * 14px))
+    scaleX(calc(1 - var(--distance, 0) * 0.15));
+  transition: transform 700ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  pointer-events: none;
+}
+
+/* ── Shiny: the card itself becomes the rarer print ──────────────────────────────────── */
+
+.card[data-shiny] .face {
+  box-shadow:
+    0 0 0 1px rgb(245 197 66 / 0.9),
+    0 0 24px rgb(245 197 66 / 0.35),
+    inset 0 0 0 2px rgb(245 197 66 / 0.6);
+}
+
+.card[data-shiny] .foil {
+  /* overlay keeps the rainbow visible on both light and dark parts of the print. */
+  mix-blend-mode: overlay;
+  opacity: calc(0.55 + var(--distance, 0) * 0.45);
+  background-image: repeating-linear-gradient(
+    120deg,
+    hsl(0 90% 70%) 0%,
+    hsl(45 95% 65%) 8%,
+    hsl(110 80% 65%) 16%,
+    hsl(190 90% 65%) 24%,
+    hsl(260 85% 72%) 32%,
+    hsl(320 85% 70%) 40%,
+    hsl(0 90% 70%) 48%
+  );
+  background-size: 300% 300%;
+}
+
+.card[data-shiny] .texture {
+  opacity: calc(0.5 + var(--distance, 0) * 0.5);
+  mix-blend-mode: color-dodge;
+  background-image:
+    radial-gradient(circle at 20% 30%, white 0 1px, transparent 2px),
+    radial-gradient(circle at 65% 70%, white 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 85% 15%, white 0 0.8px, transparent 1.6px);
+  background-size:
+    37px 41px,
+    53px 47px,
+    29px 31px;
+  background-position: var(--px, 50%) var(--py, 50%);
+}
+
+.card[data-shiny] .edge {
+  background: conic-gradient(
+    from calc(var(--ry, 0deg) * 6 + 200deg) at var(--px, 50%) var(--py, 50%),
+    hsl(0 90% 70%),
+    hsl(60 95% 65%),
+    hsl(150 80% 60%),
+    hsl(210 90% 65%),
+    hsl(290 85% 70%),
+    hsl(0 90% 70%)
+  );
+}
+
+.card[data-shiny] .artwork {
+  filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.28))
+    drop-shadow(0 0 14px rgb(255 240 180 / 0.55));
+}
+
+/* ── Reduced motion: a flat, still card (the hook does not listen either) ────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .shadow {
+    transform: none;
+    transition: none;
+  }
+  .card .art,
+  .card .aura,
+  .card .top,
+  .card .bottom {
+    transform: none;
+  }
+  .glare,
+  .edge {
+    display: none;
+  }
+}
