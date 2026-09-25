@@ -44,7 +44,9 @@ export interface QuizRepository {
     roundId: string,
   ): Promise<{ run: RunRecord; round: RoundRecord } | null>;
   findRoundSecret(userId: string, roundId: string): Promise<RoundSecret | null>;
-  seenPokemonIds(runId: string): Promise<Set<number>>;
+  /** Pokémon already met in the run this round belongs to (the round's own included). */
+  seenPokemonIds(userId: string, roundId: string): Promise<Set<number>>;
+  /** Catalog reads: static between syncs, so implementations may cache them. */
   allPokemonIds(): Promise<number[]>;
   pokemonNames(pokemonId: number): Promise<PokemonNames>;
   /** Throws ActiveRunExistsError when the player already has an active run. */

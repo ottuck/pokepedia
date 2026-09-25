@@ -24,6 +24,7 @@ import type {
   QuizErrorCode,
   QuizState,
   RoundRecord,
+  RoundSecret,
   RoundView,
   RunRecord,
   SkipResult,
@@ -55,8 +56,10 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
     userId: string,
     round: RoundRecord,
     locale: Locale,
+    /** Already loaded for this round: saves a round trip. */
+    known?: RoundSecret,
   ): Promise<RoundView> {
-    const secret = await repo.findRoundSecret(userId, round.id);
+    const secret = known ?? (await repo.findRoundSecret(userId, round.id));
     if (!secret) throw new Error(`Round ${round.id} has no quiz data`);
     const name = localizedName(
       await repo.pokemonNames(secret.pokemonId),
@@ -88,12 +91,8 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
     };
   }
 
-  async function pickNext(runId: string): Promise<number> {
-    const [all, seen] = await Promise.all([
-      repo.allPokemonIds(),
-      repo.seenPokemonIds(runId),
-    ]);
-    return pickNextPokemon(all, seen, random);
+  async function pickNext(seen: Set<number>): Promise<number> {
+    return pickNextPokemon(await repo.allPokemonIds(), seen, random);
   }
 
   /** The next round created by a commit: fresh HP, next sequence number. */
@@ -112,13 +111,25 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
     version: 0,
   });
 
-  /** Loads an active round of this player with its answer, or an error code. */
-  async function loadPlayable(userId: string, roundId: string) {
-    const found = await repo.findRound(userId, roundId);
-    if (!found) return fail("not_found");
-    const secret = await repo.findRoundSecret(userId, roundId);
-    if (!secret) return fail("not_found");
-    return { ok: true as const, ...found, secret };
+  /**
+   * Loads an active round of this player with its answer (and, for transitions that may start
+   * a next round, the Pokémon already seen), or an error code. The reads run concurrently: each
+   * is a network round trip, and they only depend on the round id.
+   */
+  async function loadPlayable(
+    userId: string,
+    roundId: string,
+    { withSeen = false } = {},
+  ) {
+    const [found, secret, seen] = await Promise.all([
+      repo.findRound(userId, roundId),
+      repo.findRoundSecret(userId, roundId),
+      withSeen
+        ? repo.seenPokemonIds(userId, roundId)
+        : Promise.resolve(new Set<number>()),
+    ]);
+    if (!found || !secret) return fail("not_found");
+    return { ok: true as const, ...found, secret, seen };
   }
 
   async function commitOrConflict<T>(
@@ -166,9 +177,10 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
       answer: string,
       locale: Locale,
     ): Promise<ActionResult<AnswerResult>> {
-      const loaded = await loadPlayable(userId, roundId);
+      // Seen Pokémon are only needed on a clear, but fetching them alongside is free.
+      const loaded = await loadPlayable(userId, roundId, { withSeen: true });
       if (!loaded.ok) return loaded;
-      const { run, round, secret } = loaded;
+      const { run, round, secret, seen } = loaded;
 
       const result = resolveAnswer(
         run,
@@ -181,7 +193,7 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
       const nextRun: RunRecord = { ...run, ...outcome.run };
       const nextRound: RoundRecord = { ...round, ...outcome.round };
       const nextPokemonId =
-        outcome.kind === "cleared" ? await pickNext(run.id) : null;
+        outcome.kind === "cleared" ? await pickNext(seen) : null;
 
       const committed = await commitOrConflict(() =>
         repo.commit({
@@ -200,7 +212,7 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
         return ok({
           outcome: "wrong",
           run: nextRun,
-          round: await roundView(userId, nextRound, locale),
+          round: await roundView(userId, nextRound, locale, secret),
         });
       }
       if (outcome.kind === "fainted") {
@@ -212,17 +224,21 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
       }
 
       const quantity = committed.stickerQuantity ?? 1;
-      return ok({
-        outcome: "cleared",
-        run: nextRun,
-        revealed: await reveal(secret.pokemonId, locale, outcome.sticker),
-        scoreGained: outcome.scoreGained,
-        sticker: { variant: outcome.sticker, quantity, isNew: quantity === 1 },
-        nextRound: await roundView(
+      const [revealed, upcoming] = await Promise.all([
+        reveal(secret.pokemonId, locale, outcome.sticker),
+        roundView(
           userId,
           nextRoundRecord(run.id, committed.nextRoundId!, round.seq + 1),
           locale,
         ),
+      ]);
+      return ok({
+        outcome: "cleared",
+        run: nextRun,
+        revealed,
+        scoreGained: outcome.scoreGained,
+        sticker: { variant: outcome.sticker, quantity, isNew: quantity === 1 },
+        nextRound: upcoming,
       });
     },
 
@@ -251,7 +267,10 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
         }),
       );
       if (committed === "conflict") return fail("conflict");
-      return ok({ run, round: await roundView(userId, round, locale) });
+      return ok({
+        run,
+        round: await roundView(userId, round, locale, loaded.secret),
+      });
     },
 
     async skip(
@@ -259,13 +278,13 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
       roundId: string,
       locale: Locale,
     ): Promise<ActionResult<SkipResult>> {
-      const loaded = await loadPlayable(userId, roundId);
+      const loaded = await loadPlayable(userId, roundId, { withSeen: true });
       if (!loaded.ok) return loaded;
 
       const result = skipRound(loaded.run, loaded.round);
       if (!result.ok) return fail(result.error);
       const run = { ...loaded.run, ...result.value.run };
-      const nextPokemonId = await pickNext(run.id);
+      const nextPokemonId = await pickNext(loaded.seen);
 
       const committed = await commitOrConflict(() =>
         repo.commit({
@@ -279,16 +298,16 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
         }),
       );
       if (committed === "conflict") return fail("conflict");
-      return ok({
-        run,
-        // Skipping shows who it was, so the player still learns something.
-        revealed: await reveal(loaded.secret.pokemonId, locale),
-        nextRound: await roundView(
+      // Skipping shows who it was, so the player still learns something.
+      const [revealed, nextRound] = await Promise.all([
+        reveal(loaded.secret.pokemonId, locale),
+        roundView(
           userId,
           nextRoundRecord(run.id, committed.nextRoundId!, loaded.round.seq + 1),
           locale,
         ),
-      });
+      ]);
+      return ok({ run, revealed, nextRound });
     },
 
     /** Ends the player's run in progress (legacy "run away"). */

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ActiveRunExistsError,
   QuizConflictError,
@@ -83,10 +83,12 @@ class InMemoryQuizRepository implements QuizRepository {
       silhouettePath: `sil-${round.pokemonId}.webp`,
     };
   }
-  async seenPokemonIds(runId: string) {
+  async seenPokemonIds(userId: string, roundId: string) {
+    const round = this.rounds.get(roundId);
+    if (!round || round.userId !== userId) return new Set<number>();
     return new Set(
       [...this.rounds.values()]
-        .filter((r) => r.runId === runId)
+        .filter((r) => r.runId === round.runId)
         .map((r) => r.pokemonId),
     );
   }
@@ -407,5 +409,74 @@ describe("hint / skip / flee", () => {
       round = result.data.nextRound;
     }
     expect(new Set(seen).size).toBe(seen.length);
+  });
+});
+
+/**
+ * Each storage call is a network round trip in production (the function and the database
+ * are in different places), so a click costs one round trip per *sequential* wait. This
+ * counts those waits: every call takes one tick; concurrent calls share it. Catalog reads
+ * are excluded because the Supabase repository serves them from memory.
+ */
+async function sequentialRoundTrips(action: () => Promise<unknown>) {
+  const tick = 100;
+  const delayed = [
+    "findActiveRun",
+    "findRound",
+    "findRoundSecret",
+    "seenPokemonIds",
+    "startRun",
+    "commit",
+  ] as const;
+  const originals = delayed.map((name) => [name, repo[name]] as const);
+  for (const [name, original] of originals) {
+    (repo as unknown as Record<string, unknown>)[name] = async (
+      ...args: unknown[]
+    ) => {
+      await new Promise((resolve) => setTimeout(resolve, tick));
+      return (original as (...a: unknown[]) => unknown).apply(repo, args);
+    };
+  }
+  vi.useFakeTimers();
+  try {
+    let settled = false;
+    const done = action().finally(() => (settled = true));
+    let trips = 0;
+    while (!settled) {
+      await vi.advanceTimersByTimeAsync(tick);
+      trips++;
+    }
+    await done;
+    return trips;
+  } finally {
+    vi.useRealTimers();
+    for (const [name, original] of originals) {
+      (repo as unknown as Record<string, unknown>)[name] = original;
+    }
+  }
+}
+
+describe("round trips per click", () => {
+  it("a clear waits on three: load (round, answer, seen), commit, next round", async () => {
+    const { round } = await start();
+
+    const trips = await sequentialRoundTrips(() =>
+      service().answer("ash", round.id, "피카츄", "ko"),
+    );
+
+    expect(trips).toBe(3);
+  });
+
+  it("a wrong answer and a hint wait on two: load, commit", async () => {
+    const { round } = await start();
+
+    expect(
+      await sequentialRoundTrips(() =>
+        service().answer("ash", round.id, "라이츄", "ko"),
+      ),
+    ).toBe(2);
+    expect(
+      await sequentialRoundTrips(() => service().hint("ash", round.id, "ko")),
+    ).toBe(2);
   });
 });

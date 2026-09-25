@@ -10,17 +10,19 @@ import { useQuizStore, type QuizPhase } from "../store";
 import { ErrorNotice } from "./error-notice";
 import { RewardCard } from "./reward-card";
 
-// How long each automatic phase holds before advancing (ms). Reduced motion keeps the pacing
-// readable but drops the waits that exist only for animation.
+// How long each automatic phase holds before advancing (ms). Kept short: players felt every
+// click wait over a second. The menu also works during intro and hit (see BattleMenu), so
+// these are the longest a player can be made to wait, not the usual. Reduced motion drops
+// the waits that exist only for animation.
 const PHASE_DURATION: Partial<Record<QuizPhase, number>> = {
-  intro: 1300,
-  hit: 1000,
-  reveal: 1700,
+  intro: 700,
+  hit: 600,
+  reveal: 1100,
 };
 const REDUCED_DURATION: Partial<Record<QuizPhase, number>> = {
-  intro: 500,
-  hit: 700,
-  reveal: 900,
+  intro: 400,
+  hit: 500,
+  reveal: 700,
 };
 
 export function BattleStage() {
@@ -327,10 +329,15 @@ function BattleMenu() {
   const phase = useQuizStore((s) => s.phase);
   const round = useQuizStore((s) => s.round);
   const run = useQuizStore((s) => s.run);
+  const gameOver = useQuizStore((s) => s.gameOver);
   const store = useQuizStore();
   const [focused, setFocused] = useState(0);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const active = phase === "menu";
+  // The entrance and "wrong" animations can be cut short by choosing the next move, so a
+  // player who knows what to do never waits for them. A faint must play out to game over.
+  const skippable = phase === "intro" || (phase === "hit" && !gameOver);
+  const usable = active || skippable;
 
   useEffect(() => {
     if (active) buttons.current[focused]?.focus();
@@ -339,14 +346,15 @@ function BattleMenu() {
   }, [active]);
 
   const disabled: Record<(typeof MENU)[number], boolean> = {
-    fight: !active,
-    item: !active || !!round?.hintUsed,
-    pokemon: !active || (run?.skipsLeft ?? 0) <= 0,
-    run: !active,
+    fight: !usable,
+    item: !usable || !!round?.hintUsed,
+    pokemon: !usable || (run?.skipsLeft ?? 0) <= 0,
+    run: !usable,
   };
 
   const act = (item: (typeof MENU)[number]) => {
     if (disabled[item]) return;
+    if (skippable) store.advance();
     if (item === "fight") store.openAnswer();
     else if (item === "item") void store.hint(locale);
     else if (item === "pokemon") void store.skip(locale);
