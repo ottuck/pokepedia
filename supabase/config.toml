@@ -130,6 +130,13 @@ public = true
 file_size_limit = "1MiB"
 allowed_mime_types = ["image/webp"]
 
+# Profile pictures of Google users: {user_id}/{timestamp}.webp (or .jpg where the browser
+# cannot encode webp), resized to 256px in the browser. Who may write is decided by storage.objects policies (avatars migration).
+[storage.buckets.avatars]
+public = true
+file_size_limit = "512KiB"
+allowed_mime_types = ["image/webp", "image/jpeg"]
+
 # [storage.buckets.images]
 # public = false
 # file_size_limit = "50MiB"

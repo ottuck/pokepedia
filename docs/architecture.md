@@ -211,6 +211,11 @@ my_stats view (security_invoker = true)
   2. 클라이언트가 Google로 `signInWithOAuth`한다(`next=/[locale]/collection`).
   3. `/auth/callback`이 code를 교환한 뒤, 새 세션이 게스트가 **아니면** `guest_merge_redeem`(service_role 전용)을 호출한다. 이 함수가 한 트랜잭션으로 티켓을 소비하고, 게스트의 진행 중 게임을 도망 처리한 뒤 run/round를 옮기고 스티커 수량을 더한다. **그다음에만** Admin API로 게스트 user를 삭제하고 `?merged=1`로 이동한다.
   - 쿠키는 callback에 올 때마다(성공이든 실패든) 지운다. 대상 user는 세션에서만 정하고, 게스트 → Google 방향만 허용한다. 티켓은 1회용이고 만료되면 거부된다(DB 테스트와 권한 변형 테스트로 확인).
+- **아바타**(Google 계정만): 마이페이지에서 사진을 고르면 브라우저가 가운데를 정사각형으로 잘라 256px webp로 만든다. webp로 인코딩하지 못하는 브라우저에서는 jpeg로 만들고, 사진의 위치 정보 같은 메타데이터도 이때 사라진다.
+  - 공개 버킷 `avatars`(512KiB, webp/jpeg, `config.toml`)의 `{user_id}/{timestamp}.{webp|jpg}`에 **브라우저가 직접** 올린다. 새 이름으로 올리므로 CDN 캐시 문제가 없다.
+  - storage.objects 정책: 비게스트(`is_anonymous` false)만, 자기 폴더에만 올리고 지울 수 있다.
+  - 그다음 Server Action `setAvatar`가 세션에서 비게스트와 경로를 다시 확인하고 `profile.avatar_path`를 바꾼 뒤 이전 파일을 지운다. check 제약이 자기 폴더 경로만 허용한다.
+  - 표시 우선순위: 올린 사진 → Google 계정 사진 → 이니셜. 헤더와 마이페이지에만 쓰고 **리더보드에는 보여 주지 않는다**.
 - **비활성 게스트 자동 정리**: pg_cron이 매일 18:00 UTC(한국 03:00)에 `cleanup_inactive_guests()`를 실행한다. 다음 조건을 **모두** 만족하는 계정만 `auth.users`에서 지우고, profile, 게임, 병합 티켓은 cascade로 함께 지워진다.
   - 익명(게스트)이다.
   - 마지막 활동이 60일보다 오래됐다.

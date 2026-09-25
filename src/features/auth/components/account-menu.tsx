@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
-import * as z from "zod/mini";
 import { Link, useRouter } from "@/i18n/navigation";
+import { googlePicture, pickAvatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/browser";
 import { onAccountChange } from "../account-events";
 import { continueWithGoogle } from "../google";
@@ -17,13 +17,6 @@ type AccountState =
       nickname: string;
       avatarUrl: string | null;
     };
-
-// Google puts the picture in user_metadata; anything unexpected is simply ignored.
-// zod/mini: this header island is on every page, and classic zod is ~90 KB gzipped.
-const metadataSchema = z.catch(
-  z.object({ avatar_url: z.optional(z.url()), picture: z.optional(z.url()) }),
-  {},
-);
 
 /**
  * Header account area. A client island on purpose: the header is in the root layout, and
@@ -48,14 +41,18 @@ export function AccountMenu() {
       }
       const { data: profile } = await supabase
         .from("profile")
-        .select("nickname")
+        // "*": works before and after the avatars migration (see features/profile/queries.ts).
+        .select("*")
         .maybeSingle();
-      const metadata = metadataSchema.parse(claims.user_metadata ?? {});
       setAccount({
         status: "signedIn",
         isAnonymous: claims.is_anonymous === true,
         nickname: profile?.nickname ?? "",
-        avatarUrl: metadata.avatar_url ?? metadata.picture ?? null,
+        // An uploaded avatar wins over the Google picture.
+        avatarUrl: pickAvatar(
+          profile?.avatar_path,
+          googlePicture(claims.user_metadata),
+        ),
       });
     }
 
@@ -179,7 +176,7 @@ function Avatar({
         src={avatarUrl}
         alt=""
         referrerPolicy="no-referrer"
-        className="size-7 rounded-full"
+        className="size-7 rounded-full object-cover"
       />
     );
   }

@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { summarizeCollection } from "@/features/collection/summary";
+import { googlePicture, pickAvatar } from "./avatar";
 import { clearRate } from "./stats";
 
 const RECENT_RUNS = 5;
@@ -42,7 +43,13 @@ export async function getMyPage() {
     failed,
     stickers,
   ] = await Promise.all([
-    supabase.from("profile").select("nickname").eq("id", userId).maybeSingle(),
+    supabase
+      .from("profile")
+      // "*" rather than naming avatar_path: right after a deploy the code can run before the
+      // avatars migration, and naming a missing column would fail the whole page.
+      .select("*")
+      .eq("id", userId)
+      .maybeSingle(),
     supabase
       .from("quiz_run")
       .select("id", { count: "exact", head: true })
@@ -86,7 +93,15 @@ export async function getMyPage() {
   }
 
   return {
+    userId,
     nickname: profile.data?.nickname ?? "",
+    avatar: {
+      url: pickAvatar(
+        profile.data?.avatar_path,
+        googlePicture(claims.user_metadata),
+      ),
+      hasUpload: Boolean(profile.data?.avatar_path),
+    },
     isAnonymous: claims.is_anonymous === true,
     stats: {
       plays: plays.count ?? 0,

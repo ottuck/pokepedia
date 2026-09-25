@@ -269,7 +269,24 @@
     },
     "emptyTitle": "Nothing here yet",
     "emptyBody": "Play a quiz game to get a guest account and start your record.",
-    "toQuiz": "Play the quiz"
+    "toQuiz": "Play the quiz",
+    "avatar": {
+      "change": "Change photo",
+      "uploading": "Uploading…",
+      "reset": "Use default",
+      "help": "Cropped to a square and resized to 256 px. Shown in the header and on this page, not in the ranking.",
+      "googleOnly": "Save to a Google account to add a profile photo.",
+      "errors": {
+        "not_image": "Please choose an image file.",
+        "too_large": "That photo is too large. Please choose another one.",
+        "unreadable": "That photo can’t be read. Please choose another one.",
+        "upload_failed": "Upload failed. Please try again in a moment.",
+        "not_signed_in": "Your session expired. Refresh the page and try again.",
+        "google_only": "Profile photos are for Google accounts only.",
+        "invalid_path": "Upload failed. Please try again in a moment.",
+        "server_error": "Couldn’t save. Please try again in a moment."
+      }
+    }
   },
   "theme": {
     "system": "System",

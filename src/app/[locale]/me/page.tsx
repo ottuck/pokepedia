@@ -6,6 +6,7 @@ import { GuestSaveBanner } from "@/features/collection/components/guest-save-ban
 import { artworkUrl } from "@/features/pokemon/assets";
 import { localizedName } from "@/features/pokemon/format";
 import { getPokedexList } from "@/features/pokemon/queries";
+import { AvatarEditor } from "@/features/profile/components/avatar-editor";
 import { NicknameForm } from "@/features/profile/components/nickname-form";
 import { getMyPage } from "@/features/profile/queries";
 
@@ -63,12 +64,23 @@ export default async function MyPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16">
-      <header className="flex flex-col gap-1">
-        <p className="text-sm font-bold text-muted">
-          {me.isAnonymous ? t("guestAccount") : t("googleAccount")}
-        </p>
-        {/* Keyed so a saved nickname resets the form to its read-only state. */}
-        <NicknameForm key={me.nickname} nickname={me.nickname} />
+      <header className="flex flex-col gap-4">
+        <AvatarEditor
+          // Remount after a change so the picture and buttons follow the new profile.
+          key={me.avatar.url ?? "none"}
+          userId={me.userId}
+          nickname={me.nickname}
+          pictureUrl={me.avatar.url}
+          hasUpload={me.avatar.hasUpload}
+          isGuest={me.isAnonymous}
+        />
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-bold text-muted">
+            {me.isAnonymous ? t("guestAccount") : t("googleAccount")}
+          </p>
+          {/* Keyed so a saved nickname resets the form to its read-only state. */}
+          <NicknameForm key={me.nickname} nickname={me.nickname} />
+        </div>
       </header>
 
       {me.isAnonymous && <GuestSaveBanner />}
