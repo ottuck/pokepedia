@@ -76,6 +76,7 @@ Round : hp = 3, hint 1회
 | Vercel Preview    | remote `pokepedia` (동일)      | PR 확인용. **DB를 변경하는 작업을 자동 실행하지 않음** |
 
 - 지역: Supabase 프로젝트는 AWS `ap-northeast-1`(도쿄)에 있다. 서버 함수(Server Action, 동적 페이지, 라우트 핸들러)도 `vercel.json`의 `regions: ["hnd1"]`로 도쿄에서 실행해 DB 왕복을 수 ms로 유지한다(기본값 `iad1` 워싱턴에서는 쿼리당 약 170ms). DB 지역을 옮기면 이 값도 함께 바꾼다.
+- 모니터링: Vercel Web Analytics(`@vercel/analytics`, 쿠키를 쓰지 않는 페이지뷰)와 Speed Insights(`@vercel/speed-insights`, 실제 사용자의 Core Web Vitals)를 root layout(`app/[locale]/layout.tsx`)에 둔다. 스크립트는 `/_vercel/*`에서 로드되므로 proxy matcher에서 제외돼 있다. 두 기능은 Vercel 배포에서만 수집하고, 로컬에서는 동작하지 않는다.
 
 ### 배포 파이프라인
 
