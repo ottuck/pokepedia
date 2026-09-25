@@ -127,15 +127,19 @@
       "hp": "HP {hp}/3",
       "shinyChance": "色違いの確率 {percent}%"
     },
+    "battle": {
+      "you": "トレーナー",
+      "levelUp": "レベルアップ！"
+    },
     "menu": {
       "label": "こうどうを選ぶ",
       "fight": "たたかう",
-      "item": "どうぐ",
+      "item": "バッグ",
       "pokemon": "ポケモン",
       "run": "にげる"
     },
     "message": {
-      "appeared": "あっ！ やせいの ポケモンが とびだしてきた！",
+      "appeared": "あっ！ やせいの {name}が とびだしてきた！",
       "skipped": "さっきのポケモンは {name}。あたらしい ポケモンが あらわれた！",
       "menu": "どうする？",
       "answering": "なまえを入力してください。",

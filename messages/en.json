@@ -127,15 +127,19 @@
       "hp": "HP {hp}/3",
       "shinyChance": "Shiny chance {percent}%"
     },
+    "battle": {
+      "you": "Trainer",
+      "levelUp": "Level up!"
+    },
     "menu": {
       "label": "Choose an action",
       "fight": "Fight",
-      "item": "Item",
+      "item": "Bag",
       "pokemon": "Pokémon",
       "run": "Run"
     },
     "message": {
-      "appeared": "A wild Pokémon appeared!",
+      "appeared": "A wild {name} appeared!",
       "skipped": "That was {name}. A new Pokémon appeared!",
       "menu": "What will you do?",
       "answering": "Type its name.",

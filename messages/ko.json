@@ -127,15 +127,19 @@
       "hp": "HP {hp}/3",
       "shinyChance": "색이 다른 포켓몬 확률 {percent}%"
     },
+    "battle": {
+      "you": "트레이너",
+      "levelUp": "레벨 업!"
+    },
     "menu": {
       "label": "행동 선택",
-      "fight": "싸운다",
-      "item": "아이템",
+      "fight": "싸우다",
+      "item": "가방",
       "pokemon": "포켓몬",
-      "run": "도망간다"
+      "run": "도망치다"
     },
     "message": {
-      "appeared": "앗! 야생의 포켓몬이 나타났다!",
+      "appeared": "앗! 야생의 {name}(이)가 튀어나왔다!",
       "skipped": "방금 포켓몬은 {name}. 새로운 포켓몬이 나타났다!",
       "menu": "무엇을 할까?",
       "answering": "이름을 입력하세요.",

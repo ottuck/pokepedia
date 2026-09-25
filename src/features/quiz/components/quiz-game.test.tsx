@@ -16,6 +16,15 @@ const actions = vi.hoisted(() => ({
   fleeQuiz: vi.fn(),
 }));
 vi.mock("../actions", () => actions);
+vi.mock("@/lib/supabase/browser", () => ({
+  createClient: () => ({
+    from: () => ({
+      select: () => ({
+        maybeSingle: async () => ({ data: { nickname: "레드" } }),
+      }),
+    }),
+  }),
+}));
 vi.mock("@/i18n/navigation", () => ({
   Link: ({ href, ...props }: { href: string }) => <a href={href} {...props} />,
 }));
@@ -76,7 +85,7 @@ async function startGame(user: ReturnType<typeof userEvent.setup>) {
   renderGame();
   await user.click(screen.getByRole("button", { name: /PRESS START/ }));
   expect(
-    await screen.findByText("앗! 야생의 포켓몬이 나타났다!"),
+    await screen.findByText("앗! 야생의 ???(이)가 튀어나왔다!"),
   ).toBeInTheDocument();
   await finishAnimation();
   expect(screen.getByText("무엇을 할까?")).toBeInTheDocument();
@@ -137,15 +146,37 @@ describe("QuizGame", () => {
     renderGame();
     await user.click(screen.getByRole("button", { name: /PRESS START/ }));
     expect(
-      await screen.findByText("앗! 야생의 포켓몬이 나타났다!"),
+      await screen.findByText("앗! 야생의 ???(이)가 튀어나왔다!"),
     ).toBeInTheDocument();
 
     // Still in the entrance animation: choosing "fight" skips the rest of it.
-    await user.click(screen.getByRole("button", { name: /싸운다/ }));
+    await user.click(screen.getByRole("button", { name: /싸우다/ }));
 
     expect(
       screen.getByRole("textbox", { name: "이름을 입력하세요." }),
     ).toBeInTheDocument();
+  });
+
+  it("shows the trainer's info box with nickname, level and HP", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await startGame(user);
+
+    expect(await screen.findByText("레드")).toBeInTheDocument();
+    expect(screen.getByText(":L5")).toBeInTheDocument();
+    expect(screen.getByText("HP 3/3")).toBeInTheDocument();
+  });
+
+  it("picks the selected command with Z, like the A button", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    actions.fleeQuiz.mockResolvedValue({
+      ok: true,
+      data: { run: { ...run, status: "finished" }, revealed: pikachu },
+    });
+    await startGame(user);
+
+    await user.keyboard("{ArrowDown}{ArrowRight}z");
+
+    expect(actions.fleeQuiz).toHaveBeenCalledWith({ locale: "ko" });
   });
 
   it("loses HP on a wrong answer and returns to the menu", async () => {
@@ -156,7 +187,7 @@ describe("QuizGame", () => {
     });
     await startGame(user);
 
-    await user.click(screen.getByRole("button", { name: /싸운다/ }));
+    await user.click(screen.getByRole("button", { name: /싸우다/ }));
     await user.type(
       screen.getByRole("textbox", { name: "이름을 입력하세요." }),
       "라이츄{Enter}",
@@ -188,7 +219,7 @@ describe("QuizGame", () => {
     });
     await startGame(user);
 
-    await user.keyboard("1"); // shortcut for 싸운다
+    await user.keyboard("1"); // shortcut for 싸우다
     await user.type(screen.getByRole("textbox"), "피카츄{Enter}");
 
     expect(await screen.findByText("정답! 피카츄!")).toBeInTheDocument();
@@ -200,6 +231,8 @@ describe("QuizGame", () => {
     await user.click(within(card).getByRole("button", { name: "다음 포켓몬" }));
     expect(await screen.findByText("????")).toBeInTheDocument();
     expect(screen.getByText("2번째 포켓몬")).toBeInTheDocument();
+    // One Pokémon named: the trainer grows a level.
+    expect(screen.getByText(":L6")).toBeInTheDocument();
   });
 
   it("disables the item after the hint and shows half the name", async () => {
@@ -213,7 +246,7 @@ describe("QuizGame", () => {
     await user.keyboard("2");
 
     expect(await screen.findByText("피??")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /아이템/ })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: /가방/ })).toHaveAttribute(
       "aria-disabled",
       "true",
     );
@@ -223,11 +256,11 @@ describe("QuizGame", () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     await startGame(user);
 
-    expect(screen.getByRole("button", { name: /싸운다/ })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /싸우다/ })).toHaveFocus();
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("button", { name: /아이템/ })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /가방/ })).toHaveFocus();
     await user.keyboard("{ArrowDown}");
-    expect(screen.getByRole("button", { name: /도망간다/ })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /도망치다/ })).toHaveFocus();
   });
 
   it("ends the run on the third miss with a summary", async () => {
