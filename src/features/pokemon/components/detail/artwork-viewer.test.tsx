@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element -- plain stand-ins for the server-rendered <Image> props */
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";

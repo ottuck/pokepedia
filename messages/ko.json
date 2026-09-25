@@ -187,6 +187,11 @@
       "no_skips_left": "스킵을 모두 썼어요.",
       "hint_already_used": "이미 힌트를 썼어요.",
       "generic": "문제가 생겼어요. 다시 시도해 주세요."
+    },
+    "sound": {
+      "label": "효과음",
+      "on": "효과음 켜짐",
+      "off": "효과음 꺼짐"
     }
   },
   "collection": {

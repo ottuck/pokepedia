@@ -187,6 +187,11 @@
       "no_skips_left": "No skips left.",
       "hint_already_used": "Hint already used.",
       "generic": "Something went wrong. Try again."
+    },
+    "sound": {
+      "label": "Sound effects",
+      "on": "Sound on",
+      "off": "Sound off"
     }
   },
   "collection": {
