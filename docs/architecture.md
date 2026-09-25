@@ -253,6 +253,7 @@ my_stats view (security_invoker = true)
 - 도감 탐색: 서버가 카드 151장을 렌더링해 `cards` prop으로 `PokedexExplorer`(C)에 넘기고, 클라이언트는 어떤 카드를 어떤 순서로 보일지만 정한다(카드 렌더링 코드가 클라이언트 번들에 들어가지 않음). `useSearchParams` 때문에 Explorer는 Suspense 아래에서 클라이언트 렌더링되고, fallback은 필터 없는 전체 그리드라 prerender HTML에 카드가 모두 들어간다.
 - 필터 상태: URL(`?q=&type=&sort=`)로 초기화 → 이후 로컬 state가 기준, URL은 `history.replaceState`로 따라간다(IME 입력과 충돌 방지, 뒤로가기 오염 방지). URL 값은 Zod로 검증하고 잘못된 값은 기본값으로.
 - Motion: `LazyMotion`으로 애니메이션 엔진을 지연 로딩(`domMax`, layout 애니메이션 필요), `MotionConfig reducedMotion="user"`, spring 프리셋은 `lib/motion.ts`.
+- OG 이미지(`opengraph-image.tsx`): `[locale]`에는 사이트 기본(스타터 3마리와 피카츄, 로고, 소개 문구), 상세에는 포켓몬별(타입 그라데이션, 아트워크, 번호, 이름, 분류, 타입) 이미지를 둔다. 모두 빌드 시 생성한다(3 + 151 × 3). 메타데이터 이미지 라우트는 레이아웃의 `locale`을 물려받지 않으므로 `generateStaticParams`가 locale × id를 직접 반환한다(빠뜨리면 아무것도 prerender되지 않고, `dynamicParams = false` 때문에 404가 된다). ImageResponse는 webp와 woff2를 읽지 못해 아트워크는 빌드 시 sharp로 PNG로 바꾸고(sharp는 dependencies), 글꼴은 Google Fonts의 `text=` 부분집합(locale별 도감 전체 글자)을 워커당 한 번만 받아 공유한다. 다운로드는 재시도한다.
 - 타입 색은 `features/pokemon/types.ts`가 단일 출처(base/soft/ink, 대비 테스트). 컴포넌트는 CSS 변수(`--type`, `--type-soft`, `--type-ink`, `--type-2`)로 소비한다.
 
 ### 컬렉션

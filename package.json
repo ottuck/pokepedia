@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
+    "check": "pnpm lint && pnpm typecheck && pnpm format:check && pnpm test",
     "test:watch": "vitest",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts",
     "test:db": "vitest run --config vitest.db.config.mts",
@@ -25,6 +26,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",
+    "sharp": "^0.35.4",
     "zod": "^4.6.5",
     "zustand": "^5.0.15"
   },
@@ -43,7 +45,6 @@
     "jsdom": "^30.1.1",
     "prettier": "^3.9.9",
     "prettier-plugin-tailwindcss": "^0.8.1",
-    "sharp": "^0.35.4",
     "supabase": "^2.117.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",

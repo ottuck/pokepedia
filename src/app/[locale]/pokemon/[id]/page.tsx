@@ -46,7 +46,6 @@ export async function generateMetadata({
   ]);
   const name = localizedName(pokemon, locale);
   const description = pokemon[`description_${locale}`];
-  const image = artworkUrl(pokemon.artwork_path);
 
   return {
     title: `${name} ${formatDexNumber(pokemon.id)} · Pokepedia`,
@@ -54,7 +53,6 @@ export async function generateMetadata({
     openGraph: {
       title: name,
       description,
-      images: [{ url: image, width: 475, height: 475 }],
     },
     alternates: {
       languages: Object.fromEntries(
