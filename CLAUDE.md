@@ -1,4 +1,12 @@
-@AGENTS.md
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
 
 # Pokepedia
 
@@ -20,9 +28,24 @@ before structural changes. `README.md` is the public-facing overview.
 - `pnpm test:db` — RLS/grant/RPC tests against local Supabase (writes fixtures; local DB only)
 - `pnpm test:e2e` — one Playwright journey (dex → detail → language → game → collection) against
   local Supabase; starts `pnpm dev` on :3200 (first run: `pnpm exec playwright install chromium`)
-- Node 24 (`.nvmrc`). Package manager: pnpm (version pinned by `packageManager`).
+- Node 24 (`engines` in `package.json`; CI pins `node-version: 24`). Package manager: pnpm
+  (version pinned by `packageManager`).
 - Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
   `admin.ts` (secret key, bypasses RLS — server only), `proxy.ts` (session refresh only).
+
+## Repo layout
+
+- `src/app` routes · `src/features/<domain>` (queries, actions, components, pure logic + tests)
+  · `src/lib` (env, Supabase clients, shared helpers) · `src/i18n` + `messages/*.json`
+- `supabase/` — `config.toml` (local stack only), `migrations/` (auto-deployed on merge),
+  `seed.sql`, `tests/` (`pnpm test:db`)
+- `scripts/sync-pokemon` — the only PokeAPI code · `e2e/` — Playwright
+- `.github/workflows/ci.yml` — check / db / e2e jobs · `vercel.json` — install command, region
+- No `public/`: static assets are served from Supabase Storage; the favicon is `src/app/icon.svg`.
+- Local-only, gitignored: `.env.local`, `.env.remote.local`, `.cache/` (PokeAPI cache for the
+  sync), `.claude/` (desktop-app preview config), `.next/`, `test-results/`, `next-env.d.ts`.
+- This file is the only agent-instructions file. Keep the Next.js block at the top: `next dev`
+  looks for it and recreates `AGENTS.md` when it is missing.
 
 ## Principles
 
