@@ -15,7 +15,8 @@
     "test:watch": "vitest",
     "db:types": "supabase gen types typescript --local --schema public > src/lib/supabase/database.types.ts",
     "test:db": "vitest run --config vitest.db.config.mts",
-    "sync:pokemon": "tsx scripts/sync-pokemon/index.mts"
+    "sync:pokemon": "tsx scripts/sync-pokemon/index.mts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -33,6 +34,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
