@@ -4,7 +4,7 @@ import { LazyMotion, m, MotionConfig } from "motion/react";
 import { useFormatter, useTranslations } from "next-intl";
 import { loadMotionFeatures, spring } from "@/lib/motion";
 
-export const STAT_KEYS = [
+const STAT_KEYS = [
   "hp",
   "attack",
   "defense",
@@ -13,7 +13,7 @@ export const STAT_KEYS = [
   "speed",
 ] as const;
 
-export type StatKey = (typeof STAT_KEYS)[number];
+type StatKey = (typeof STAT_KEYS)[number];
 
 // Bars are scaled against this, not 255: no Gen 1 base stat except Chansey's HP (250) goes
 // far past 150, so a 255 scale would leave most bars looking half empty.

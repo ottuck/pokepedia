@@ -48,13 +48,13 @@ export type QuizPhase =
   | "reward"
   | "gameover";
 
-export type Reward = {
+type Reward = {
   revealed: PokemonReveal;
   scoreGained: number;
   sticker: { variant: StickerVariant; quantity: number; isNew: boolean };
 };
 
-export type GameOver = { reason: "fainted" | "fled"; revealed: PokemonReveal };
+type GameOver = { reason: "fainted" | "fled"; revealed: PokemonReveal };
 
 type QuizStore = {
   phase: QuizPhase;

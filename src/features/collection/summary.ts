@@ -7,7 +7,7 @@ export type OwnedSticker = {
 /** How many of each variant the player owns for one Pokémon. */
 export type Holding = { normal: number; shiny: number };
 
-export type CollectionSummary = {
+type CollectionSummary = {
   byPokemon: ReadonlyMap<number, Holding>;
   /** Distinct Pokémon with at least one sticker of any variant. */
   collected: number;

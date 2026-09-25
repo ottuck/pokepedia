@@ -114,5 +114,3 @@ export async function getMyPage() {
     recentRuns: recentRuns.data ?? [],
   };
 }
-
-export type MyPage = NonNullable<Awaited<ReturnType<typeof getMyPage>>>;

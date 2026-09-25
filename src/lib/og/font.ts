@@ -1,7 +1,7 @@
 import "server-only";
 import { createRetryingFetch } from "@/lib/supabase/retrying-fetch";
 
-export type OgFamily = "Noto Sans KR" | "Noto Sans JP";
+type OgFamily = "Noto Sans KR" | "Noto Sans JP";
 
 const retryingFetch = createRetryingFetch();
 /** One download per family, weight and glyph set for the whole build worker. */

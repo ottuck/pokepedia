@@ -30,7 +30,7 @@ import type {
   SkipResult,
 } from "./types";
 
-export type QuizServiceDeps = {
+type QuizServiceDeps = {
   repo: QuizRepository;
   /** Returns [0, 1). Decides the next Pokémon and the sticker variant. */
   random: () => number;
@@ -340,5 +340,3 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
     },
   };
 }
-
-export type QuizService = ReturnType<typeof createQuizService>;

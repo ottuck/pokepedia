@@ -4,7 +4,7 @@
  * the original Game Boy screen.
  * Each character is one pixel; "." is transparent.
  */
-export const TRAINER_PIXELS = [
+const TRAINER_PIXELS = [
   "........KKKKKKKK........",
   "......KKRRRRRRRRKK......",
   ".....KRRRRRRRRRRRRK.....",
@@ -31,7 +31,7 @@ export const TRAINER_PIXELS = [
   ".....KKKKKK..KKKKKK.....",
 ] as const;
 
-export const TRAINER_PALETTE: Record<string, string> = {
+const TRAINER_PALETTE: Record<string, string> = {
   K: "#1f1d1a",
   R: "#55534d",
   W: "#f8f8f0",
