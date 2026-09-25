@@ -1,26 +1,19 @@
-<div align="center">
-
 # Pokepedia
 
-**1세대 포켓몬 151마리 도감 · GB 배틀 스타일 이름 맞히기 게임 · 띠부씰 컬렉션**
+1세대 포켓몬 151마리 도감, 실루엣 보고 이름 맞히는 GB 배틀풍 게임, 맞히면 모이는 띠부씰 컬렉션.
 
-2023년 JSP 팀 프로젝트([PikapediaProject](https://github.com/ottuck/PikapediaProject))를
-Next.js 16 + Supabase로 처음부터 다시 만든 리메이크입니다.
+2023년에 팀으로 만들었던 JSP 프로젝트([PikapediaProject](https://github.com/ottuck/PikapediaProject))를 요즘 스택으로 혼자 다시 만들어 본 사이드 프로젝트다.
 
-[**라이브 데모**](https://pokepedia-rust-six.vercel.app) · [시스템 설계 문서](docs/system_design.md)
-
-[![CI](https://github.com/ottuck/pokepedia/actions/workflows/ci.yml/badge.svg)](https://github.com/ottuck/pokepedia/actions/workflows/ci.yml)
-![Next.js](https://img.shields.io/badge/Next.js-16-000?logo=nextdotjs)
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=000)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=fff)
-![Supabase](https://img.shields.io/badge/Supabase-Postgres%20·%20Auth%20·%20Storage-3ECF8E?logo=supabase&logoColor=fff)
-
-</div>
+**[pokepedia-rust-six.vercel.app](https://pokepedia-rust-six.vercel.app)** · [설계 문서](docs/system_design.md)
 
 <table>
   <tr>
+    <td width="50%"><img src="docs/images/title.png" alt="게임 타이틀 화면" /></td>
     <td width="50%"><img src="docs/images/battle.png" alt="GB 배틀 화면: 실루엣으로 나타난 포켓몬과 트레이너, 명령창" /></td>
-    <td width="50%"><img src="docs/images/reward.png" alt="정답을 맞히고 띠부씰을 얻는 화면" /></td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/reward.png" alt="정답을 맞히고 띠부씰을 얻는 화면" /></td>
+    <td><img src="docs/images/collection.png" alt="모은 띠부씰 컬렉션" /></td>
   </tr>
   <tr>
     <td><img src="docs/images/dex.png" alt="151마리 도감과 타입 필터" /></td>
@@ -28,32 +21,19 @@ Next.js 16 + Supabase로 처음부터 다시 만든 리메이크입니다.
   </tr>
 </table>
 
-## 주요 기능
+## 뭐가 있나
 
-| 기능           | 설명                                                                                                                  |
-| -------------- | --------------------------------------------------------------------------------------------------------------------- |
-| 📖 도감        | 151마리를 한 페이지에서 한국어·영어·일본어 이름이나 번호로 검색하고, 타입 필터와 정렬을 URL에 남깁니다.               |
-| 🃏 상세        | 능력치·특성·진화 라인과 함께, 마우스와 손가락을 따라 기우는 3D 홀로그램 카드. 색이 다른 모습으로 바꿔 볼 수 있습니다. |
-| ⚔️ 게임        | 실루엣만 보고 이름을 맞히는 GB 배틀 화면. 싸우다·가방(힌트)·포켓몬(스킵)·도망치다, 방향키와 Z키로도 조작합니다.       |
-| ✨ 보상        | 맞히면 그 포켓몬의 띠부씰을 얻습니다. 연속으로 맞힐수록 점수 배율과 색이 다른 띠부씰 확률이 올라갑니다.               |
-| 🗂️ 컬렉션      | 151칸 중 모은 칸이 채워지고, 수량과 색이 다른 띠부씰 수집률을 보여 줍니다.                                            |
-| 🏆 랭킹        | 사용자별 한 판 최고 점수. 닉네임·점수·콤보만 공개합니다.                                                              |
-| 👤 계정        | 가입 없이 게스트로 바로 시작하고, 나중에 Google 계정을 연결해도 기록이 그대로 이어집니다.                             |
-| 🌐 다국어·테마 | UI와 포켓몬 데이터 모두 한국어·영어·일본어. 라이트/다크 모드.                                                         |
+- **도감**: 151마리를 한 페이지에. 한국어·영어·일본어 이름이나 번호로 검색하고, 타입 필터와 정렬은 URL에 남는다.
+- **상세**: 능력치, 특성, 진화 라인. 아트워크는 마우스(모바일은 손가락)를 따라 기우는 홀로그램 카드로 보여 주고, 색이 다른 모습으로 바꿔 볼 수 있다.
+- **게임**: 실루엣만 보고 이름을 맞힌다. 싸우다 / 가방(힌트) / 포켓몬(스킵) / 도망치다. 방향키와 Z키로도 된다. 틀리면 HP가 깎이고, 연속으로 맞히면 점수 배율과 색이 다른 띠부씰 확률이 올라간다. 정답은 세 언어 이름 다 받는다.
+- **컬렉션·랭킹**: 모은 띠부씰 151칸, 사용자별 최고 점수 랭킹.
+- **계정**: 가입 없이 게스트로 바로 시작하고, 나중에 Google을 연결하면 기록이 그대로 넘어간다.
+- 한국어·영어·일본어, 라이트/다크 모드.
 
-## 기술 스택
+## 스택
 
-| 영역      | 사용 기술                                                                                 |
-| --------- | ----------------------------------------------------------------------------------------- |
-| Frontend  | Next.js 16 (App Router, RSC, Server Actions), React 19, TypeScript, Tailwind CSS v4       |
-| 상태·연출 | Zustand(게임 화면만), Motion, CSS 3D·blend-mode, Web Audio                                |
-| 검증·i18n | Zod, next-intl                                                                            |
-| Backend   | Supabase: Postgres(RLS, RPC, pg_cron), Auth(익명 + Google), Storage                       |
-| 데이터    | PokeAPI → 동기화 스크립트(sharp로 webp·실루엣 생성) → Supabase. 런타임 외부 API 호출 없음 |
-| 테스트    | Vitest, React Testing Library, Supabase 로컬 DB 테스트, Playwright                        |
-| 배포·운영 | Vercel(도쿄 리전), GitHub Actions, Vercel Analytics·Speed Insights                        |
-
-## 아키텍처
+Next.js 16 (App Router, RSC, Server Actions) · React 19 · TypeScript · Tailwind CSS v4 · Motion · Zustand · Zod · next-intl ·
+Supabase (Postgres, Auth, Storage) · Vitest · Playwright · Vercel
 
 ```mermaid
 flowchart LR
@@ -65,85 +45,42 @@ flowchart LR
   Sync --> DB & Storage
 ```
 
-- **도감·상세는 빌드 시 미리 만듭니다.** 상세 페이지 151마리 × 3개 언어 = 453페이지와 OG 이미지를 prerender해서 DB 조회 없이 응답합니다.
-- **게임 판정은 모두 서버에서 합니다.** 브라우저는 실루엣과 이름 마스크만 받고, 상태 변경은 Server Action → Postgres RPC로만 일어납니다.
+포켓몬 데이터와 이미지는 PokeAPI에서 한 번 긁어와 Supabase에 넣어 두고, 런타임에는 외부 API를 부르지 않는다. 도감과 상세(151 × 3개 언어)는 빌드 때 전부 prerender한다.
 
-## 기술적으로 신경 쓴 점
+## 만들면서 고민한 것들
 
-**정답이 새지 않는 게임**
+**정답이 브라우저에 안 가게.** 이름 맞히기 게임이라 개발자도구 열면 답이 보이면 곤란하다. 진행 중인 문제는 응답에 포켓몬 id나 이름을 싣지 않고 실루엣과 글자 수 마스크만 보낸다. 실루엣 파일명은 HMAC 키로 바꿔 두고, 진행 중인 round는 RLS로 아예 조회가 안 되게 막았다. 정답 키는 API에 노출되지 않는 private 스키마에 있다.
 
-- 진행 중인 문제의 포켓몬 id·이름은 응답에도, DB 조회 권한에도 없습니다.
-  - 실루엣 파일명은 HMAC으로 만든 무작위 키입니다.
-  - 진행 중인 round는 RLS로 숨깁니다.
-  - 정답 키는 API로 노출되지 않는 private 스키마에 둡니다.
+**판정은 서버, 커밋은 한 번에.** 규칙은 순수 TS(`rules.ts`)로 두고, 결과 반영(점수, 띠부씰, 다음 문제 생성)은 Postgres RPC 하나로 트랜잭션 처리한다. `version` 컬럼으로 낙관적 잠금을 걸어서 같은 답을 두 번 보내도 띠부씰은 한 번만 나온다.
 
-**동시 제출에도 한 번만 지급**
+**느렸던 답변 응답.** 처음엔 답 하나에 1.6–2.5초가 걸렸다. 알고 보니 Vercel 함수는 워싱턴, DB는 도쿄에 있었다. 함수 리전을 도쿄로 옮기고 순차 DB 왕복을 8번에서 3번으로 줄였더니 0.25초 정도로 내려왔다. 왕복 횟수는 다시 늘지 않게 테스트로 묶어 뒀다.
 
-- 정답 처리, 점수, 띠부씰 지급, 다음 문제 생성을 한 트랜잭션 RPC로 커밋합니다.
-- 낙관적 잠금(`version`)으로 같은 답을 두 번 보내도 한 번만 적용됩니다.
+**게스트에서 Google 계정으로.** 가입 없이 시작한 게스트가 나중에 Google을 연결하면 같은 user id를 유지한다. 이미 가입한 Google 계정이 있으면 기록을 합칠 수 있는데, 1회용 티켓(DB에는 해시만, 원본은 httpOnly 쿠키로만)으로 처리하고 기록 이동이 성공한 뒤에만 게스트를 지운다. 안 쓰는 게스트는 pg_cron이 정리하되, 띠부씰이 한 장이라도 있으면 남긴다.
 
-**응답 속도 1.6–2.5초 → 약 0.25초**
+**권한은 DB에서 끝낸다.** 새 테이블은 권한 없이 만들고 필요한 GRANT와 RLS만 연다. 랭킹처럼 남의 기록을 보여 줘야 하는 곳은 닉네임·점수·콤보만 돌려주는 함수 하나로 해결했다.
 
-- 서버 함수를 DB와 같은 도쿄 리전에서 실행합니다.
-- 한 번의 클릭에 필요한 순차 DB 왕복을 8번에서 3번으로 줄였습니다.
-- 이 왕복 횟수는 회귀 테스트로 지킵니다.
+**테스트는 깨지면 곤란한 것만.** 게임 규칙, 권한, 실제로 났던 버그 위주로 남기고 화면 문구 확인 같은 건 지웠다. RLS·RPC는 로컬 Supabase에 붙여서 돌리고, E2E는 도감 → 상세 → 언어 전환 → 게임 → 컬렉션 한 줄기만 Playwright로 확인한다.
 
-**게스트 → Google 계정 병합**
+**GB 느낌은 직접.** 원작 에셋은 쓰지 않았다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 만들었고 포켓몬 아트워크만 PokeAPI 이미지다.
 
-- 게스트가 이미 가입한 Google 계정으로 로그인하면 기록을 합칠 수 있습니다.
-- 1회용 티켓은 해시로만 저장하고, 원래 토큰은 httpOnly 쿠키로만 보냅니다.
-- 기록 이동이 성공한 뒤에만 게스트 계정을 지웁니다.
+더 자세한 건 [설계 문서](docs/system_design.md)에 정리해 뒀다.
 
-**권한은 DB가 최종 방어선**
+## 로컬에서 돌리기
 
-- 새 테이블은 기본 권한 없이 만들고, 필요한 GRANT와 RLS만 명시합니다.
-- 랭킹처럼 공개가 필요한 곳은 공개 컬럼만 돌려주는 함수 하나로만 엽니다.
-- 쓰지 않는 게스트 계정은 pg_cron이 정리합니다. 띠부씰이 한 장이라도 있으면 지우지 않습니다.
-
-**설명할 수 있는 테스트만**
-
-- 게임 규칙, 보안 경계, 실제 버그의 회귀를 단위 테스트로 지킵니다.
-- RLS·RPC 권한은 로컬 Supabase에 붙어서 테스트합니다.
-- 핵심 사용자 여정 1개(도감 → 상세 → 언어 전환 → 게임 → 컬렉션)는 Playwright로 확인합니다.
-- 화면 문구나 DOM 구조를 확인하는 테스트는 두지 않습니다.
-
-**원작 에셋 없이 만든 GB 감성**
-
-- 트레이너 도트, 타이틀 화면, 효과음을 모두 SVG·CSS·Web Audio로 직접 만들었습니다.
-- 포켓몬 아트워크만 PokeAPI 이미지를 씁니다.
-
-## 레거시와 비교
-
-|           | 2023 PikapediaProject                    | Pokepedia (리메이크)                                            |
-| --------- | ---------------------------------------- | --------------------------------------------------------------- |
-| 형태      | 5인 팀, 3주 (팀장)                       | 개인 프로젝트                                                   |
-| 구조      | Java JSP·Servlet, Oracle Cloud DB, Azure | Next.js App Router·RSC·Server Actions, Supabase, Vercel         |
-| 게임 정답 | 한국어 이름만                            | 한국어·영어·일본어 이름 모두, 서버 판정·트랜잭션 커밋           |
-| 계정      | 회원가입                                 | 게스트로 바로 시작 → Google 연결·기록 병합                      |
-| 추가      |                                          | 점수·콤보·색이 다른 띠부씰, 랭킹, 3D 카드, OG 이미지, 테스트·CI |
-
-## 로컬 실행
-
-Node 24, pnpm, Docker가 필요합니다.
+Node 24, pnpm, Docker가 필요하다.
 
 ```bash
 pnpm install
 pnpm supabase start            # 로컬 Postgres·Auth·Storage (Docker)
 cp .env.example .env.local     # 값은 `pnpm supabase status -o env`에서 확인
-pnpm sync:pokemon              # PokeAPI → 로컬 DB·Storage (처음 한 번, 없으면 시드 3마리만)
+pnpm sync:pokemon              # PokeAPI → 로컬 DB·Storage (처음 한 번, 안 하면 시드 3마리만)
 pnpm dev
 ```
 
-| 명령            | 용도                                    |
-| --------------- | --------------------------------------- |
-| `pnpm check`    | lint · typecheck · format · 단위 테스트 |
-| `pnpm test:db`  | 로컬 Supabase RLS·RPC 테스트            |
-| `pnpm test:e2e` | Playwright 핵심 여정                    |
-
-## 문서
-
-- [시스템 설계](docs/system_design.md): 시스템 구성, DB 스키마·권한, 게임 규칙과 API, 계정·병합·정리 로직, 배포·테스트 방식
+- `pnpm check`: lint · typecheck · format · 단위 테스트
+- `pnpm test:db`: 로컬 Supabase RLS·RPC 테스트
+- `pnpm test:e2e`: Playwright
 
 ---
 
-<sub>Pokémon과 관련 이름·아트워크의 권리는 Nintendo, Creatures Inc., GAME FREAK inc.에 있습니다. 이 프로젝트는 비상업적 팬 프로젝트입니다.</sub>
+<sub>Pokémon과 관련 이름·아트워크의 권리는 Nintendo, Creatures Inc., GAME FREAK inc.에 있습니다. 비상업적 팬 프로젝트입니다.</sub>
