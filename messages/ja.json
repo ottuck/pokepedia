@@ -187,6 +187,11 @@
       "no_skips_left": "スキップはもう使えません。",
       "hint_already_used": "ヒントはもう使いました。",
       "generic": "問題が起きました。もう一度お試しください。"
+    },
+    "sound": {
+      "label": "効果音",
+      "on": "効果音オン",
+      "off": "効果音オフ"
     }
   },
   "collection": {
