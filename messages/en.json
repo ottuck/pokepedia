@@ -119,26 +119,6 @@
     "metaTitle": "Silhouette quiz",
     "title": "Who’s that Pokémon?",
     "subtitle": "Name the Pokémon from its silhouette to collect stickers. Korean, English, and Japanese names all count.",
-    "play": "Play",
-    "starting": "Getting ready…",
-    "rules": {
-      "fight": {
-        "title": "Fight",
-        "body": "Type the name to attack. A wrong guess costs 1 HP; three misses end the game."
-      },
-      "item": {
-        "title": "Item",
-        "body": "Reveals half the name. Breaks your combo and halves the points."
-      },
-      "pokemon": {
-        "title": "Pokémon",
-        "body": "Switches to another Pokémon. Up to 3 times per game."
-      },
-      "run": {
-        "title": "Run",
-        "body": "Ends the game and shows your results."
-      }
-    },
     "hud": {
       "score": "Score",
       "combo": "Combo",
@@ -203,6 +183,25 @@
       "label": "Sound effects",
       "on": "Sound on",
       "off": "Sound off"
+    },
+    "titleScreen": {
+      "subtitle": "SILHOUETTE QUIZ",
+      "pressStart": "PRESS START",
+      "starting": "Getting ready…",
+      "copyright": "© 2026 Pokepedia · fan project",
+      "rules": "How to play"
+    },
+    "rulesScreen": {
+      "heading": "How to play",
+      "p1": "A wild Pokémon appears as a silhouette!\nName it to win its sticker.",
+      "p2": "▶FIGHT\nType its name to attack. Korean, English and Japanese names all work.\nA wrong name costs 1 HP; at 0 HP the game is over!",
+      "p3": "▶BAG\nA hint shows half of the name.\nIt breaks your combo and halves the points.",
+      "p4": "▶POKéMON\nSwap for another Pokémon. Up to 3 times per game.",
+      "p5": "▶RUN\nEnd the game and see your results.\nStreaks raise your score and your shiny odds. Let's go!",
+      "skip": "Skip",
+      "next": "Next",
+      "start": "Start battle",
+      "starting": "Getting ready…"
     }
   },
   "collection": {

@@ -1,0 +1,304 @@
+/*
+ * Title screen and rules box in the spirit of the Game Boy Color titles: a flat sky, blocky
+ * clouds, a logo with a thick pixel outline, a silhouette crossing the sky with a sparkle
+ * trail, and a blinking PRESS START. Every piece is drawn here or from our own artwork.
+ */
+
+.title {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 26rem;
+  padding: 2.5rem 1rem 1.25rem;
+  background: linear-gradient(
+    #7cc4ff 0%,
+    #9fd5ff 55%,
+    #d8efff 72%,
+    #ffffff 100%
+  );
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+
+.logo {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-size: clamp(2.6rem, 9vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: #c86cff;
+  /* A two-step pixel outline: dark inner line, light outer line (no blur). */
+  text-shadow:
+    3px 0 #3b1466,
+    -3px 0 #3b1466,
+    0 3px #3b1466,
+    0 -3px #3b1466,
+    3px 3px #3b1466,
+    -3px 3px #3b1466,
+    3px -3px #3b1466,
+    -3px -3px #3b1466,
+    6px 6px #ffffff;
+}
+
+.logoAccent {
+  color: #ffd23f;
+}
+
+.subtitle {
+  position: relative;
+  z-index: 2;
+  margin: 0.6rem 0 0;
+  font-size: clamp(0.9rem, 3vw, 1.2rem);
+  font-weight: 900;
+  letter-spacing: 0.35em;
+  color: #e3342f;
+  text-shadow:
+    2px 2px #ffffff,
+    -1px -1px #7a1411;
+}
+
+/* The flyer: our own artwork turned into a dark silhouette, crossing the sky on a loop. */
+.flight {
+  position: absolute;
+  z-index: 1;
+  top: 34%;
+  left: 0;
+  width: clamp(7rem, 26vw, 11rem);
+  aspect-ratio: 1;
+  animation: fly 9s linear infinite;
+  pointer-events: none;
+}
+
+.flyer {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0);
+  opacity: 0.72;
+  animation: bob 1.1s ease-in-out infinite;
+}
+
+@keyframes fly {
+  0% {
+    transform: translateX(-40%) translateY(0);
+  }
+  100% {
+    transform: translateX(calc(100cqw + 60%)) translateY(-18%);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6%);
+  }
+}
+
+.sky {
+  container-type: inline-size;
+  position: absolute;
+  inset: 0;
+}
+
+.sparkles {
+  position: absolute;
+  z-index: 1;
+  inset: 55% 0 12%;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffe066;
+  box-shadow:
+    0 -6px #ffe066,
+    0 6px #ffe066,
+    -6px 0 #ffe066,
+    6px 0 #ffe066;
+  animation: twinkle 1.6s steps(2, jump-none) infinite;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Blocky clouds along the horizon, drifting slowly. */
+.clouds {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 14%;
+  height: 4.5rem;
+  background-image:
+    radial-gradient(circle at 12% 70%, #fff 0 22px, transparent 23px),
+    radial-gradient(circle at 20% 45%, #fff 0 26px, transparent 27px),
+    radial-gradient(circle at 30% 75%, #fff 0 20px, transparent 21px),
+    radial-gradient(circle at 52% 60%, #fff 0 24px, transparent 25px),
+    radial-gradient(circle at 62% 40%, #fff 0 30px, transparent 31px),
+    radial-gradient(circle at 74% 70%, #fff 0 22px, transparent 23px),
+    radial-gradient(circle at 90% 55%, #fff 0 26px, transparent 27px);
+  background-size: 50% 100%;
+  animation: drift 30s linear infinite;
+}
+
+@keyframes drift {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.press {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  border: 0;
+  background: none;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  color: #1f1d1a;
+  cursor: pointer;
+  animation: blink 1s steps(1, end) infinite;
+}
+
+.press:disabled {
+  animation: none;
+  cursor: progress;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1f1d1a;
+}
+
+.rulesLink {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ── Rules: Game Boy text box ─────────────────────────────────────────────────────────── */
+
+.rules {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1rem;
+  min-height: 26rem;
+  padding: 1.25rem;
+  /* The title sky continues behind the text box. */
+  background: linear-gradient(
+    #7cc4ff 0%,
+    #9fd5ff 45%,
+    #d8efff 62%,
+    #ffffff 80%
+  );
+}
+
+.rules > :not(.clouds) {
+  position: relative;
+  z-index: 2;
+}
+
+.rulesTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #1f1d1a;
+}
+
+.textbox {
+  position: relative;
+  min-height: 8.5rem;
+  border: 4px solid #1f1d1a;
+  border-radius: 10px;
+  outline: 3px solid #f8f8f0;
+  outline-offset: -9px;
+  box-shadow:
+    inset 0 0 0 9px #f8f8f0,
+    inset 0 0 0 11px #1f1d1a;
+  background: #f8f8f0;
+  padding: 1.1rem 1.4rem 1.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.8;
+  color: #1f1d1a;
+  white-space: pre-line;
+  cursor: pointer;
+}
+
+.cursor {
+  position: absolute;
+  right: 1.1rem;
+  bottom: 0.6rem;
+  color: #e3342f;
+  animation: blink 0.8s steps(1, end) infinite;
+}
+
+.skip {
+  border: 2px solid #1f1d1a;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0.2rem 0.7rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flight,
+  .flyer,
+  .clouds,
+  .sparkle,
+  .press,
+  .cursor {
+    animation: none;
+  }
+  .flight {
+    left: 58%;
+  }
+}
