@@ -1,0 +1,371 @@
+/*
+ * The battle screen laid out like a Game Boy battle: the wild Pokémon's info box top left
+ * and the Pokémon top right, the trainer's back bottom left and the player's info box bottom
+ * right, then the text box and the command box. Drawn with our own pixel art and CSS only.
+ * The screen keeps its light Game Boy palette in dark mode too, like the title screen.
+ */
+
+.battle {
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  background: #f8f8f0;
+  color: #1f1d1a;
+}
+
+.field {
+  position: relative;
+  overflow: hidden;
+  height: clamp(14rem, 60cqw, 21rem);
+  background: linear-gradient(#f8f8f0 0%, #f8f8f0 58%, #e9f3d9 58%, #e9f3d9);
+}
+
+/* ── Info boxes: name, level, HP bar, framed on two sides like the originals ── */
+
+.info {
+  position: absolute;
+  z-index: 2;
+  width: min(50%, 17rem);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.enemyInfo {
+  top: 6%;
+  left: 4%;
+  padding: 0 0.6rem 0.45rem 0.7rem;
+  border-left: 3px solid #1f1d1a;
+  border-bottom: 3px solid #1f1d1a;
+  border-bottom-left-radius: 6px;
+}
+
+.playerInfo {
+  bottom: 7%;
+  right: 4%;
+  padding: 0 0.7rem 0.45rem 0.6rem;
+  border-right: 3px solid #1f1d1a;
+  border-bottom: 3px solid #1f1d1a;
+  border-bottom-right-radius: 6px;
+}
+
+.name {
+  display: block;
+  overflow: hidden;
+  font-size: clamp(0.85rem, 3.6cqw, 1.15rem);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.level {
+  display: inline-block;
+  font-size: clamp(0.75rem, 3cqw, 0.95rem);
+}
+
+.levelUp {
+  animation: level-up 0.9s steps(6, end);
+}
+
+@keyframes level-up {
+  0%,
+  33%,
+  66% {
+    color: #e3342f;
+    transform: scale(1.35);
+  }
+  17%,
+  50%,
+  100% {
+    color: inherit;
+    transform: scale(1);
+  }
+}
+
+.hpRow {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.2rem;
+}
+
+.hpLabel {
+  flex: none;
+  border-radius: 3px;
+  background: #1f1d1a;
+  padding: 0 0.25rem;
+  font-size: 0.6rem;
+  line-height: 1.35;
+  color: #f5c542;
+}
+
+.hpTrack {
+  flex: 1;
+  height: 0.55rem;
+  border: 2px solid #1f1d1a;
+  border-radius: 999px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.hpFill {
+  display: block;
+  height: 100%;
+  background: #3bbf5b;
+  /* Drains in steps, like the Game Boy bar. */
+  transition:
+    width 0.6s steps(10, end),
+    background-color 0s 0.3s;
+}
+
+.hpFill[data-level="mid"] {
+  background: #f2c230;
+}
+
+.hpFill[data-level="low"] {
+  background: #e3342f;
+}
+
+.hpNumbers {
+  display: block;
+  margin-top: 0.15rem;
+  text-align: right;
+  font-size: clamp(0.75rem, 3cqw, 0.95rem);
+  letter-spacing: 0.1em;
+}
+
+/* ── Sprites ── */
+
+.enemy {
+  position: absolute;
+  z-index: 1;
+  top: 4%;
+  right: 6%;
+  width: min(36cqw, 13rem);
+  aspect-ratio: 1;
+}
+
+.platform {
+  position: absolute;
+  inset: auto -8% 2% -8%;
+  height: 22%;
+  border-radius: 50%;
+  background: #cfe3b0;
+  box-shadow: inset 0 -4px 0 #a9c887;
+}
+
+.trainer {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  left: 7%;
+  width: min(30cqw, 10rem);
+  aspect-ratio: 1;
+}
+
+.trainerPlatform {
+  position: absolute;
+  inset: auto -20% -6% -20%;
+  height: 30%;
+  border-radius: 50%;
+  background: #cfe3b0;
+  box-shadow: inset 0 4px 0 #a9c887;
+}
+
+.trainerSprite {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hit: the trainer blinks, as a Pokémon does when it takes damage. */
+.hurt {
+  animation: hurt 0.5s steps(1, end);
+}
+
+@keyframes hurt {
+  0%,
+  40%,
+  80% {
+    opacity: 0;
+  }
+  20%,
+  60%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ── Text box and command box ── */
+
+.console {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f8f8f0;
+}
+
+@media (min-width: 640px) {
+  .console {
+    grid-template-columns: 1fr 15rem;
+  }
+}
+
+.box {
+  position: relative;
+  border: 4px solid #1f1d1a;
+  border-radius: 10px;
+  outline: 3px solid #f8f8f0;
+  outline-offset: -9px;
+  box-shadow:
+    inset 0 0 0 9px #f8f8f0,
+    inset 0 0 0 11px #1f1d1a;
+  background: #f8f8f0;
+  padding: 1rem 1.25rem;
+  font-weight: 700;
+  color: #1f1d1a;
+}
+
+.message {
+  min-height: 6.5rem;
+  font-size: 1rem;
+  line-height: 1.8;
+  cursor: pointer;
+}
+
+.cursor {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.55rem;
+  color: #e3342f;
+  animation: blink 0.8s steps(1, end) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.15rem 0.5rem;
+  padding: 0.8rem 0.9rem;
+}
+
+.command {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  min-height: 2.5rem;
+  border-radius: 4px;
+  padding: 0 0.2rem;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #1f1d1a;
+}
+
+.command:focus-visible {
+  outline: 2px dashed #1f1d1a;
+  outline-offset: 1px;
+}
+
+.command[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: #a8a59c;
+}
+
+.pointer {
+  flex: none;
+  width: 1em;
+  color: #1f1d1a;
+  visibility: hidden;
+}
+
+.command[data-selected="true"] .pointer {
+  visibility: visible;
+}
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.answerRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  min-width: 0;
+  flex: 1;
+  height: 2.75rem;
+  border: 0;
+  border-bottom: 3px solid #1f1d1a;
+  background: transparent;
+  padding: 0 0.25rem;
+  font-size: 1.05rem;
+  color: #1f1d1a;
+  outline: none;
+}
+
+.input:focus {
+  border-bottom-width: 4px;
+}
+
+.input::placeholder {
+  color: #a8a59c;
+}
+
+.attack {
+  flex: none;
+  border: 3px solid #1f1d1a;
+  border-radius: 6px;
+  background: #1f1d1a;
+  padding: 0 0.9rem;
+  font-weight: 900;
+  color: #f8f8f0;
+  box-shadow: 0 3px 0 #8a877f;
+}
+
+.attack:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.cancel {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  color: #6b6860;
+}
+
+/* ── Status strip above the field ── */
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.15rem 1rem;
+  background: #1f1d1a;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f8f8f0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hpFill {
+    transition: none;
+  }
+
+  .levelUp,
+  .hurt,
+  .cursor {
+    animation: none;
+  }
+}

@@ -46,7 +46,7 @@ describe("MyRank", () => {
     renderRank();
 
     expect(
-      await screen.findByText("퀴즈를 한 판 하면 게스트로도 순위에 올라요."),
+      await screen.findByText("게임을 한 판 하면 게스트로도 순위에 올라요."),
     ).toBeInTheDocument();
     expect(state.rpc).not.toHaveBeenCalled();
   });

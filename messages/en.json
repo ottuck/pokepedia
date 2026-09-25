@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Pokepedia",
-    "description": "Gen 1 Pokédex, silhouette quiz, and sticker collection"
+    "description": "Gen 1 Pokédex, battle game, and sticker collection"
   },
   "dex": {
     "title": "Pokédex",
@@ -48,7 +48,7 @@
       "owned": "My stickers: {normal} normal{shiny, plural, =0 {} other { · # shiny}}",
       "shinyOwned": "Shiny collected",
       "none": "Not collected yet.",
-      "toQuiz": "Collect it in the quiz"
+      "toQuiz": "Collect it in the game"
     }
   },
   "types": {
@@ -110,13 +110,13 @@
   },
   "nav": {
     "dex": "Pokédex",
-    "quiz": "Quiz",
+    "quiz": "Game",
     "main": "Main menu",
     "collection": "Collection",
     "leaderboard": "Ranking"
   },
   "quiz": {
-    "metaTitle": "Silhouette quiz",
+    "metaTitle": "Game",
     "title": "Who’s that Pokémon?",
     "subtitle": "Name the Pokémon from its silhouette to collect stickers. Korean, English, and Japanese names all count.",
     "hud": {
@@ -127,15 +127,19 @@
       "hp": "HP {hp}/3",
       "shinyChance": "Shiny chance {percent}%"
     },
+    "battle": {
+      "you": "Trainer",
+      "levelUp": "Level up!"
+    },
     "menu": {
       "label": "Choose an action",
       "fight": "Fight",
-      "item": "Item",
+      "item": "Bag",
       "pokemon": "Pokémon",
       "run": "Run"
     },
     "message": {
-      "appeared": "A wild Pokémon appeared!",
+      "appeared": "A wild {name} appeared!",
       "skipped": "That was {name}. A new Pokémon appeared!",
       "menu": "What will you do?",
       "answering": "Type its name.",
@@ -185,7 +189,7 @@
       "off": "Sound off"
     },
     "titleScreen": {
-      "subtitle": "SILHOUETTE QUIZ",
+      "subtitle": "GOLD",
       "pressStart": "PRESS START",
       "starting": "Getting ready…",
       "copyright": "© 2026 Pokepedia · fan project",
@@ -213,8 +217,8 @@
     "shinyBadge": "Shiny",
     "quantity": "{normal} normal, {shiny} shiny",
     "emptyTitle": "No stickers yet",
-    "emptyBody": "Name a Pokémon in the quiz to get its sticker.",
-    "toQuiz": "Play the quiz",
+    "emptyBody": "Name a Pokémon in the game to get its sticker.",
+    "toQuiz": "Play the game",
     "filters": {
       "label": "Show",
       "all": "All",
@@ -247,7 +251,7 @@
       }
     },
     "stats": {
-      "title": "Quiz record",
+      "title": "Game record",
       "plays": "Games",
       "bestScore": "Best score",
       "bestCombo": "Best combo",
@@ -267,8 +271,8 @@
       "fled": "Ran away"
     },
     "emptyTitle": "Nothing here yet",
-    "emptyBody": "Play a quiz game to get a guest account and start your record.",
-    "toQuiz": "Play the quiz",
+    "emptyBody": "Play a game to get a guest account and start your record.",
+    "toQuiz": "Play the game",
     "avatar": {
       "change": "Change photo",
       "uploading": "Uploading…",
@@ -308,8 +312,8 @@
       "label": "My rank",
       "ranked": "You are #{rank} · best {score, number} pts · combo {combo}",
       "unranked": "No scored game yet. Play one to get ranked.",
-      "signedOut": "Play one quiz game to get ranked, even as a guest.",
-      "play": "Play the quiz"
+      "signedOut": "Play one game to get ranked, even as a guest.",
+      "play": "Play the game"
     },
     "unavailable": "The ranking is unavailable right now. Please check back in a moment."
   }

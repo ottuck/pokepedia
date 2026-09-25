@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Pokepedia",
-    "description": "1세대 포켓몬 도감, 실루엣 퀴즈, 띠부씰 컬렉션"
+    "description": "1세대 포켓몬 도감, 배틀 게임, 띠부씰 컬렉션"
   },
   "dex": {
     "title": "도감",
@@ -48,7 +48,7 @@
       "owned": "내 띠부씰 {normal}장{shiny, plural, =0 {} other { · 색이 다른 #장}}",
       "shinyOwned": "색이 다른 모습 획득",
       "none": "아직 모으지 못했어요.",
-      "toQuiz": "퀴즈로 모으기"
+      "toQuiz": "게임으로 모으기"
     }
   },
   "types": {
@@ -110,13 +110,13 @@
   },
   "nav": {
     "dex": "도감",
-    "quiz": "퀴즈",
+    "quiz": "게임",
     "main": "메인 메뉴",
     "collection": "컬렉션",
     "leaderboard": "랭킹"
   },
   "quiz": {
-    "metaTitle": "실루엣 퀴즈",
+    "metaTitle": "게임",
     "title": "이 포켓몬은 누구일까?",
     "subtitle": "실루엣을 보고 이름을 맞혀 띠부씰을 모으세요. 한국어·영어·일본어 이름 모두 정답이에요.",
     "hud": {
@@ -127,15 +127,19 @@
       "hp": "HP {hp}/3",
       "shinyChance": "색이 다른 포켓몬 확률 {percent}%"
     },
+    "battle": {
+      "you": "트레이너",
+      "levelUp": "레벨 업!"
+    },
     "menu": {
       "label": "행동 선택",
-      "fight": "싸운다",
-      "item": "아이템",
+      "fight": "싸우다",
+      "item": "가방",
       "pokemon": "포켓몬",
-      "run": "도망간다"
+      "run": "도망치다"
     },
     "message": {
-      "appeared": "앗! 야생의 포켓몬이 나타났다!",
+      "appeared": "앗! 야생의 {name}(이)가 튀어나왔다!",
       "skipped": "방금 포켓몬은 {name}. 새로운 포켓몬이 나타났다!",
       "menu": "무엇을 할까?",
       "answering": "이름을 입력하세요.",
@@ -185,7 +189,7 @@
       "off": "효과음 꺼짐"
     },
     "titleScreen": {
-      "subtitle": "실루엣 퀴즈",
+      "subtitle": "골드",
       "pressStart": "PRESS START",
       "starting": "준비 중…",
       "copyright": "© 2026 Pokepedia · 팬 프로젝트",
@@ -213,8 +217,8 @@
     "shinyBadge": "색이 다른",
     "quantity": "일반 {normal}장, 색이 다른 {shiny}장",
     "emptyTitle": "아직 모은 띠부씰이 없어요",
-    "emptyBody": "퀴즈에서 포켓몬을 맞히면 그 포켓몬의 띠부씰을 받아요.",
-    "toQuiz": "퀴즈 하러 가기",
+    "emptyBody": "게임에서 포켓몬을 맞히면 그 포켓몬의 띠부씰을 받아요.",
+    "toQuiz": "게임 하러 가기",
     "filters": {
       "label": "보기",
       "all": "전체",
@@ -247,7 +251,7 @@
       }
     },
     "stats": {
-      "title": "퀴즈 기록",
+      "title": "게임 기록",
       "plays": "플레이",
       "bestScore": "최고 점수",
       "bestCombo": "최고 콤보",
@@ -267,8 +271,8 @@
       "fled": "도망침"
     },
     "emptyTitle": "아직 기록이 없어요",
-    "emptyBody": "퀴즈를 한 판 하면 게스트 계정이 만들어지고 기록이 쌓여요.",
-    "toQuiz": "퀴즈 하러 가기",
+    "emptyBody": "게임을 한 판 하면 게스트 계정이 만들어지고 기록이 쌓여요.",
+    "toQuiz": "게임 하러 가기",
     "avatar": {
       "change": "사진 변경",
       "uploading": "올리는 중…",
@@ -308,8 +312,8 @@
       "label": "내 순위",
       "ranked": "내 순위 {rank}위 · 최고 {score, number}점 · 콤보 {combo}",
       "unranked": "아직 점수를 낸 게임이 없어요. 한 판 하면 순위에 올라요.",
-      "signedOut": "퀴즈를 한 판 하면 게스트로도 순위에 올라요.",
-      "play": "퀴즈 하러 가기"
+      "signedOut": "게임을 한 판 하면 게스트로도 순위에 올라요.",
+      "play": "게임 하러 가기"
     },
     "unavailable": "지금은 랭킹을 불러올 수 없어요. 잠시 후 다시 확인해 주세요."
   }

@@ -7,8 +7,12 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import { spring } from "@/lib/motion";
 import { RULES, shinyChance } from "../rules";
 import { useQuizStore, type QuizPhase } from "../store";
+import styles from "./battle.module.css";
 import { ErrorNotice } from "./error-notice";
 import { RewardCard } from "./reward-card";
+import { TrainerSprite } from "./trainer-sprite";
+import { useTrainerName } from "./use-trainer-name";
+import { useTypewriter } from "./use-typewriter";
 
 // How long each automatic phase holds before advancing (ms). Kept short: players felt every
 // click wait over a second. The menu also works during intro and hit (see BattleMenu), so
@@ -25,6 +29,13 @@ const REDUCED_DURATION: Partial<Record<QuizPhase, number>> = {
   reveal: 700,
 };
 
+/** The trainer levels up with every Pokémon named in the run. */
+const START_LEVEL = 5;
+
+/**
+ * The battle, laid out like a Game Boy battle screen: the wild Pokémon and its info box on
+ * top, the trainer's back and the player's info box below, then the text and command boxes.
+ */
 export function BattleStage() {
   const phase = useQuizStore((s) => s.phase);
   const advance = useQuizStore((s) => s.advance);
@@ -38,16 +49,15 @@ export function BattleStage() {
   }, [phase, advance, reduceMotion]);
 
   return (
-    <div className="flex flex-col">
+    <div className={styles.battle}>
       <Hud />
-      <div className="relative grid min-h-72 grid-cols-[1fr_auto] items-center gap-2 px-4 py-4 sm:min-h-80 sm:px-8">
-        <div className="flex h-full flex-col justify-between gap-4 py-2">
-          <EnemyPanel />
-          <PlayerPanel />
-        </div>
-        <PokemonStage />
+      <div className={styles.field}>
+        <EnemyInfo />
+        <EnemySprite />
+        <Trainer />
+        <PlayerInfo />
       </div>
-      <div className="grid gap-3 border-t-4 border-ink/15 bg-card/60 p-3 sm:grid-cols-[1fr_16rem] sm:p-4">
+      <div className={styles.console}>
         <MessageBox />
         <BattleMenu />
       </div>
@@ -66,7 +76,7 @@ function Hud() {
   const chance = Math.round(shinyChance(run.combo + 1, round.hintUsed) * 100);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 bg-charcoal/85 px-4 py-2 text-sm font-bold text-white sm:px-8">
+    <div className={styles.hud}>
       <span>
         {t("score")}{" "}
         <m.span
@@ -90,105 +100,81 @@ function Hud() {
           ×{run.combo}
         </m.span>
       </span>
-      <span className="font-normal text-white/80">
+      <span className="font-normal opacity-80">
         {t("shinyChance", { percent: chance })}
       </span>
-      <span className="font-normal text-white/80">
+      <span className="font-normal opacity-80">
         {t("skips")} {run.skipsLeft}/{RULES.skipsPerRun}
       </span>
-      <span className="font-normal text-white/80">
+      <span className="font-normal opacity-80">
         {t("round", { seq: round.seq })}
       </span>
     </div>
   );
 }
 
-function EnemyPanel() {
-  const t = useTranslations("quiz");
-  const round = useQuizStore((s) => s.round);
+/** A Game Boy HP bar: green, then yellow, then red as it drains. */
+function HpBar({ ratio }: { ratio: number }) {
+  const level = ratio > 0.7 ? "high" : ratio > 0.4 ? "mid" : "low";
+  return (
+    <span aria-hidden className={styles.hpRow}>
+      <span className={styles.hpLabel}>HP</span>
+      <span className={styles.hpTrack}>
+        <span
+          className={styles.hpFill}
+          data-level={level}
+          style={{ width: `${ratio * 100}%` }}
+        />
+      </span>
+    </span>
+  );
+}
+
+/** The Pokémon revealed right now: after a clear, or the answer when the trainer faints. */
+function useRevealed() {
   const phase = useQuizStore((s) => s.phase);
   const reward = useQuizStore((s) => s.reward);
   const gameOver = useQuizStore((s) => s.gameOver);
+  if (phase === "reveal" || phase === "reward") return reward?.revealed;
+  if (phase === "hit" && gameOver) return gameOver.revealed;
+  return undefined;
+}
+
+function EnemyInfo() {
+  const t = useTranslations("quiz");
+  const round = useQuizStore((s) => s.round);
+  const phase = useQuizStore((s) => s.phase);
+  const revealed = useRevealed();
   if (!round) return null;
 
-  const revealedName =
-    phase === "reveal" || phase === "reward"
-      ? reward?.revealed.name
-      : phase === "hit" && gameOver
-        ? gameOver.revealed.name
-        : null;
+  // Named correctly: the wild Pokémon's HP runs out.
+  const defeated = phase === "reveal" || phase === "reward";
 
   return (
-    <div className="max-w-64 rounded-2xl rounded-bl-none border-4 border-ink/80 bg-card px-4 py-2 shadow">
-      <p
-        aria-live="polite"
-        className="text-xl font-black tracking-widest tabular-nums"
-      >
-        {revealedName ?? round.hint ?? round.mask}
+    <div className={`${styles.info} ${styles.enemyInfo}`}>
+      <p aria-live="polite" className={`${styles.name} tabular-nums`}>
+        {revealed?.name ?? round.hint ?? round.mask}
       </p>
-      {round.hint && !revealedName && (
-        <p className="text-xs font-semibold text-muted">{t("hint")}</p>
+      <span aria-hidden className={styles.level}>
+        :L??
+      </span>
+      {round.hint && !revealed && (
+        <span className="ml-2 text-xs text-[#6b6860]">{t("hint")}</span>
       )}
+      <HpBar ratio={defeated ? 0 : 1} />
     </div>
   );
 }
 
-function PlayerPanel() {
-  const t = useTranslations("quiz.hud");
-  const round = useQuizStore((s) => s.round);
-  const phase = useQuizStore((s) => s.phase);
-  if (!round) return null;
-
-  return (
-    <m.div
-      // Hit: the trainer's panel shakes (legacy counter-attack).
-      animate={phase === "hit" ? { x: [0, -12, 12, -8, 8, 0] } : { x: 0 }}
-      transition={{ duration: 0.5 }}
-      className="w-fit rounded-2xl rounded-tr-none border-4 border-ink/80 bg-card px-4 py-2 shadow"
-    >
-      <p className="sr-only">{t("hp", { hp: round.hp })}</p>
-      <div aria-hidden className="flex gap-1 text-2xl">
-        {Array.from({ length: RULES.maxHp }, (_, i) => (
-          <m.span
-            key={i}
-            animate={
-              i < round.hp
-                ? { scale: 1, opacity: 1 }
-                : { scale: 0.6, opacity: 0.25 }
-            }
-            transition={spring.bouncy}
-            className="text-dex-red"
-          >
-            ♥
-          </m.span>
-        ))}
-      </div>
-    </m.div>
-  );
-}
-
-function PokemonStage() {
+function EnemySprite() {
   const t = useTranslations("quiz");
   const round = useQuizStore((s) => s.round);
-  const phase = useQuizStore((s) => s.phase);
-  const reward = useQuizStore((s) => s.reward);
-  const gameOver = useQuizStore((s) => s.gameOver);
+  const revealed = useRevealed();
   if (!round) return null;
 
-  const revealed =
-    phase === "reveal" || phase === "reward"
-      ? reward?.revealed
-      : phase === "hit" && gameOver
-        ? gameOver.revealed
-        : undefined;
-
   return (
-    <div className="relative size-40 sm:size-56">
-      {/* Grass platform */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-2 h-8 rounded-[50%] bg-green-700/25"
-      />
+    <div className={styles.enemy}>
+      <div aria-hidden className={styles.platform} />
       <AnimatePresence mode="wait">
         {revealed ? (
           <m.div
@@ -210,7 +196,7 @@ function PokemonStage() {
               src={revealed.artworkUrl}
               alt={revealed.name}
               fill
-              sizes="224px"
+              sizes="208px"
               className="object-contain"
             />
           </m.div>
@@ -218,7 +204,8 @@ function PokemonStage() {
           <m.div
             key={round.id}
             className="absolute inset-0"
-            initial={{ x: 120, opacity: 0 }}
+            // A new wild Pokémon slides in from the left, as in the originals.
+            initial={{ x: "-160%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={spring.gentle}
@@ -227,7 +214,7 @@ function PokemonStage() {
               src={round.silhouetteUrl}
               alt={t("unknownName")}
               fill
-              sizes="224px"
+              sizes="208px"
               preload
               className="object-contain"
             />
@@ -238,10 +225,77 @@ function PokemonStage() {
   );
 }
 
+/**
+ * The player's trainer, always on the field. Slides in once when the battle starts and
+ * shakes when HP is lost.
+ */
+function Trainer() {
+  const phase = useQuizStore((s) => s.phase);
+  return (
+    <m.div
+      className={styles.trainer}
+      initial={{ x: "160%" }}
+      animate={{ x: 0 }}
+      transition={spring.gentle}
+    >
+      <div aria-hidden className={styles.trainerPlatform} />
+      <m.div
+        // Losing HP: the trainer shakes and blinks, as a Pokémon does when it is hit.
+        animate={phase === "hit" ? { x: [0, -10, 10, -7, 7, -3, 0] } : { x: 0 }}
+        transition={{ duration: 0.45 }}
+        className={phase === "hit" ? styles.hurt : undefined}
+      >
+        <TrainerSprite className={styles.trainerSprite} />
+      </m.div>
+    </m.div>
+  );
+}
+
+function PlayerInfo() {
+  const t = useTranslations("quiz");
+  const round = useQuizStore((s) => s.round);
+  const run = useQuizStore((s) => s.run);
+  const trainerName = useTrainerName();
+  if (!round || !run) return null;
+
+  const level = START_LEVEL + run.roundsCleared;
+
+  return (
+    <div className={`${styles.info} ${styles.playerInfo}`}>
+      <p className={styles.name}>{trainerName ?? t("battle.you")}</p>
+      <span
+        // Remounted on every level so the level-up flash plays again.
+        key={level}
+        className={`${styles.level} ${level > START_LEVEL ? styles.levelUp : ""}`}
+      >
+        :L{level}
+      </span>
+      {level > START_LEVEL && (
+        <m.span
+          key={`up-${level}`}
+          aria-hidden
+          className="absolute -top-5 right-2 text-xs font-bold text-[#e3342f]"
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: [0, 1, 1, 0], y: [4, 0, 0, -4] }}
+          transition={{ duration: 1.6 }}
+        >
+          {t("battle.levelUp")}
+        </m.span>
+      )}
+      <HpBar ratio={round.hp / RULES.maxHp} />
+      <span className="sr-only">{t("hud.hp", { hp: round.hp })}</span>
+      <span aria-hidden className={`${styles.hpNumbers} tabular-nums`}>
+        {round.hp}/ {RULES.maxHp}
+      </span>
+    </div>
+  );
+}
+
 function MessageBox() {
   const t = useTranslations("quiz");
   const locale = useLocale();
   const phase = useQuizStore((s) => s.phase);
+  const round = useQuizStore((s) => s.round);
   const reward = useQuizStore((s) => s.reward);
   const skipped = useQuizStore((s) => s.skipped);
   const gameOver = useQuizStore((s) => s.gameOver);
@@ -257,12 +311,10 @@ function MessageBox() {
           event.preventDefault();
           void answer(value, locale).then(() => setValue(""));
         }}
-        className="flex flex-col gap-2 rounded-2xl border-4 border-ink/80 bg-card p-3"
+        className={`${styles.box} ${styles.answer}`}
       >
-        <label htmlFor={inputId} className="text-sm font-semibold">
-          {t("message.answering")}
-        </label>
-        <div className="flex gap-2">
+        <label htmlFor={inputId}>{t("message.answering")}</label>
+        <div className={styles.answerRow}>
           <input
             id={inputId}
             autoFocus
@@ -276,21 +328,17 @@ function MessageBox() {
             enterKeyHint="send"
             placeholder={t("answer.placeholder")}
             disabled={phase === "judging"}
-            className="h-11 min-w-0 flex-1 rounded-xl border-2 border-ink/20 px-3 text-base outline-none focus:border-dex-red"
+            className={styles.input}
           />
           <button
             type="submit"
             disabled={phase === "judging" || value.trim() === ""}
-            className="rounded-xl bg-dex-red px-4 font-black text-white disabled:opacity-50"
+            className={styles.attack}
           >
             {t("answer.submit")}
           </button>
         </div>
-        <button
-          type="button"
-          onClick={closeAnswer}
-          className="self-start text-xs text-muted"
-        >
+        <button type="button" onClick={closeAnswer} className={styles.cancel}>
           {t("answer.cancel")}
         </button>
         <ErrorNotice />
@@ -302,7 +350,7 @@ function MessageBox() {
   if (phase === "intro")
     message = skipped
       ? t("message.skipped", { name: skipped.name })
-      : t("message.appeared");
+      : t("message.appeared", { name: round?.mask ?? "???" });
   else if (phase === "hit")
     message = gameOver
       ? t("message.fainted", { name: gameOver.revealed.name })
@@ -310,10 +358,22 @@ function MessageBox() {
   else if ((phase === "reveal" || phase === "reward") && reward)
     message = t("message.correct", { name: reward.revealed.name });
 
+  return <BattleText message={message} />;
+}
+
+/** The text box: prints the message letter by letter; a click shows the rest at once. */
+function BattleText({ message }: { message: string }) {
+  const { shown, done, finish } = useTypewriter(message);
+
   return (
-    <div className="flex min-h-24 flex-col justify-between gap-2 rounded-2xl border-4 border-ink/80 bg-card p-3">
-      <p aria-live="polite" className="text-base font-bold">
-        {message}
+    <div className={`${styles.box} ${styles.message}`} onClick={finish}>
+      <p aria-live="polite">
+        {/* The unprinted rest keeps its space (no reflow) and is hidden from screen
+            readers, which hear the message once it is complete. */}
+        <span aria-hidden={!done}>
+          {shown}
+          <span className="invisible">{message.slice(shown.length)}</span>
+        </span>
       </p>
       <ErrorNotice />
     </div>
@@ -322,7 +382,10 @@ function MessageBox() {
 
 const MENU = ["fight", "item", "pokemon", "run"] as const;
 
-/** Legacy 2×2 battle menu: arrow keys move, Enter picks, 1–4 are shortcuts. */
+/**
+ * The 2×2 command box. Arrow keys move the ▶ cursor, Enter or Z picks, 1–4 are shortcuts;
+ * the pointer moves the cursor too.
+ */
 function BattleMenu() {
   const t = useTranslations("quiz.menu");
   const locale = useLocale();
@@ -331,7 +394,7 @@ function BattleMenu() {
   const run = useQuizStore((s) => s.run);
   const gameOver = useQuizStore((s) => s.gameOver);
   const store = useQuizStore();
-  const [focused, setFocused] = useState(0);
+  const [selected, setSelected] = useState(0);
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const active = phase === "menu";
   // The entrance and "wrong" animations can be cut short by choosing the next move, so a
@@ -340,10 +403,11 @@ function BattleMenu() {
   const usable = active || skippable;
 
   useEffect(() => {
-    if (active) buttons.current[focused]?.focus();
-    // Only when the menu becomes active, not on every focus move.
+    // Keyboard players land on the menu whenever it can be used (also after the answer
+    // box closes), not on every cursor move.
+    if (usable) buttons.current[selected]?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active]);
+  }, [usable]);
 
   const disabled: Record<(typeof MENU)[number], boolean> = {
     fight: !usable,
@@ -370,9 +434,13 @@ function BattleMenu() {
     };
     if (event.key in moves) {
       event.preventDefault();
-      const next = (focused + moves[event.key] + MENU.length) % MENU.length;
-      setFocused(next);
+      const next = (selected + moves[event.key] + MENU.length) % MENU.length;
+      setSelected(next);
       buttons.current[next]?.focus();
+    } else if (event.key === "z" || event.key === "Z") {
+      // The A button.
+      event.preventDefault();
+      act(MENU[selected]);
     } else if (/^[1-4]$/.test(event.key)) {
       event.preventDefault();
       act(MENU[Number(event.key) - 1]);
@@ -384,7 +452,7 @@ function BattleMenu() {
       role="group"
       aria-label={t("label")}
       onKeyDown={onKeyDown}
-      className="grid grid-cols-2 gap-2"
+      className={`${styles.box} ${styles.menu}`}
     >
       {MENU.map((item, index) => (
         <button
@@ -393,14 +461,16 @@ function BattleMenu() {
             buttons.current[index] = el;
           }}
           type="button"
-          tabIndex={index === focused ? 0 : -1}
-          onFocus={() => setFocused(index)}
+          tabIndex={index === selected ? 0 : -1}
+          data-selected={index === selected}
+          onFocus={() => setSelected(index)}
+          onMouseEnter={() => setSelected(index)}
           onClick={() => act(item)}
           aria-disabled={disabled[item]}
-          className="rounded-xl border-4 border-ink/80 bg-card px-3 py-3 text-left font-black transition-colors hover:bg-volt/30 focus-visible:bg-volt/40 focus-visible:outline-none aria-disabled:cursor-not-allowed aria-disabled:opacity-40"
+          className={styles.command}
         >
-          <span aria-hidden className="mr-1 text-dex-red">
-            ▸
+          <span aria-hidden className={styles.pointer}>
+            ▶
           </span>
           {t(item)}
         </button>
