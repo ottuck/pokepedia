@@ -343,6 +343,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      guest_merge_create_ticket: {
+        Args: {
+          p_from_user: string
+          p_token_hash: string
+          p_ttl_seconds: number
+        }
+        Returns: undefined
+      }
+      guest_merge_redeem: {
+        Args: { p_to_user: string; p_token_hash: string }
+        Returns: string
+      }
       leaderboard: {
         Args: { p_limit?: number }
         Returns: {
