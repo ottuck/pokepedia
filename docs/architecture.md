@@ -256,6 +256,12 @@ my_stats view (security_invoker = true)
 - OG 이미지(`opengraph-image.tsx`): `[locale]`에는 사이트 기본(스타터 3마리와 피카츄, 로고, 소개 문구), 상세에는 포켓몬별(타입 그라데이션, 아트워크, 번호, 이름, 분류, 타입) 이미지를 둔다. 모두 빌드 시 생성한다(3 + 151 × 3). 메타데이터 이미지 라우트는 레이아웃의 `locale`을 물려받지 않으므로 `generateStaticParams`가 locale × id를 직접 반환한다(빠뜨리면 아무것도 prerender되지 않고, `dynamicParams = false` 때문에 404가 된다). ImageResponse는 webp와 woff2를 읽지 못해 아트워크는 빌드 시 sharp로 PNG로 바꾸고(sharp는 dependencies), 글꼴은 Google Fonts의 `text=` 부분집합(locale별 도감 전체 글자)을 워커당 한 번만 받아 공유한다. 다운로드는 재시도한다.
 - 타입 색은 `features/pokemon/types.ts`가 단일 출처(base/soft/ink, 대비 테스트). 컴포넌트는 CSS 변수(`--type`, `--type-soft`, `--type-ink`, `--type-2`)로 소비한다.
 
+### 리더보드
+
+- `/[locale]/leaderboard`: 사용자마다 **한 판 최고 점수**를 하나씩 뽑아 점수순으로 보여 준다(동점은 같은 순위, 먼저 달성한 기록이 위). 게스트도 포함한다.
+- 공개 정보는 **닉네임, 점수, 그 판의 최고 콤보**뿐이다. user id, 이메일, Google 이름은 내보내지 않는다. `quiz_run`과 `profile`의 RLS(본인만)는 그대로 두고, `security definer` 함수 `leaderboard(limit)`(anon/authenticated, 최대 100)가 유일한 공개 창구다. 내 순위는 `my_leaderboard_rank()`(authenticated, `auth.uid()` 기준)로 브라우저에서 읽는다.
+- 쿠키를 읽지 않으므로 페이지는 `revalidate = 60`(ISR)으로 캐시한다. "내 순위"만 client island다. 닉네임이 유일하지 않아 목록에서 "나"를 강조하지 않고 별도 카드로 보여 준다.
+
 ### 컬렉션
 
 - `/[locale]/collection`, `/[locale]/me`는 **요청마다 서버 렌더링**한다(세션 cookie를 읽기 때문). 응답은 `Cache-Control: private, no-store`.

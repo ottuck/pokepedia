@@ -102,7 +102,8 @@
     "dex": "도감",
     "quiz": "퀴즈",
     "main": "메인 메뉴",
-    "collection": "컬렉션"
+    "collection": "컬렉션",
+    "leaderboard": "랭킹"
   },
   "quiz": {
     "metaTitle": "실루엣 퀴즈",
@@ -267,5 +268,22 @@
   },
   "common": {
     "loading": "불러오는 중…"
+  },
+  "leaderboard": {
+    "title": "랭킹",
+    "subtitle": "한 판 최고 점수 순위예요. 게스트도 참여해요. 공개되는 정보는 닉네임과 점수뿐이에요.",
+    "rank": "순위",
+    "nickname": "닉네임",
+    "score": "점수",
+    "bestCombo": "최고 콤보",
+    "empty": "아직 순위에 오른 기록이 없어요. 첫 번째 주인공이 되어 보세요!",
+    "mine": {
+      "label": "내 순위",
+      "ranked": "내 순위 {rank}위 · 최고 {score, number}점 · 콤보 {combo}",
+      "unranked": "아직 점수를 낸 게임이 없어요. 한 판 하면 순위에 올라요.",
+      "signedOut": "퀴즈를 한 판 하면 게스트로도 순위에 올라요.",
+      "play": "퀴즈 하러 가기"
+    },
+    "unavailable": "지금은 랭킹을 불러올 수 없어요. 잠시 후 다시 확인해 주세요."
   }
 }

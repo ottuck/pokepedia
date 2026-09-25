@@ -102,7 +102,8 @@
     "dex": "Pokédex",
     "quiz": "Quiz",
     "main": "Main menu",
-    "collection": "Collection"
+    "collection": "Collection",
+    "leaderboard": "Ranking"
   },
   "quiz": {
     "metaTitle": "Silhouette quiz",
@@ -267,5 +268,22 @@
   },
   "common": {
     "loading": "Loading…"
+  },
+  "leaderboard": {
+    "title": "Ranking",
+    "subtitle": "Players ranked by their best single game. Guests take part too. Only nicknames and scores are shown.",
+    "rank": "Rank",
+    "nickname": "Nickname",
+    "score": "Score",
+    "bestCombo": "Best combo",
+    "empty": "No ranked games yet. Be the first!",
+    "mine": {
+      "label": "My rank",
+      "ranked": "You are #{rank} · best {score, number} pts · combo {combo}",
+      "unranked": "No scored game yet. Play one to get ranked.",
+      "signedOut": "Play one quiz game to get ranked, even as a guest.",
+      "play": "Play the quiz"
+    },
+    "unavailable": "The ranking is unavailable right now. Please check back in a moment."
   }
 }
