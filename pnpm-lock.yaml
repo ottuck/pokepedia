@@ -190,6 +190,9 @@ importers:
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
+      sharp:
+        specifier: ^0.35.4
+        version: 0.35.4(@types/node@24.13.6)
       zod:
         specifier: ^4.6.5
         version: 4.6.5
@@ -239,9 +242,6 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
         version: 0.8.1(prettier@3.9.9)
-      sharp:
-        specifier: ^0.35.4
-        version: 0.35.4(@types/node@24.13.6)
       supabase:
         specifier: ^2.117.0
         version: 2.117.0
