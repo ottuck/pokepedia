@@ -43,7 +43,7 @@ const arpeggio = (frequencies: number[], step: number, wave: OscillatorType) =>
     wave,
   }));
 
-export const SOUNDS: Record<SoundName, Note[]> = {
+const SOUNDS: Record<SoundName, Note[]> = {
   encounter: [
     { frequency: 220, at: 0, duration: 0.18, wave: "square", slideTo: 440 },
     { frequency: 440, at: 0.2, duration: 0.12, wave: "square" },

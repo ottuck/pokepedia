@@ -56,7 +56,7 @@ export function toDexParams(filters: DexFilters): URLSearchParams {
   return params;
 }
 
-export type SearchIndex = ReadonlyMap<number, readonly string[]>;
+type SearchIndex = ReadonlyMap<number, readonly string[]>;
 
 /** Normalized names in every language, built once so each keystroke is a cheap scan. */
 export function buildSearchIndex(entries: readonly DexEntry[]): SearchIndex {

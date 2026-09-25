@@ -28,7 +28,7 @@ export function hashMergeToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
 }
 
-export type RedeemResult =
+type RedeemResult =
   { ok: true; mergedUserId: string } | { ok: false; code: "merge_failed" };
 
 /**

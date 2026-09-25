@@ -15,11 +15,11 @@ import type {
 import { apiPath } from "./pokeapi";
 
 type Tables = Database["public"]["Tables"];
-export type PokemonRow = Tables["pokemon"]["Row"];
-export type AbilityRow = Tables["ability"]["Row"];
-export type PokemonAbilityRow = Tables["pokemon_ability"]["Row"];
-export type PokemonType = Database["public"]["Enums"]["pokemon_type"];
-export type QuizRow = {
+type PokemonRow = Tables["pokemon"]["Row"];
+type AbilityRow = Tables["ability"]["Row"];
+type PokemonAbilityRow = Tables["pokemon_ability"]["Row"];
+type PokemonType = Database["public"]["Enums"]["pokemon_type"];
+type QuizRow = {
   pokemon_id: number;
   silhouette_path: string;
   answer_keys: string[];
@@ -66,7 +66,7 @@ export function pickLocalized<T extends Localized>(
   throw new Error(`${context}: no ${locale} entry`);
 }
 
-export function cleanFlavorText(text: string, locale: AppLocale): string {
+function cleanFlavorText(text: string, locale: AppLocale): string {
   return text
     .replaceAll(SOFT_HYPHEN, "")
     .replace(/[\f\r\n]+/g, LINE_BREAK_REPLACEMENT[locale])
@@ -84,13 +84,13 @@ function localizedColumns<T extends Localized>(
   return { ko: value("ko"), en: value("en"), ja: value("ja") };
 }
 
-export function idFromUrl(url: string): number {
+function idFromUrl(url: string): number {
   const id = Number(apiPath(url).split("/").pop());
   if (!Number.isInteger(id)) throw new Error(`No numeric id in ${url}`);
   return id;
 }
 
-export function toPokemonType(name: string): PokemonType {
+function toPokemonType(name: string): PokemonType {
   const match = Constants.public.Enums.pokemon_type.find(
     (type) => type === name,
   );
@@ -110,7 +110,7 @@ export function silhouettePath(id: number, secret: string): string {
 
 // ── Evolution ──
 
-export type Evolution = {
+type Evolution = {
   trigger: string;
   minLevel?: number;
   item?: { slug: string; ko: string; en: string; ja: string };
@@ -148,7 +148,7 @@ export function findEvolutionSource(
   return found;
 }
 
-export function itemNames(item: Item): NonNullable<Evolution["item"]> {
+function itemNames(item: Item): NonNullable<Evolution["item"]> {
   const names = localizedColumns(
     item.names,
     (entry) => entry.name,
@@ -168,7 +168,7 @@ const STAT_COLUMNS = {
   speed: "speed",
 } as const;
 
-export type PokemonSource = {
+type PokemonSource = {
   species: Species;
   pokemon: Pokemon;
   chain: EvolutionChain;

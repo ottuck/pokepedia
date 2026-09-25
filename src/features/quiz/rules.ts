@@ -98,7 +98,7 @@ export function shinyChance(combo: number, hintUsed: boolean): number {
   return RULES.shinyTiers.find((tier) => combo >= tier.minCombo)!.chance;
 }
 
-export type AnswerOutcome =
+type AnswerOutcome =
   | { kind: "wrong"; run: RunState; round: RoundState }
   | { kind: "fainted"; run: RunState; round: RoundState }
   | {

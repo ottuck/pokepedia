@@ -1,7 +1,7 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/public";
 
-export const LEADERBOARD_SIZE = 50;
+const LEADERBOARD_SIZE = 50;
 
 /**
  * Top players by their best single game. The `leaderboard` function is the only public view
@@ -22,7 +22,3 @@ export async function getLeaderboard() {
   }
   return data;
 }
-
-export type LeaderboardRow = NonNullable<
-  Awaited<ReturnType<typeof getLeaderboard>>
->[number];

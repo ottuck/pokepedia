@@ -2,7 +2,7 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import type { OwnedSticker } from "./summary";
 
-export type MyCollection = {
+type MyCollection = {
   /** Null when there is no session: nothing to show yet. */
   userId: string | null;
   isAnonymous: boolean;

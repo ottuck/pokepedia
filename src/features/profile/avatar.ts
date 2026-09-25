@@ -26,7 +26,7 @@ export function isOwnAvatarPath(userId: string, path: string): boolean {
   );
 }
 
-export function avatarUrl(path: string): string {
+function avatarUrl(path: string): string {
   return `${publicEnv.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${AVATAR_BUCKET}/${path}`;
 }
 

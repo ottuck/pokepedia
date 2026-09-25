@@ -3,5 +3,4 @@ node_modules
 pnpm-lock.yaml
 next-env.d.ts
 supabase/.temp
-AGENTS.md
 src/lib/supabase/database.types.ts
