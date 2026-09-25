@@ -85,7 +85,7 @@ describe("MyStickerBadge", () => {
     act(() => announceAccountChange());
 
     expect(
-      await screen.findByRole("link", { name: "퀴즈로 모으기" }),
+      await screen.findByRole("link", { name: "게임으로 모으기" }),
     ).toHaveAttribute("href", "/quiz");
   });
 });

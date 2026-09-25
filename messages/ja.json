@@ -1,7 +1,7 @@
 {
   "metadata": {
     "title": "Pokepedia",
-    "description": "第1世代ポケモン図鑑・シルエットクイズ・シールコレクション"
+    "description": "第1世代ポケモン図鑑・バトルゲーム・シールコレクション"
   },
   "dex": {
     "title": "ずかん",
@@ -48,7 +48,7 @@
       "owned": "わたしのシール {normal}枚{shiny, plural, =0 {} other {・色違い #枚}}",
       "shinyOwned": "色違いゲット",
       "none": "まだ集めていません。",
-      "toQuiz": "クイズで集める"
+      "toQuiz": "ゲームで集める"
     }
   },
   "types": {
@@ -110,13 +110,13 @@
   },
   "nav": {
     "dex": "ずかん",
-    "quiz": "クイズ",
+    "quiz": "ゲーム",
     "main": "メインメニュー",
     "collection": "コレクション",
     "leaderboard": "ランキング"
   },
   "quiz": {
-    "metaTitle": "シルエットクイズ",
+    "metaTitle": "ゲーム",
     "title": "だれだ？",
     "subtitle": "シルエットを見てなまえを当てて、シールを集めよう。韓国語・英語・日本語のどのなまえでも正解です。",
     "hud": {
@@ -189,7 +189,7 @@
       "off": "効果音オフ"
     },
     "titleScreen": {
-      "subtitle": "シルエットクイズ",
+      "subtitle": "ゴールド",
       "pressStart": "PRESS START",
       "starting": "準備中…",
       "copyright": "© 2026 Pokepedia · ファンプロジェクト",
@@ -217,8 +217,8 @@
     "shinyBadge": "色違い",
     "quantity": "ふつう{normal}まい、色違い{shiny}まい",
     "emptyTitle": "まだシールがありません",
-    "emptyBody": "クイズでポケモンを当てると、そのポケモンのシールがもらえます。",
-    "toQuiz": "クイズであそぶ",
+    "emptyBody": "ゲームでポケモンを当てると、そのポケモンのシールがもらえます。",
+    "toQuiz": "ゲームであそぶ",
     "filters": {
       "label": "表示",
       "all": "すべて",
@@ -251,7 +251,7 @@
       }
     },
     "stats": {
-      "title": "クイズの記録",
+      "title": "ゲームの記録",
       "plays": "プレイ回数",
       "bestScore": "最高スコア",
       "bestCombo": "最高コンボ",
@@ -271,8 +271,8 @@
       "fled": "にげた"
     },
     "emptyTitle": "まだ記録がありません",
-    "emptyBody": "クイズを1回プレイすると、ゲストアカウントが作られて記録が残ります。",
-    "toQuiz": "クイズで遊ぶ",
+    "emptyBody": "ゲームを1回プレイすると、ゲストアカウントが作られて記録が残ります。",
+    "toQuiz": "ゲームで遊ぶ",
     "avatar": {
       "change": "写真を変更",
       "uploading": "アップロード中…",
@@ -312,8 +312,8 @@
       "label": "わたしの順位",
       "ranked": "わたしの順位 {rank}位・最高 {score, number}点・コンボ {combo}",
       "unranked": "まだスコアのあるゲームがありません。1回遊ぶとランキングに載ります。",
-      "signedOut": "クイズを1回遊ぶと、ゲストでもランキングに載ります。",
-      "play": "クイズで遊ぶ"
+      "signedOut": "ゲームを1回遊ぶと、ゲストでもランキングに載ります。",
+      "play": "ゲームで遊ぶ"
     },
     "unavailable": "いまはランキングを読み込めません。しばらくしてからもう一度ご確認ください。"
   }
