@@ -32,7 +32,7 @@ export function MainNav() {
 
   return (
     <nav aria-label={t("main")}>
-      <ul className="flex gap-1 overflow-x-auto text-sm font-bold">
+      <ul className="flex flex-wrap gap-1 text-sm font-bold">
         {ITEMS.map(({ href, key, match }) => (
           <li key={key}>
             <Link
