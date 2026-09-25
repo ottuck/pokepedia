@@ -12,7 +12,7 @@ beforeEach(() => {
   useQuizStore.getState().reset();
 });
 
-function to(state: Parameters<typeof useQuizStore.setState>[0]) {
+function to(state: Partial<ReturnType<typeof useQuizStore.getState>>) {
   act(() => useQuizStore.setState(state));
 }
 
