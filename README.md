@@ -61,7 +61,8 @@ flowchart LR
   Next -- "RSC · 정적 페이지<br/>(publishable key + RLS)" --> DB[(Supabase Postgres<br/>도쿄)]
   Next -- "Server Actions<br/>(secret key → RPC)" --> DB
   User -- 이미지 --> Storage[(Supabase Storage)]
-  PokeAPI[(PokeAPI)] -. "1회 동기화 스크립트" .-> DB & Storage
+  PokeAPI[(PokeAPI)] --> Sync[동기화 스크립트<br/>수동 1회]
+  Sync --> DB & Storage
 ```
 
 - **도감·상세는 빌드 시 미리 만듭니다.** 상세 페이지 151마리 × 3개 언어 = 453페이지와 OG 이미지를 prerender해서 DB 조회 없이 응답합니다.

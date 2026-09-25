@@ -35,28 +35,23 @@ Pokepedia의 시스템 설계, 비즈니스 로직, 개발 방식을 정리한 �
 
 ```mermaid
 flowchart LR
-  subgraph Browser
-    RSC[RSC 페이지]
-    Island[Client island<br/>QuizGame · 계정 메뉴 · 필터]
-  end
-  subgraph Vercel["Vercel (hnd1, 도쿄)"]
-    Pages[정적/동적 페이지]
+  UI["브라우저<br/>RSC 페이지 + client island"]
+  subgraph Vercel["Vercel · hnd1 도쿄"]
+    Pages[페이지 렌더링]
     Actions[Server Actions<br/>게임 · 프로필 · 병합]
   end
-  subgraph Supabase["Supabase (ap-northeast-1, 도쿄)"]
-    DB[(Postgres<br/>RLS · RPC)]
+  subgraph Supabase["Supabase · ap-northeast-1 도쿄"]
     Auth[Auth<br/>익명 · Google]
+    DB[(Postgres<br/>RLS · RPC · pg_cron)]
     Storage[(Storage<br/>아트워크 · 실루엣 · 아바타)]
-    Cron[pg_cron<br/>게스트 정리]
   end
-  PokeAPI[(PokeAPI)] -. 1회 동기화 .-> DB
-  PokeAPI -. 1회 동기화 .-> Storage
-  RSC --> Pages --> DB
-  Island --> Actions -- secret key --> DB
-  Island -- publishable key + RLS --> DB
-  Island --> Auth
-  Browser -- 이미지 --> Storage
-  Cron --> DB
+  PokeAPI[(PokeAPI)] --> Sync[scripts/sync-pokemon<br/>수동 1회]
+  Sync --> DB & Storage
+  UI --> Pages -- publishable key --> DB
+  UI --> Actions -- secret key · RPC --> DB
+  UI -- publishable key · RLS --> DB
+  UI --> Auth
+  UI -- 이미지 --> Storage
 ```
 
 - 브라우저는 publishable key로 RLS가 허용한 것만 읽는다. 게임 상태를 바꾸는 쓰기는 모두 Server Action이 secret key로 RPC를 호출해서 한다.
