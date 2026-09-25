@@ -4,7 +4,8 @@
 
 Modern remake of a 2023 JSP team project: Gen 1 (#001–151) Pokédex, a battle-style
 silhouette quiz, and a sticker collection. Next.js 16 App Router + Supabase + Vercel.
-Architecture and product decisions: `docs/architecture.md` — read it before structural changes.
+System design, business logic and development decisions: `docs/system_design.md` — read it
+before structural changes. `README.md` is the public-facing overview.
 
 ## Commands
 
@@ -82,7 +83,8 @@ Claude merges its own PRs (squash) when the change is low-risk and every gate pa
 
 **Gates — all required, otherwise do not merge:**
 
-1. GitHub CI green.
+1. GitHub CI green. Documentation-only PRs (`**/*.md`, `docs/**`) skip CI by design
+   (`paths-ignore`), so this gate does not apply to them.
 2. Vercel Preview deployment succeeded, and the changed pages were checked on it.
 3. Self-review of the full diff (`/code-review` or equivalent) with findings fixed.
 4. No unresolved review comments.
@@ -91,7 +93,7 @@ Claude merges its own PRs (squash) when the change is low-risk and every gate pa
 **Low-risk (Claude may merge):** UI / CSS / Motion, components and ordinary features,
 tests, additive non-destructive migrations (new tables/columns/indexes/functions without
 new or changed grants/policies), Pokémon data code under `scripts/`, patch/minor updates of
-existing dependencies, dependencies already planned in `docs/architecture.md`, docs.
+existing dependencies, dependencies already planned in `docs/system_design.md`, docs.
 
 **Needs the user's approval before merge** — label the PR `needs-approval`, ask, and wait:
 
@@ -99,8 +101,8 @@ existing dependencies, dependencies already planned in `docs/architecture.md`, d
 - Any RLS policy, GRANT/REVOKE, `security definer` function, or Auth configuration change
 - Deleting or bulk-changing production data; running seed/sync against remote
 - Secrets, environment variables, domains, billing, third-party integrations
-- New dependencies not planned in `docs/architecture.md`; major-version upgrades
-- Architecture changes (anything that should update `docs/architecture.md` beyond wording)
+- New dependencies not planned in `docs/system_design.md`; major-version upgrades
+- Architecture changes (anything that should update `docs/system_design.md` beyond wording)
 
 **After merge:**
 

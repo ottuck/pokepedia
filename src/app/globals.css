@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Design tokens (see docs/architecture.md § Design tokens).
+ * Design tokens (see docs/system_design.md § UI).
  * Every themed token is `light-dark(light, dark)`: the value follows `color-scheme`, so switching
  * the theme only changes `color-scheme` (system by default, or `data-theme` set by ThemeScript).
  */
