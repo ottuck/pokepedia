@@ -17,6 +17,8 @@ Architecture and product decisions: `docs/architecture.md` — read it before st
   The dex is prerendered at build time, so a remote sync only shows after the next deploy.
 - `supabase/seed.sql` seeds a 3-Pokémon catalog for local/CI (`db reset`); run the sync for the full dex
 - `pnpm test:db` — RLS/grant/RPC tests against local Supabase (writes fixtures; local DB only)
+- `pnpm test:e2e` — one Playwright journey (dex → detail → language → game → collection) against
+  local Supabase; starts `pnpm dev` on :3200 (first run: `pnpm exec playwright install chromium`)
 - Node 24 (`.nvmrc`). Package manager: pnpm (version pinned by `packageManager`).
 - Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
   `admin.ts` (secret key, bypasses RLS — server only), `proxy.ts` (session refresh only).
