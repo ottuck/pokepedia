@@ -45,7 +45,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Start local Supabase (applies all migrations)
-        run: pnpm supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,realtime
+        run: pnpm supabase start -x studio,imgproxy,mailpit,supavisor
       - name: Lint database schema
         run: pnpm supabase db lint --level warning --fail-on warning
       - name: Generated types match the migrations
@@ -73,7 +73,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Start local Supabase (applies migrations and the seed catalog)
-        run: pnpm supabase start -x studio,imgproxy,mailpit,edge-runtime,logflare,vector,supavisor,realtime
+        run: pnpm supabase start -x studio,imgproxy,mailpit,supavisor
       - name: Export local keys
         run: |
           pnpm --silent supabase status -o env > .supabase.env
