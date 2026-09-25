@@ -37,7 +37,9 @@
 
 ### Could
 
-리더보드, 데일리 챌린지, 즐겨찾기 [L], 스티커 3D tilt, OG 이미지, 익명 계정 정리 cron, 익명 컬렉션 병합
+리더보드, 스티커 3D tilt, OG 이미지, 익명 계정 정리 cron, 익명 컬렉션 병합
+
+제외(2026-09-25 결정): 데일리 챌린지, 즐겨찾기
 
 ### Not Now
 
@@ -204,7 +206,12 @@ my_stats view (security_invoker = true)
 - 헤더 계정 영역은 **client island**다. layout에서 cookie를 읽으면 모든 정적 페이지가 요청마다 렌더링되므로, 브라우저에서 `getClaims()`로 세션을 읽고 profile은 RLS 아래에서 조회한다.
 - profile은 `auth.users` insert trigger(`private.create_profile_for_new_user`, security definer)가 만든다. 기본 닉네임 `Trainer-XXXX`(언어 중립). 본인만 조회, `nickname` 컬럼만 수정 가능.
 - 원격 설정은 대시보드에서 한다(`config.toml`의 auth 설정은 GitHub 연동으로 배포되지 않음): Anonymous sign-ins, Manual linking, Google provider, Site URL, Redirect URLs(production, preview 와일드카드).
-- Could: 이미 있는 Google 계정으로 로그인할 때 게스트 컬렉션 병합, 오래된 익명 계정 정리 cron, CAPTCHA.
+- **게스트 기록 병합**: 게스트의 `linkIdentity`가 `identity_already_exists`로 실패하면, 오류 페이지에서 기록을 그 Google 계정으로 합칠 수 있다.
+  1. 게스트 세션으로 Server Action `prepareGuestMerge`가 1회용 티켓을 만든다. 무작위 32바이트 토큰의 sha256만 `private.guest_merge_ticket`에 저장하고(10분), 원래 토큰은 httpOnly·Lax·`path=/auth/callback` 쿠키로만 보낸다.
+  2. 클라이언트가 Google로 `signInWithOAuth`한다(`next=/[locale]/collection`).
+  3. `/auth/callback`이 code를 교환한 뒤, 새 세션이 게스트가 **아니면** `guest_merge_redeem`(service_role 전용)을 호출한다. 이 함수가 한 트랜잭션으로 티켓을 소비하고, 게스트의 진행 중 게임을 도망 처리한 뒤 run/round를 옮기고 스티커 수량을 더한다. **그다음에만** Admin API로 게스트 user를 삭제하고 `?merged=1`로 이동한다.
+  - 쿠키는 callback에 올 때마다(성공이든 실패든) 지운다. 대상 user는 세션에서만 정하고, 게스트 → Google 방향만 허용한다. 티켓은 1회용이고 만료되면 거부된다(DB 테스트와 권한 변형 테스트로 확인).
+- Could: 오래된 익명 계정 정리 cron, CAPTCHA.
 
 ## 7. 게임 API (Server Actions)
 

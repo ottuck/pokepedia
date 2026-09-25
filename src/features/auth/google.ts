@@ -11,9 +11,10 @@ import { createClient } from "@/lib/supabase/browser";
 export async function continueWithGoogle(
   linkToCurrentUser: boolean,
   router: ReturnType<typeof useRouter>,
+  /** Where to land afterwards; defaults to the current page. */
+  next = window.location.pathname + window.location.search,
 ) {
   const supabase = createClient();
-  const next = window.location.pathname + window.location.search;
   const options = {
     redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
   };

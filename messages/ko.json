@@ -91,12 +91,22 @@
     "signOut": "로그아웃",
     "errors": {
       "title": "로그인하지 못했어요",
-      "identityAlreadyExists": "이 Google 계정은 이미 다른 Pokepedia 계정에 연결돼 있어요. 게스트에서 나간 뒤 Google로 로그인해 주세요.",
+      "identityAlreadyExists": "이 Google 계정은 이미 다른 Pokepedia 계정에 연결돼 있어요. 지금까지의 게스트 기록을 그 계정으로 합칠 수 있어요.",
       "accessDenied": "Google 로그인이 취소됐어요.",
       "generic": "잠시 후 다시 시도해 주세요.",
-      "backHome": "도감으로"
+      "backHome": "도감으로",
+      "mergeFailed": "게스트 기록을 합치지 못했어요. Google 계정으로는 로그인됐어요. 잠시 후 다시 시도해 주세요."
     },
-    "myPage": "마이페이지"
+    "myPage": "마이페이지",
+    "merge": {
+      "button": "기록 합치고 Google로 로그인",
+      "preparing": "준비 중…",
+      "note": "스티커 수량은 더해지고 게임 기록은 옮겨져요. 합친 뒤 게스트 계정은 삭제돼요.",
+      "errors": {
+        "not_guest": "게스트로 플레이 중일 때만 합칠 수 있어요.",
+        "server_error": "준비하지 못했어요. 잠시 후 다시 시도해 주세요."
+      }
+    }
   },
   "nav": {
     "dex": "도감",
@@ -216,7 +226,8 @@
     "guest": {
       "notice": "게스트 컬렉션은 이 브라우저에만 저장돼요. Google 계정에 저장하면 다른 기기에서도 볼 수 있어요.",
       "save": "Google 계정에 저장"
-    }
+    },
+    "merged": "게스트 기록을 이 계정으로 합쳤어요."
   },
   "me": {
     "title": "마이페이지",

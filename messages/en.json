@@ -91,12 +91,22 @@
     "signOut": "Sign out",
     "errors": {
       "title": "Couldn’t sign you in",
-      "identityAlreadyExists": "This Google account is already linked to another Pokepedia account. Leave guest mode, then sign in with Google.",
+      "identityAlreadyExists": "This Google account is already linked to another Pokepedia account. You can merge your guest record into it.",
       "accessDenied": "Google sign-in was cancelled.",
       "generic": "Try again in a moment.",
-      "backHome": "Back to Pokédex"
+      "backHome": "Back to Pokédex",
+      "mergeFailed": "We couldn’t merge your guest record, but you are signed in with Google. Please try again in a moment."
     },
-    "myPage": "My page"
+    "myPage": "My page",
+    "merge": {
+      "button": "Merge record and sign in with Google",
+      "preparing": "Getting ready…",
+      "note": "Sticker counts are added up and game history moves over. The guest account is deleted afterwards.",
+      "errors": {
+        "not_guest": "Only a guest record can be merged.",
+        "server_error": "Something went wrong. Please try again in a moment."
+      }
+    }
   },
   "nav": {
     "dex": "Pokédex",
@@ -216,7 +226,8 @@
     "guest": {
       "notice": "A guest collection lives only in this browser. Save it to Google to see it on any device.",
       "save": "Save to Google account"
-    }
+    },
+    "merged": "Your guest record was merged into this account."
   },
   "me": {
     "title": "My page",
