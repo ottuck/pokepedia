@@ -94,6 +94,9 @@ export function HeroCard({
           </div>
 
           <div aria-hidden className={styles.edge} />
+          {/* In front of the artwork, so the Pokémon itself catches the light too. */}
+          <div aria-hidden className={styles.holo} />
+          <div aria-hidden className={styles.sparkle} />
           <div aria-hidden className={styles.glare} />
         </div>
         <div aria-hidden className={styles.shadow} />
