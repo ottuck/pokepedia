@@ -51,17 +51,12 @@ export function BattleStage() {
   return (
     <div className={styles.battle}>
       <Hud />
-      <m.div
-        // Hit: the whole screen shakes, as when a move lands.
-        animate={phase === "hit" ? { x: [0, -8, 8, -5, 5, 0] } : { x: 0 }}
-        transition={{ duration: 0.4 }}
-        className={styles.field}
-      >
+      <div className={styles.field}>
         <EnemyInfo />
         <EnemySprite />
         <Trainer />
         <PlayerInfo />
-      </m.div>
+      </div>
       <div className={styles.console}>
         <MessageBox />
         <BattleMenu />
@@ -230,7 +225,10 @@ function EnemySprite() {
   );
 }
 
-/** The player's trainer, always on the field. Slides in once when the battle starts. */
+/**
+ * The player's trainer, always on the field. Slides in once when the battle starts and
+ * shakes when HP is lost.
+ */
 function Trainer() {
   const phase = useQuizStore((s) => s.phase);
   return (
@@ -241,9 +239,14 @@ function Trainer() {
       transition={spring.gentle}
     >
       <div aria-hidden className={styles.trainerPlatform} />
-      <TrainerSprite
-        className={`${styles.trainerSprite} ${phase === "hit" ? styles.hurt : ""}`}
-      />
+      <m.div
+        // Losing HP: the trainer shakes and blinks, as a Pokémon does when it is hit.
+        animate={phase === "hit" ? { x: [0, -10, 10, -7, 7, -3, 0] } : { x: 0 }}
+        transition={{ duration: 0.45 }}
+        className={phase === "hit" ? styles.hurt : undefined}
+      >
+        <TrainerSprite className={styles.trainerSprite} />
+      </m.div>
     </m.div>
   );
 }

@@ -314,7 +314,7 @@
 }
 
 .input:focus {
-  border-bottom-color: #e3342f;
+  border-bottom-width: 4px;
 }
 
 .input::placeholder {
@@ -325,11 +325,11 @@
   flex: none;
   border: 3px solid #1f1d1a;
   border-radius: 6px;
-  background: #e3342f;
+  background: #1f1d1a;
   padding: 0 0.9rem;
   font-weight: 900;
-  color: #fff;
-  box-shadow: 0 3px 0 #1f1d1a;
+  color: #f8f8f0;
+  box-shadow: 0 3px 0 #8a877f;
 }
 
 .attack:disabled {

@@ -1,6 +1,7 @@
 /**
  * The player's trainer, seen from behind as in Game Boy battles. Original pixel art for
- * Pokepedia (no game asset is used): a red cap, a yellow backpack, a blue jacket.
+ * Pokepedia (no game asset is used): a cap, a backpack and a jacket in the four greys of
+ * the original Game Boy screen.
  * Each character is one pixel; "." is transparent.
  */
 export const TRAINER_PIXELS = [
@@ -32,14 +33,14 @@ export const TRAINER_PIXELS = [
 
 export const TRAINER_PALETTE: Record<string, string> = {
   K: "#1f1d1a",
-  R: "#e3342f",
-  W: "#ffffff",
-  H: "#3b2a20",
-  S: "#f2c9a0",
-  B: "#3a6fd8",
-  Y: "#f5c542",
-  O: "#c98a1a",
-  D: "#26324d",
+  R: "#55534d",
+  W: "#f8f8f0",
+  H: "#34322e",
+  S: "#d9d6cc",
+  B: "#8a877f",
+  Y: "#bdbab0",
+  O: "#55534d",
+  D: "#34322e",
 };
 
 // Pixel runs merged per row: one <rect> per run of a color instead of one per pixel.
