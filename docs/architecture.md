@@ -326,9 +326,9 @@ my_stats view (security_invoker = true)
 
 ## 11. 테스트
 
-| 도구                    | 대상                                                    |
-| ----------------------- | ------------------------------------------------------- |
-| Vitest                  | `rules.ts`, `normalize.ts`, sync 정규화                 |
-| Vitest + local Supabase | RLS·RPC 권한                                            |
-| RTL                     | `PokedexExplorer`, `BattleMenu`, `AnswerBox`            |
-| Playwright              | 도감→검색→상세→언어 전환 / PLAY→오답→정답→스티커→컬렉션 |
+| 도구                    | 대상                                                          |
+| ----------------------- | ------------------------------------------------------------- |
+| Vitest                  | `rules.ts`, `normalize.ts`, sync 정규화                       |
+| Vitest + local Supabase | RLS·RPC 권한                                                  |
+| RTL                     | `PokedexExplorer`, `BattleMenu`, `AnswerBox`                  |
+| Playwright              | 핵심 여정 1개: 도감 검색→상세→언어 전환→게임 오답·정답→컬렉션 |

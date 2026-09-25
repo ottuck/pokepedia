@@ -1,0 +1,29 @@
+import { defineConfig, devices } from "@playwright/test";
+
+const PORT = 3200;
+
+// One core journey against local Supabase (`pnpm supabase start`). The app reads its keys
+// from .env.local locally; CI exports them from `supabase status -o env`. It runs on the dev
+// server everywhere: a production build prerenders OG images from Storage artwork, which the
+// seed catalog does not upload.
+export default defineConfig({
+  testDir: "e2e",
+  // Generous: the dev server compiles each page on first visit.
+  timeout: 180_000,
+  retries: process.env.CI ? 1 : 0,
+  reporter: process.env.CI ? [["github"], ["list"]] : "list",
+  use: {
+    baseURL: `http://localhost:${PORT}`,
+    locale: "ko-KR",
+    trace: "retain-on-failure",
+  },
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  webServer: {
+    command: `pnpm dev --port ${PORT}`,
+    url: `http://localhost:${PORT}/ko`,
+    reuseExistingServer: !process.env.CI,
+    // Stop `next dev` (behind pnpm) cleanly so the run exits once the test is done.
+    gracefulShutdown: { signal: "SIGTERM", timeout: 5_000 },
+    timeout: 180_000,
+  },
+});

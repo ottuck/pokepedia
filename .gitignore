@@ -54,3 +54,7 @@ supabase/.branches
 
 # IDE
 .idea/
+
+# playwright
+/test-results/
+/playwright-report/
