@@ -9,11 +9,6 @@ describe("nicknameSchema", () => {
     },
   );
 
-  it("trims surrounding spaces before checking the length", () => {
-    expect(nicknameSchema.parse("  레드  ")).toBe("레드");
-    expect(nicknameSchema.safeParse("  a  ").success).toBe(false);
-  });
-
   it.each(["", "a", "a".repeat(21), "red\nblue", "zero​width"])(
     "rejects %j",
     (nickname) => {

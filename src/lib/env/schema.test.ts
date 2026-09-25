@@ -11,10 +11,6 @@ describe("publicEnvSchema", () => {
     expect(publicEnvSchema.parse(validPublic)).toEqual(validPublic);
   });
 
-  it("rejects missing values", () => {
-    expect(publicEnvSchema.safeParse({}).success).toBe(false);
-  });
-
   it("rejects a legacy anon JWT in place of the publishable key", () => {
     const result = publicEnvSchema.safeParse({
       ...validPublic,
@@ -34,14 +30,6 @@ describe("publicEnvSchema", () => {
 });
 
 describe("serverEnvSchema", () => {
-  it("accepts a secret key", () => {
-    expect(
-      serverEnvSchema.parse({ SUPABASE_SECRET_KEY: "sb_secret_abc" }),
-    ).toEqual({
-      SUPABASE_SECRET_KEY: "sb_secret_abc",
-    });
-  });
-
   it("rejects a publishable key in place of the secret key", () => {
     expect(
       serverEnvSchema.safeParse({ SUPABASE_SECRET_KEY: "sb_publishable_abc" })

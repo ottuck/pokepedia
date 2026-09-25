@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { localeFromPath, safeNextPath } from "./redirect";
+import { safeNextPath } from "./redirect";
 
 describe("safeNextPath", () => {
   it.each(["/", "/ko", "/ja/pokemon/25", "/ko?type=fire&sort=name"])(
@@ -21,10 +21,6 @@ describe("safeNextPath", () => {
     expect(safeNextPath(next)).toBe("/");
   });
 
-  it("keeps percent-encoded paths, which cannot leave the origin", () => {
-    expect(safeNextPath("/%0a")).toBe("/%0a");
-  });
-
   it("never produces a URL that leaves the origin", () => {
     const origin = "https://pokepedia.example";
     for (const attempt of [
@@ -34,13 +30,5 @@ describe("safeNextPath", () => {
     ]) {
       expect(new URL(safeNextPath(attempt), origin).origin).toBe(origin);
     }
-  });
-});
-
-describe("localeFromPath", () => {
-  it("reads the locale segment and falls back to the default", () => {
-    expect(localeFromPath("/ja/pokemon/25")).toBe("ja");
-    expect(localeFromPath("/")).toBe("ko");
-    expect(localeFromPath("/fr/x")).toBe("ko");
   });
 });

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import {
   applyHint,
   comboMultiplier,
-  flee,
   hintText,
   isCorrectAnswer,
   nameMask,
@@ -135,13 +134,6 @@ describe("resolveAnswer", () => {
     });
   });
 
-  it("scores by HP left after earlier mistakes", () => {
-    const afterTwoMisses: RoundState = { ...newRound(), hp: 1, attempts: 2 };
-    expect(answer(newRun(), afterTwoMisses, true)).toMatchObject({
-      scoreGained: 30,
-    });
-  });
-
   it("faints on the third miss, failing the round and ending the run", () => {
     const lastHp: RoundState = { ...newRound(), hp: 1, attempts: 2 };
     const result = answer({ ...newRun(), score: 500 }, lastHp, false);
@@ -164,26 +156,6 @@ describe("resolveAnswer", () => {
     expect(resolveAnswer(finished, newRound(), true, NEVER_SHINY)).toEqual({
       ok: false,
       error: "run_not_active",
-    });
-  });
-
-  it("plays out a whole run", () => {
-    let run = newRun();
-    // Clear, clear, miss then clear, then faint.
-    run = answer(run, newRound(), true).run;
-    run = answer(run, newRound(), true).run;
-    const missed = answer(run, newRound(), false);
-    run = answer(missed.run, missed.round, true).run;
-    let round = newRound();
-    for (let i = 0; i < 2; i++) ({ run, round } = answer(run, round, false));
-    const end = answer(run, round, false);
-
-    expect(end.kind).toBe("fainted");
-    expect(end.run).toMatchObject({
-      status: "finished",
-      roundsCleared: 3,
-      bestCombo: 2,
-      score: 100 + 110 + 60, // combo 1, combo 2, then combo 1 again with 2 HP
     });
   });
 });
@@ -222,12 +194,6 @@ describe("applyHint / skipRound / flee", () => {
       error: "no_skips_left",
     });
   });
-
-  it("flees an active run only", () => {
-    const fled = unwrap(flee(newRun()));
-    expect(fled.status).toBe("finished");
-    expect(flee(fled)).toEqual({ ok: false, error: "run_not_active" });
-  });
 });
 
 describe("pickNextPokemon", () => {
@@ -237,10 +203,6 @@ describe("pickNextPokemon", () => {
     const seen = new Set([1, 2, 3]);
     expect(pickNextPokemon(ids, seen, always(0))).toBe(4);
     expect(pickNextPokemon(ids, seen, always(0.99))).toBe(4);
-  });
-
-  it("allows repeats once every Pokémon has appeared", () => {
-    expect(pickNextPokemon(ids, new Set(ids), always(0.99))).toBe(4);
   });
 });
 

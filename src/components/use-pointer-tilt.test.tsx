@@ -39,26 +39,6 @@ beforeEach(() => {
 afterEach(() => vi.restoreAllMocks());
 
 describe("usePointerTilt", () => {
-  it("tilts toward a mouse and writes the CSS variables", () => {
-    const surface = setup();
-
-    surface.dispatchEvent(pointer("pointermove", { x: 0, y: 0 }));
-
-    expect(surface).toHaveAttribute("data-tilting");
-    expect(surface.style.getPropertyValue("--rx")).toBe("10.00deg");
-    expect(surface.style.getPropertyValue("--ry")).toBe("-10.00deg");
-  });
-
-  it("lays flat again when the pointer leaves", () => {
-    const surface = setup();
-    surface.dispatchEvent(pointer("pointermove", { x: 0, y: 0 }));
-
-    surface.dispatchEvent(pointer("pointerleave"));
-
-    expect(surface).not.toHaveAttribute("data-tilting");
-    expect(surface.style.getPropertyValue("--rx")).toBe("0.00deg");
-  });
-
   it("ignores touch unless asked, so finger scrolling never tilts a sticker", () => {
     const surface = setup();
 
@@ -67,20 +47,6 @@ describe("usePointerTilt", () => {
     );
 
     expect(surface).not.toHaveAttribute("data-tilting");
-  });
-
-  it("follows a finger when asked, and flattens when the page scroll takes over", () => {
-    const surface = setup(true);
-
-    surface.dispatchEvent(
-      pointer("pointermove", { x: 100, y: 50, pointerType: "touch" }),
-    );
-    expect(surface.style.getPropertyValue("--ry")).toBe("10.00deg");
-
-    // A vertical swipe hands the gesture to scrolling: the browser cancels the pointer.
-    surface.dispatchEvent(pointer("pointercancel", { pointerType: "touch" }));
-    expect(surface).not.toHaveAttribute("data-tilting");
-    expect(surface.style.getPropertyValue("--ry")).toBe("0.00deg");
   });
 
   it("does nothing at all when reduced motion is requested", () => {

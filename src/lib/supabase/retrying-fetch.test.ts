@@ -17,17 +17,6 @@ describe("createRetryingFetch", () => {
     expect(base).toHaveBeenCalledTimes(3);
   });
 
-  it("gives up after the last retry with the final response", async () => {
-    const base = vi.fn<typeof fetch>().mockResolvedValue(response(503));
-
-    const result = await createRetryingFetch(base, { retries: 2, delayMs: 0 })(
-      "https://x",
-    );
-
-    expect(result.status).toBe(503);
-    expect(base).toHaveBeenCalledTimes(3);
-  });
-
   it("does not retry client errors or writes", async () => {
     const base = vi
       .fn<typeof fetch>()

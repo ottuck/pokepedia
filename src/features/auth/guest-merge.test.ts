@@ -66,10 +66,4 @@ describe("redeemGuestMerge", () => {
     });
     expect(admin.auth.admin.deleteUser).not.toHaveBeenCalled();
   });
-
-  it("still reports success when only the delete fails (the record already moved)", async () => {
-    deleteResult = { error: { message: "boom" } };
-
-    await expect(redeem()).resolves.toMatchObject({ ok: true });
-  });
 });

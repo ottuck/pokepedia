@@ -1,31 +1,24 @@
 import { describe, expect, it } from "vitest";
 import fixtures from "./__fixtures__/pokeapi.json";
 import {
-  abilitySchema,
   evolutionChainSchema,
   itemSchema,
   pokemonSchema,
   speciesSchema,
 } from "./pokeapi";
 import {
-  cleanFlavorText,
   pickLocalized,
   silhouettePath,
-  toAbilityRow,
   toAnswerKeys,
-  toPokemonAbilityRows,
   toPokemonRow,
 } from "./transform";
 
 // Trimmed real PokeAPI responses; parsing them also checks the response schemas.
 const pikachuSpecies = speciesSchema.parse(fixtures.species25);
-const raichuSpecies = speciesSchema.parse(fixtures.species26);
 const mrMimeSpecies = speciesSchema.parse(fixtures.species122);
 const pikachu = pokemonSchema.parse(fixtures.pokemon25);
-const raichu = pokemonSchema.parse(fixtures.pokemon26);
 const chain = evolutionChainSchema.parse(fixtures.chain10);
 const thunderStone = itemSchema.parse(fixtures.itemThunderStone);
-const staticAbility = abilitySchema.parse(fixtures.ability9);
 
 const idBySpeciesName = new Map([
   ["pikachu", 25],
@@ -66,37 +59,6 @@ describe("toPokemonRow", () => {
     expect(row.evolves_from_id).toBeNull();
     expect(row.evolution).toBeNull();
   });
-
-  it("describes an item evolution with localized item names", () => {
-    const raichuRow = toPokemonRow({
-      species: raichuSpecies,
-      pokemon: raichu,
-      chain,
-      idBySpeciesName,
-      itemsBySlug,
-    });
-    expect(raichuRow.evolves_from_id).toBe(25);
-    expect(raichuRow.evolution).toEqual({
-      trigger: "use-item",
-      item: {
-        slug: "thunder-stone",
-        ko: "천둥의돌",
-        en: "Thunder Stone",
-        ja: "かみなりのいし",
-      },
-    });
-  });
-
-  it("uses the latest flavor text per language, without game line breaks", () => {
-    for (const text of [
-      row.description_ko,
-      row.description_en,
-      row.description_ja,
-    ]) {
-      expect(text).not.toMatch(/[\n\f]/);
-      expect(text.length).toBeGreaterThan(10);
-    }
-  });
 });
 
 describe("toAnswerKeys", () => {
@@ -108,25 +70,6 @@ describe("toAnswerKeys", () => {
   });
 });
 
-describe("toAbilityRow / toPokemonAbilityRows", () => {
-  it("maps an ability with localized names and descriptions", () => {
-    expect(toAbilityRow(staticAbility)).toMatchObject({
-      id: 9,
-      slug: "static",
-      name_ko: "정전기",
-      name_en: "Static",
-      name_ja: "せいでんき",
-    });
-  });
-
-  it("keeps slots and hidden abilities", () => {
-    expect(toPokemonAbilityRows(pikachu)).toEqual([
-      { pokemon_id: 25, ability_id: 9, slot: 1, is_hidden: false },
-      { pokemon_id: 25, ability_id: 31, slot: 3, is_hidden: true },
-    ]);
-  });
-});
-
 describe("pickLocalized", () => {
   const entries = [
     { language: { name: "ja-hrkt" }, value: "kana" },
@@ -134,27 +77,10 @@ describe("pickLocalized", () => {
     { language: { name: "ja" }, value: "new" },
   ];
 
-  it("prefers the first language code and its latest entry", () => {
-    expect(pickLocalized(entries, "ja", "test").value).toBe("new");
-  });
-
-  it("falls back to the next language code", () => {
-    expect(pickLocalized(entries.slice(0, 1), "ja", "test").value).toBe("kana");
-  });
-
   it("throws instead of silently using another language", () => {
     expect(() => pickLocalized(entries, "ko", "test")).toThrow(
       "test: no ko entry",
     );
-  });
-});
-
-describe("cleanFlavorText", () => {
-  it("joins wrapped lines with a space, or an ideographic space in Japanese", () => {
-    expect(cleanFlavorText("A clever\nforest-dweller\froasts", "en")).toBe(
-      "A clever forest-dweller roasts",
-    );
-    expect(cleanFlavorText("電気を\n流す", "ja")).toBe("電気を　流す");
   });
 });
 

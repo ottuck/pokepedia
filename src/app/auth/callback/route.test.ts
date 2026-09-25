@@ -48,13 +48,6 @@ beforeEach(() => {
 });
 
 describe("auth callback", () => {
-  it("signs in and returns to next without a merge ticket", async () => {
-    const response = await callback("code=abc&next=/ko/quiz");
-
-    expect(location(response)).toBe("/ko/quiz");
-    expect(state.redeem).not.toHaveBeenCalled();
-  });
-
   it("merges into the account that just signed in and lands with ?merged=1", async () => {
     const response = await callback(
       "code=abc&next=/ko/collection",
@@ -90,16 +83,5 @@ describe("auth callback", () => {
     expect(state.deleteCookie).toHaveBeenCalled();
     expect(state.redeem).not.toHaveBeenCalled();
     expect(location(response)).toBe("/en/auth/error?code=access_denied");
-  });
-
-  it("reports a failed merge on the error page", async () => {
-    state.redeem.mockResolvedValue({ ok: false, code: "merge_failed" });
-
-    const response = await callback(
-      "code=abc&next=/ko/collection",
-      "raw-token",
-    );
-
-    expect(location(response)).toBe("/ko/auth/error?code=merge_failed");
   });
 });

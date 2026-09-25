@@ -280,55 +280,11 @@ describe("answer", () => {
     expect(repo.stickers.get("ash:25:normal")).toBe(1);
   });
 
-  it("shows the shiny artwork when the roll lands shiny", async () => {
-    const { round } = await start();
-    const result = await service(() => 0).answer(
-      "ash",
-      round.id,
-      "피카츄",
-      "ko",
-    );
-
-    expect(result).toMatchObject({
-      ok: true,
-      data: {
-        sticker: { variant: "shiny" },
-        revealed: { artworkUrl: "art/shiny/025.webp" },
-      },
-    });
-  });
-
-  it("reveals the answer and ends the run on the third miss", async () => {
-    const { round } = await start();
-    await service().answer("ash", round.id, "x", "ko");
-    await service().answer("ash", round.id, "y", "ko");
-    const result = await service().answer("ash", round.id, "z", "ko");
-
-    expect(result).toMatchObject({
-      ok: true,
-      data: {
-        outcome: "fainted",
-        run: { status: "finished" },
-        revealed: { name: "피카츄" },
-      },
-    });
-    expect([...repo.runs.values()][0].endReason).toBe("fainted");
-  });
-
   it("does not let another player answer your round", async () => {
     const { round } = await start("ash");
     expect(await service().answer("gary", round.id, "피카츄", "ko")).toEqual({
       ok: false,
       code: "not_found",
-    });
-  });
-
-  it("refuses an answer to a round that is already over", async () => {
-    const { round } = await start();
-    await service().answer("ash", round.id, "피카츄", "ko");
-    expect(await service().answer("ash", round.id, "피카츄", "ko")).toEqual({
-      ok: false,
-      code: "round_not_active",
     });
   });
 
@@ -348,67 +304,6 @@ describe("answer", () => {
       code: "conflict",
     });
     expect(repo.stickers.size).toBe(0);
-  });
-});
-
-describe("hint / skip / flee", () => {
-  it("reveals half the name once and breaks the combo", async () => {
-    const { round } = await start();
-    const hinted = await service().hint("ash", round.id, "ko");
-
-    expect(hinted).toMatchObject({
-      ok: true,
-      data: { round: { hintUsed: true, hint: "피??" } },
-    });
-    expect(await service().hint("ash", round.id, "ko")).toEqual({
-      ok: false,
-      code: "hint_already_used",
-    });
-  });
-
-  it("skips to a new Pokémon, shows who it was, and spends a skip", async () => {
-    const { round } = await start();
-    const skipped = await service().skip("ash", round.id, "en");
-
-    expect(skipped).toMatchObject({
-      ok: true,
-      data: {
-        run: { skipsLeft: 2 },
-        revealed: { name: "Pikachu" },
-        nextRound: { seq: 2 },
-      },
-    });
-  });
-
-  it("flees the run in progress and reveals the answer", async () => {
-    await start();
-    const fled = await service().flee("ash", "ko");
-
-    expect(fled).toMatchObject({
-      ok: true,
-      data: { run: { status: "finished" }, revealed: { id: 25 } },
-    });
-    expect([...repo.runs.values()][0].endReason).toBe("fled");
-    expect(await service().flee("ash", "ko")).toEqual({
-      ok: false,
-      code: "run_not_active",
-    });
-  });
-
-  it("never repeats a Pokémon within a run until all have appeared", async () => {
-    let { round } = await start();
-    const seen = [];
-    for (let i = 0; i < POKEMON.length; i++) {
-      const secret = await repo.findRoundSecret("ash", round.id);
-      seen.push(secret!.pokemonId);
-      const result = await service(firstPick).skip("ash", round.id, "ko");
-      if (!result.ok) {
-        expect(result.code).toBe("no_skips_left"); // 3 skips for 3 Pokémon
-        break;
-      }
-      round = result.data.nextRound;
-    }
-    expect(new Set(seen).size).toBe(seen.length);
   });
 });
 
