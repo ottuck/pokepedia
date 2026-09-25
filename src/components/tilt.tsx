@@ -1,14 +1,7 @@
 "use client";
 
-import {
-  m,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotionConfig,
-  useSpring,
-  useTransform,
-} from "motion/react";
-import type { PointerEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
+import { usePointerTilt } from "./use-pointer-tilt";
 
 type Props = {
   children: ReactNode;
@@ -19,54 +12,32 @@ type Props = {
   className?: string;
 };
 
-const settle = { stiffness: 300, damping: 24 };
+// Light that follows the pointer, fed by the CSS variables usePointerTilt writes.
+const GLARE =
+  "radial-gradient(circle at var(--px, 50%) var(--py, 50%), rgb(255 255 255 / 0.45), transparent 55%)";
+const SHEEN =
+  "linear-gradient(115deg, transparent 20%, rgb(255 120 200 / 0.35) calc(var(--px, 50%) - 10%), rgb(120 220 255 / 0.35) var(--px, 50%), rgb(255 240 120 / 0.35) calc(var(--px, 50%) + 10%), transparent 80%)";
 
 /**
  * A sticker that tilts toward the mouse with a light glare, like holding a card to the light.
- * Pointer position lives in motion values, so moving the mouse never re-renders React.
- * Mouse only (touch scrolls the grid instead), and flat when reduced motion is requested.
- * Must render inside <LazyMotion> (uses `m`).
+ * Shares usePointerTilt with the detail page card: the pointer only writes CSS variables, so
+ * moving the mouse never re-renders React. Mouse only (touch scrolls the grid instead), and
+ * flat when reduced motion is requested.
  */
 export function Tilt({ children, holo = false, max = 10, className }: Props) {
-  // Follows <MotionConfig reducedMotion="user">, i.e. the OS setting unless a parent overrides it.
-  const reduceMotion = useReducedMotionConfig();
-  // Pointer position within the card, 0–1 on each axis; 0.5 is the resting center.
-  const x = useMotionValue(0.5);
-  const y = useMotionValue(0.5);
-  const rotateX = useSpring(useTransform(y, [0, 1], [max, -max]), settle);
-  const rotateY = useSpring(useTransform(x, [0, 1], [-max, max]), settle);
-  const glareX = useTransform(x, (v) => `${v * 100}%`);
-  const glareY = useTransform(y, (v) => `${v * 100}%`);
-  const glare = useMotionTemplate`radial-gradient(circle at ${glareX} ${glareY}, rgb(255 255 255 / 0.45), transparent 55%)`;
-  const sheen = useMotionTemplate`linear-gradient(115deg, transparent 20%, rgb(255 120 200 / 0.35) calc(${glareX} - 10%), rgb(120 220 255 / 0.35) ${glareX}, rgb(255 240 120 / 0.35) calc(${glareX} + 10%), transparent 80%)`;
-
-  if (reduceMotion) return <div className={className}>{children}</div>;
-
-  function track(event: PointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== "mouse") return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    x.set((event.clientX - rect.left) / rect.width);
-    y.set((event.clientY - rect.top) / rect.height);
-  }
-
-  function reset() {
-    x.set(0.5);
-    y.set(0.5);
-  }
+  const ref = usePointerTilt<HTMLDivElement>({ maxDegrees: max });
 
   return (
-    <m.div
-      onPointerMove={track}
-      onPointerLeave={reset}
-      style={{ rotateX, rotateY, transformPerspective: 600 }}
-      className={`group/tilt relative ${className ?? ""}`}
+    <div
+      ref={ref}
+      className={`group/tilt relative [transform:perspective(600px)_rotateX(var(--rx,0deg))_rotateY(var(--ry,0deg))] transition-transform duration-500 ease-out data-tilting:duration-75 ${className ?? ""}`}
     >
       {children}
-      <m.div
+      <div
         aria-hidden
-        style={{ backgroundImage: holo ? sheen : glare }}
-        className={`pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-hover/tilt:opacity-100 ${holo ? "mix-blend-color-dodge" : "mix-blend-soft-light"}`}
+        style={{ backgroundImage: holo ? SHEEN : GLARE }}
+        className={`pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 group-data-tilting/tilt:opacity-100 motion-reduce:hidden ${holo ? "mix-blend-color-dodge" : "mix-blend-soft-light"}`}
       />
-    </m.div>
+    </div>
   );
 }
