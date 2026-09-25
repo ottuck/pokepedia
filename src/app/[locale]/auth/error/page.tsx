@@ -1,9 +1,11 @@
 import { getTranslations } from "next-intl/server";
+import { GuestMergeButton } from "@/features/auth/components/guest-merge-button";
 import { Link } from "@/i18n/navigation";
 
 const KNOWN_ERRORS = {
   identity_already_exists: "identityAlreadyExists",
   access_denied: "accessDenied",
+  merge_failed: "mergeFailed",
 } as const;
 
 // Reads searchParams, so this is rendered per request (the only dynamic page so far).
@@ -21,6 +23,7 @@ export default async function AuthErrorPage({
     <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-3 px-4 pb-16 text-center">
       <h1 className="text-2xl font-black">{t("title")}</h1>
       <p className="text-muted">{t(key)}</p>
+      {code === "identity_already_exists" && <GuestMergeButton />}
       <Link
         href="/"
         className="mt-2 rounded-full bg-ink px-4 py-2 text-sm font-medium text-surface"
