@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Locale } from "next-intl";
 import { useTranslations } from "next-intl";
+import { Tilt } from "@/components/tilt";
 import { Link } from "@/i18n/navigation";
 import { artworkUrl } from "@/features/pokemon/assets";
 import { formatDexNumber, localizedName } from "@/features/pokemon/format";
@@ -42,54 +43,58 @@ export function StickerCard({ pokemon, holding, locale }: Props) {
   const shiny = holding.shiny > 0;
 
   return (
-    <Link
-      href={`/pokemon/${pokemon.id}`}
-      style={typeStyle(pokemon.type_1, pokemon.type_2)}
-      className={`group relative flex aspect-[3/4] flex-col rounded-2xl border-4 bg-card p-2 shadow-sm transition-transform hover:scale-105 hover:-rotate-2 motion-reduce:transition-none ${
-        shiny ? "border-volt shadow-volt/40" : "border-card ring-1 ring-ink/10"
-      }`}
-    >
-      <div className="flex items-baseline justify-between gap-1">
-        <span className="truncate text-xs font-black">{name}</span>
-        <span className="font-mono text-[10px] text-muted">{number}</span>
-      </div>
+    <Tilt holo={shiny} className="rounded-2xl">
+      <Link
+        href={`/pokemon/${pokemon.id}`}
+        style={typeStyle(pokemon.type_1, pokemon.type_2)}
+        className={`group relative flex aspect-[3/4] flex-col rounded-2xl border-4 bg-card p-2 shadow-sm ${
+          shiny
+            ? "border-volt shadow-volt/40"
+            : "border-card ring-1 ring-ink/10"
+        }`}
+      >
+        <div className="flex items-baseline justify-between gap-1">
+          <span className="truncate text-xs font-black">{name}</span>
+          <span className="font-mono text-[10px] text-muted">{number}</span>
+        </div>
 
-      <div className="relative my-1 flex-1 rounded-xl bg-(--type-soft)">
-        <Image
-          src={artworkUrl(
-            shiny ? pokemon.shiny_artwork_path : pokemon.artwork_path,
+        <div className="relative my-1 flex-1 rounded-xl bg-(--type-soft)">
+          <Image
+            src={artworkUrl(
+              shiny ? pokemon.shiny_artwork_path : pokemon.artwork_path,
+            )}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 140px, (min-width: 640px) 22vw, 30vw"
+            className="object-contain p-1 drop-shadow"
+          />
+          {shiny && (
+            <span className="absolute top-1 left-1 rounded-full bg-volt px-1.5 text-[10px] font-black">
+              ✦ {t("shinyBadge")}
+            </span>
           )}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 140px, (min-width: 640px) 22vw, 30vw"
-          className="object-contain p-1 drop-shadow"
-        />
-        {shiny && (
-          <span className="absolute top-1 left-1 rounded-full bg-volt px-1.5 text-[10px] font-black">
-            ✦ {t("shinyBadge")}
-          </span>
-        )}
-      </div>
+        </div>
 
-      <div className="flex items-center justify-between text-[10px] font-semibold text-muted">
-        <span className="flex items-center gap-1">
-          <span
-            aria-hidden
-            className="relative size-2.5 overflow-hidden rounded-full border border-ink/60"
-          >
-            <span className="absolute inset-x-0 top-0 h-1/2 bg-dex-red" />
+        <div className="flex items-center justify-between text-[10px] font-semibold text-muted">
+          <span className="flex items-center gap-1">
+            <span
+              aria-hidden
+              className="relative size-2.5 overflow-hidden rounded-full border border-ink/60"
+            >
+              <span className="absolute inset-x-0 top-0 h-1/2 bg-dex-red" />
+            </span>
+            Pokémon
           </span>
-          Pokémon
-        </span>
-        <span
-          aria-label={t("quantity", {
-            normal: holding.normal,
-            shiny: holding.shiny,
-          })}
-        >
-          ×{holding.normal + holding.shiny}
-        </span>
-      </div>
-    </Link>
+          <span
+            aria-label={t("quantity", {
+              normal: holding.normal,
+              shiny: holding.shiny,
+            })}
+          >
+            ×{holding.normal + holding.shiny}
+          </span>
+        </div>
+      </Link>
+    </Tilt>
   );
 }
