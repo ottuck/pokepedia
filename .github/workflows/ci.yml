@@ -53,9 +53,10 @@ jobs:
       - name: RLS and RPC permission tests
         run: pnpm test:db
 
-  # One core user journey in a real browser, against a production build and local Supabase.
+  # One core user journey in a real browser, against the dev server and local Supabase.
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v6
@@ -74,7 +75,6 @@ jobs:
           echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$PUBLISHABLE_KEY" >> "$GITHUB_ENV"
           echo "SUPABASE_SECRET_KEY=$SECRET_KEY" >> "$GITHUB_ENV"
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm build
       - run: pnpm test:e2e
       - uses: actions/upload-artifact@v4
         if: failure()
