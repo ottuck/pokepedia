@@ -56,6 +56,7 @@ jobs:
   # One core user journey in a real browser, against the dev server and local Supabase.
   e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v6

@@ -22,6 +22,8 @@ export default defineConfig({
     command: `pnpm dev --port ${PORT}`,
     url: `http://localhost:${PORT}/ko`,
     reuseExistingServer: !process.env.CI,
+    // Stop `next dev` (behind pnpm) cleanly so the run exits once the test is done.
+    gracefulShutdown: { signal: "SIGTERM", timeout: 5_000 },
     timeout: 180_000,
   },
 });
