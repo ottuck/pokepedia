@@ -8,7 +8,7 @@ import {
   type QuizRepository,
 } from "./repository";
 import { RULES } from "./rules";
-import type { RoundRecord, RunRecord } from "./types";
+import type { PokemonNames, RoundRecord, RunRecord } from "./types";
 
 type Client = SupabaseClient<Database>;
 type RunRow = Database["public"]["Tables"]["quiz_run"]["Row"];
@@ -56,6 +56,33 @@ function one<R extends Response>(
   const data = maybe(result, what);
   if (data === null) throw new Error(`${what}: no data`);
   return data;
+}
+
+type CatalogEntry = PokemonNames;
+
+/**
+ * The Gen 1 catalog (ids, names, artwork paths), read once per server instance. It only
+ * changes through a sync, which is followed by a redeploy, so it never goes stale in practice.
+ * Before this, every answer re-read it: several of the sequential round trips per click.
+ */
+let catalog: Promise<Map<number, CatalogEntry>> | null = null;
+
+function loadCatalog(db: Client) {
+  catalog ??= (async () => {
+    const rows = one(
+      await db
+        .from("pokemon")
+        .select(
+          "id, name_ko, name_en, name_ja, artwork_path, shiny_artwork_path",
+        )
+        .order("id"),
+      "Pokémon catalog",
+    );
+    return new Map(rows.map((row) => [row.id, row]));
+  })();
+  // A failed load is retried by the next request instead of being cached.
+  catalog.catch(() => (catalog = null));
+  return catalog;
 }
 
 /**
@@ -121,33 +148,32 @@ export function createSupabaseQuizRepository(db: Client): QuizRepository {
         : null;
     },
 
-    async seenPokemonIds(runId) {
-      const rows = one(
-        await db.from("quiz_round").select("pokemon_id").eq("run_id", runId),
+    async seenPokemonIds(userId, roundId) {
+      // One query from the round id alone: its run's rounds, embedded. This lets the service
+      // fetch it alongside the round instead of after it.
+      const row = maybe(
+        await db
+          .from("quiz_round")
+          .select("quiz_run(quiz_round(pokemon_id))")
+          .eq("id", roundId)
+          .eq("user_id", userId)
+          .maybeSingle(),
         "seen Pokémon",
       );
-      return new Set(rows.map((row) => row.pokemon_id));
+      return new Set(
+        (row?.quiz_run?.quiz_round ?? []).map((round) => round.pokemon_id),
+      );
     },
 
     async allPokemonIds() {
-      const rows = one(
-        await db.from("pokemon").select("id").order("id"),
-        "Pokémon ids",
-      );
-      return rows.map((row) => row.id);
+      return [...(await loadCatalog(db)).keys()];
     },
 
     async pokemonNames(pokemonId) {
-      return one(
-        await db
-          .from("pokemon")
-          .select(
-            "id, name_ko, name_en, name_ja, artwork_path, shiny_artwork_path",
-          )
-          .eq("id", pokemonId)
-          .single(),
-        "Pokémon names",
-      );
+      const entry = (await loadCatalog(db)).get(pokemonId);
+      if (!entry)
+        throw new Error(`Pokémon #${pokemonId} is not in the catalog`);
+      return entry;
     },
 
     async startRun(userId, pokemonId) {

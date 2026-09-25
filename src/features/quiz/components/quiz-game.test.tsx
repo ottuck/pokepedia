@@ -92,6 +92,22 @@ describe("QuizGame", () => {
     expect(screen.getByText("???")).toBeInTheDocument();
   });
 
+  it("lets the player act during the entrance instead of waiting for it", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderGame();
+    await user.click(screen.getByRole("button", { name: "게임 시작" }));
+    expect(
+      await screen.findByText("앗! 야생의 포켓몬이 나타났다!"),
+    ).toBeInTheDocument();
+
+    // Still in the entrance animation: choosing "fight" skips the rest of it.
+    await user.click(screen.getByRole("button", { name: /싸운다/ }));
+
+    expect(
+      screen.getByRole("textbox", { name: "이름을 입력하세요." }),
+    ).toBeInTheDocument();
+  });
+
   it("loses HP on a wrong answer and returns to the menu", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     actions.submitAnswer.mockResolvedValue({

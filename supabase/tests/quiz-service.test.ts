@@ -86,8 +86,14 @@ describe("quiz service on Supabase", () => {
       service().answer(userId, round.id, key, "ko"),
     ]);
 
-    const codes = results.map((r) => (r.ok ? "ok" : r.code)).sort();
-    expect(codes).toEqual(["conflict", "ok"]);
+    // Exactly one wins. The loser is refused either by the version check (both read the
+    // round before either committed: "conflict") or by its read (the winner committed first:
+    // "round_not_active"); which one depends on timing, and the client resyncs on both.
+    const codes = results.map((r) => (r.ok ? "ok" : r.code));
+    expect(codes.filter((code) => code === "ok")).toHaveLength(1);
+    expect(codes.filter((code) => code !== "ok")).toEqual([
+      expect.stringMatching(/^(conflict|round_not_active)$/),
+    ]);
     const { data: stickers } = await adminClient()
       .from("user_sticker")
       .select("quantity")
