@@ -14,13 +14,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 // Rendered per request: the page reads the session cookie (see getMyCollection).
-export default async function CollectionPage() {
+export default async function CollectionPage({
+  searchParams,
+}: PageProps<"/[locale]/collection">) {
   const [locale, t, pokedex, mine] = await Promise.all([
     getLocale(),
     getTranslations("collection"),
     getPokedexList(),
     getMyCollection(),
   ]);
+  // Set by the auth callback after a guest record was merged into this account.
+  const merged = (await searchParams).merged === "1";
   const summary = summarizeCollection(mine.stickers);
   const total = pokedex.length;
 
@@ -58,6 +62,14 @@ export default async function CollectionPage() {
         />
       </section>
 
+      {merged && (
+        <p
+          role="status"
+          className="mb-6 rounded-2xl bg-volt/20 p-4 text-sm font-bold"
+        >
+          {t("merged")}
+        </p>
+      )}
       {mine.isAnonymous && <GuestSaveBanner className="mb-6" />}
 
       {summary.collected === 0 && (
