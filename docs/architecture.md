@@ -253,8 +253,9 @@ my_stats view (security_invoker = true)
 - `/[locale]/quiz`는 정적 셸이고 게임은 client island(`QuizGame`)다.
 - Zustand `useQuizStore`: 서버 액션을 호출하고 결과를 저장한다. phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 결과를 어떤 순서로 연출할지만 정한다. 판정은 항상 서버.
 - 자동으로 넘어가는 phase(intro/hit/reveal)는 `BattleStage`가 타이머로 `advance()`한다. reduced motion이면 대기 시간을 줄인다.
-- 레거시 조작: 2×2 메뉴(싸운다/아이템/포켓몬/도망간다), 방향키 이동(roving tabindex), 숫자 1–4 단축키, 입력창 Esc.
-- 연출: 실루엣 등장(spring), 오답 시 HP 패널 흔들림, 정답 시 flash + 실루엣→아트워크, 스티커 카드 낙하·뒤집기(색違い는 홀로그램 광택), 콤보 pop.
+- 화면 배치는 GB 배틀 화면을 따른다: 위쪽 야생 포켓몬 정보창(이름 마스크, `:L??`, HP 바)과 실루엣, 아래쪽 트레이너 뒷모습(자체 도트 SVG `TrainerSprite`)과 플레이어 정보창(닉네임, 레벨 = 5 + 이번 판에 맞힌 수, HP 바), 그 아래 글자가 한 자씩 찍히는 텍스트 창과 명령창. 배틀 화면은 다크모드에서도 GB의 밝은 팔레트를 유지한다. 닉네임은 헤더처럼 브라우저에서 RLS로 읽는다(`useTrainerName`).
+- 조작: 2×2 명령창(싸우다/가방/포켓몬/도망치다), 방향키로 ▶ 커서 이동(roving tabindex), Enter·Z로 결정, 숫자 1–4 단축키, 입력창 Esc.
+- 연출: 트레이너·실루엣 등장(spring), 오답 시 화면 흔들림 + 트레이너 깜빡임 + HP 바 단계적 감소, 정답 시 적 HP 바 소진 + 레벨 업, 정답 시 flash + 실루엣→아트워크, 스티커 카드 낙하·뒤집기(색違い는 홀로그램 광택), 콤보 pop.
 - 새로고침하면 로비로 돌아오고, 시작을 누르면 서버의 진행 중 run을 이어한다.
 
 ## 8. 렌더링 전략
