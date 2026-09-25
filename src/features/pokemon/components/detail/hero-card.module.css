@@ -212,9 +212,9 @@
   pointer-events: none;
   background: radial-gradient(
     farthest-corner circle at var(--px, 50%) var(--py, 50%),
-    rgb(255 255 255 / 0.8) 0%,
-    rgb(255 255 255 / 0.2) 25%,
-    transparent 55%
+    rgb(255 255 255 / 0.55) 0%,
+    rgb(255 255 255 / 0.12) 25%,
+    transparent 50%
   );
   mix-blend-mode: overlay;
   transform: translateZ(60px);
@@ -325,6 +325,168 @@
     drop-shadow(0 0 14px rgb(255 240 180 / 0.55));
 }
 
+/* ── Holo and glitter: the sparkle of a real foil card ───────────────────────────────────
+ * Two layers over the whole card, artwork included, blended with color-dodge so they only
+ * brighten what is under them (white frame stays white, colors light up).
+ *   holo    — a prismatic band tinted by the type colors. At rest it drifts slowly across the
+ *             card on its own; while tilting it follows the pointer instead.
+ *   sparkle — two grids of glitter dots of different sizes that slide against each other
+ *             with the tilt (parallax) and twinkle out of step.
+ */
+
+/* A narrow band: it crosses the card as a stripe of color rather than tinting all of it. */
+.holo {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  background-image: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 36%,
+    color-mix(in oklab, var(--type) 55%, #ff7ab8) 40%,
+    color-mix(in oklab, var(--type) 35%, #ffe066) 43%,
+    color-mix(in oklab, var(--type-2) 45%, #6ef3ff) 46%,
+    color-mix(in oklab, var(--type-2) 45%, #b388ff) 49%,
+    transparent 53%,
+    transparent 100%
+  );
+  background-size: 300% 300%;
+  background-position: var(--px, 50%) var(--py, 50%);
+  transform: translateZ(58px);
+  opacity: 0.35;
+  transition: opacity 300ms ease;
+}
+
+.stage:not([data-tilting]) .holo {
+  animation: holo-drift 7s ease-in-out infinite;
+}
+
+.stage[data-tilting] .holo {
+  opacity: calc(0.5 + var(--distance, 0) * 0.3);
+}
+
+@keyframes holo-drift {
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
+.sparkle {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  transform: translateZ(58px);
+  opacity: 0.45;
+}
+
+.sparkle::before,
+.sparkle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    radial-gradient(circle at 20% 30%, white 0 1px, transparent 1.8px),
+    radial-gradient(circle at 75% 65%, white 0 0.7px, transparent 1.4px),
+    radial-gradient(circle at 45% 85%, #fff6c9 0 1.2px, transparent 2px);
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+/* Two grids with different spacing drift in opposite directions: glitter at two depths. */
+.sparkle::before {
+  background-size:
+    31px 37px,
+    23px 29px,
+    47px 41px;
+  background-position: calc(var(--tilt-x, 0) * -18px)
+    calc(var(--tilt-y, 0) * -18px);
+}
+
+.sparkle::after {
+  background-size:
+    43px 39px,
+    27px 33px,
+    59px 53px;
+  background-position: calc(var(--tilt-x, 0) * 26px)
+    calc(var(--tilt-y, 0) * 26px);
+  animation-delay: -1.2s;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.stage[data-tilting] .sparkle {
+  opacity: calc(0.55 + var(--distance, 0) * 0.4);
+}
+
+/* Shiny: thin rainbow stripes with gaps, like light split by a diffraction foil (a solid
+   rainbow would wash the artwork out), plus denser and brighter glitter. */
+.card[data-shiny] .holo {
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 7%,
+    hsl(0 100% 70%) 8%,
+    hsl(50 100% 64%) 9%,
+    hsl(130 90% 62%) 10%,
+    hsl(195 100% 64%) 11%,
+    hsl(270 95% 72%) 12%,
+    transparent 13.5%,
+    transparent 20%
+  );
+  background-size: 250% 250%;
+}
+
+.stage[data-tilting] .card[data-shiny] .holo {
+  opacity: calc(0.55 + var(--distance, 0) * 0.3);
+}
+
+.card[data-shiny] .sparkle {
+  opacity: 0.75;
+}
+
+.card[data-shiny] .sparkle::before,
+.card[data-shiny] .sparkle::after {
+  background-image:
+    radial-gradient(circle at 20% 30%, white 0 1.4px, transparent 2.4px),
+    radial-gradient(circle at 75% 65%, #fffbe0 0 1px, transparent 1.8px),
+    radial-gradient(circle at 45% 85%, #e0f7ff 0 1.6px, transparent 2.6px),
+    radial-gradient(circle at 60% 15%, white 0 0.8px, transparent 1.5px);
+  animation-duration: 1.6s;
+}
+
+.card[data-shiny] .sparkle::before {
+  background-size:
+    23px 27px,
+    17px 19px,
+    37px 31px,
+    29px 23px;
+}
+
+.card[data-shiny] .sparkle::after {
+  background-size:
+    31px 29px,
+    21px 25px,
+    43px 39px,
+    19px 17px;
+}
+
 /* ── Reduced motion: a flat, still card (the hook does not listen either) ────────────── */
 
 @media (prefers-reduced-motion: reduce) {
@@ -342,5 +504,11 @@
   .glare,
   .edge {
     display: none;
+  }
+  /* Keep a still sheen and glitter, without the drift and twinkle. */
+  .holo,
+  .sparkle::before,
+  .sparkle::after {
+    animation: none !important;
   }
 }
