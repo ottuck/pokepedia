@@ -41,7 +41,15 @@
     "previous": "Previous Pokémon",
     "next": "Next Pokémon",
     "legendary": "Legendary Pokémon",
-    "mythical": "Mythical Pokémon"
+    "mythical": "Mythical Pokémon",
+    "shinyToggle": "Shiny",
+    "shinyAlt": "Shiny {name}",
+    "myStickers": {
+      "owned": "My stickers: {normal} normal{shiny, plural, =0 {} other { · # shiny}}",
+      "shinyOwned": "Shiny collected",
+      "none": "Not collected yet.",
+      "toQuiz": "Collect it in the quiz"
+    }
   },
   "types": {
     "normal": "Normal",

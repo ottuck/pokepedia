@@ -41,7 +41,15 @@
     "previous": "이전 포켓몬",
     "next": "다음 포켓몬",
     "legendary": "전설의 포켓몬",
-    "mythical": "환상의 포켓몬"
+    "mythical": "환상의 포켓몬",
+    "shinyToggle": "색이 다른 모습",
+    "shinyAlt": "색이 다른 {name}",
+    "myStickers": {
+      "owned": "내 띠부씰 {normal}장{shiny, plural, =0 {} other { · 색이 다른 #장}}",
+      "shinyOwned": "색이 다른 모습 획득",
+      "none": "아직 모으지 못했어요.",
+      "toQuiz": "퀴즈로 모으기"
+    }
   },
   "types": {
     "normal": "노말",

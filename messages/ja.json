@@ -41,7 +41,15 @@
     "previous": "まえのポケモン",
     "next": "つぎのポケモン",
     "legendary": "でんせつのポケモン",
-    "mythical": "まぼろしのポケモン"
+    "mythical": "まぼろしのポケモン",
+    "shinyToggle": "色違い",
+    "shinyAlt": "色違いの{name}",
+    "myStickers": {
+      "owned": "わたしのシール {normal}枚{shiny, plural, =0 {} other {・色違い #枚}}",
+      "shinyOwned": "色違いゲット",
+      "none": "まだ集めていません。",
+      "toQuiz": "クイズで集める"
+    }
   },
   "types": {
     "normal": "ノーマル",
