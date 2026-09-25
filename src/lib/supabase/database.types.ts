@@ -355,6 +355,23 @@ export type Database = {
         Args: { p_to_user: string; p_token_hash: string }
         Returns: string
       }
+      leaderboard: {
+        Args: { p_limit?: number }
+        Returns: {
+          best_combo: number
+          nickname: string
+          rank: number
+          score: number
+        }[]
+      }
+      my_leaderboard_rank: {
+        Args: never
+        Returns: {
+          best_combo: number
+          rank: number
+          score: number
+        }[]
+      }
       quiz_commit: {
         Args: {
           p_expected_version: number

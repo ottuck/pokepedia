@@ -19,6 +19,11 @@ const ITEMS = [
     key: "collection",
     match: (path: string) => path.startsWith("/collection"),
   },
+  {
+    href: "/leaderboard",
+    key: "leaderboard",
+    match: (path: string) => path.startsWith("/leaderboard"),
+  },
 ] as const;
 
 export function MainNav() {
