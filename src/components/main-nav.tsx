@@ -32,13 +32,13 @@ export function MainNav() {
 
   return (
     <nav aria-label={t("main")}>
-      <ul className="flex gap-1 text-sm font-bold">
+      <ul className="flex gap-1 overflow-x-auto text-sm font-bold">
         {ITEMS.map(({ href, key, match }) => (
           <li key={key}>
             <Link
               href={href}
               aria-current={match(pathname) ? "page" : undefined}
-              className="rounded-full px-3 py-1.5 text-muted hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-surface"
+              className="rounded-full px-2.5 py-1.5 whitespace-nowrap text-muted hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-surface sm:px-3"
             >
               {t(key)}
             </Link>
