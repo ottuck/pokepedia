@@ -1,46 +1,61 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { useState } from "react";
 import { useQuizStore } from "../store";
 import { ErrorNotice } from "./error-notice";
+import { RulesScreen } from "./rules-screen";
+import { TitleScreen } from "./title-screen";
 
-const RULES = ["fight", "item", "pokemon", "run"] as const;
+const RULES_SEEN = "quiz-rules-seen";
 
+function rulesSeen() {
+  try {
+    return localStorage.getItem(RULES_SEEN) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberRules() {
+  try {
+    localStorage.setItem(RULES_SEEN, "1");
+  } catch {
+    // Not remembered; the rules show again next time, which is harmless.
+  }
+}
+
+/**
+ * Before a game: the title screen, then (first time only, or on request) the rules, then
+ * the battle. The server call starts on the last step; its "getting ready" state shows in
+ * whichever screen is up.
+ */
 export function Lobby() {
-  const t = useTranslations("quiz");
   const locale = useLocale();
   const phase = useQuizStore((s) => s.phase);
   const start = useQuizStore((s) => s.start);
   const starting = phase === "starting";
+  const [screen, setScreen] = useState<"title" | "rules">("title");
+
+  const play = () => {
+    rememberRules();
+    void start(locale);
+  };
 
   return (
-    <div className="flex flex-col items-center gap-6 px-5 py-10 text-center sm:px-10">
-      <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
-        {t("title")}
-      </h1>
-      <p className="max-w-md text-sm text-ink/70">{t("subtitle")}</p>
-
-      <dl className="grid w-full max-w-xl grid-cols-1 gap-3 text-left sm:grid-cols-2">
-        {RULES.map((rule) => (
-          <div key={rule} className="rounded-2xl bg-card/70 p-4">
-            <dt className="font-bold">{t(`rules.${rule}.title`)}</dt>
-            <dd className="mt-1 text-sm text-ink/70">
-              {t(`rules.${rule}.body`)}
-            </dd>
-          </div>
-        ))}
-      </dl>
-
-      <ErrorNotice />
-
-      <button
-        type="button"
-        onClick={() => void start(locale)}
-        disabled={starting}
-        className="rounded-full bg-ink px-10 py-3 text-lg font-black text-surface shadow-lg transition hover:scale-105 disabled:opacity-60 motion-reduce:transition-none"
-      >
-        {starting ? t("starting") : t("play")}
-      </button>
+    <div className="relative">
+      {screen === "title" ? (
+        <TitleScreen
+          starting={starting}
+          onStart={() => (rulesSeen() ? play() : setScreen("rules"))}
+          onShowRules={() => setScreen("rules")}
+        />
+      ) : (
+        <RulesScreen starting={starting} onDone={play} />
+      )}
+      <div className="absolute inset-x-4 bottom-4 z-10">
+        <ErrorNotice />
+      </div>
     </div>
   );
 }

@@ -64,6 +64,8 @@ beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
   vi.clearAllMocks();
   useQuizStore.getState().reset();
+  // Returning player by default: PRESS START goes straight into the battle.
+  localStorage.setItem("quiz-rules-seen", "1");
   actions.startQuiz.mockResolvedValue({
     ok: true,
     data: { run, round: round("r1") },
@@ -72,13 +74,51 @@ beforeEach(() => {
 
 async function startGame(user: ReturnType<typeof userEvent.setup>) {
   renderGame();
-  await user.click(screen.getByRole("button", { name: "게임 시작" }));
+  await user.click(screen.getByRole("button", { name: /PRESS START/ }));
   expect(
     await screen.findByText("앗! 야생의 포켓몬이 나타났다!"),
   ).toBeInTheDocument();
   await finishAnimation();
   expect(screen.getByText("무엇을 할까?")).toBeInTheDocument();
 }
+
+describe("QuizGame intro", () => {
+  it("shows the rules before the first game, and starts the battle after the last page", async () => {
+    localStorage.removeItem("quiz-rules-seen");
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderGame();
+
+    await user.click(screen.getByRole("button", { name: /PRESS START/ }));
+    expect(screen.getByText("룰 설명 1/5")).toBeInTheDocument();
+    expect(actions.startQuiz).not.toHaveBeenCalled();
+
+    // Each press finishes the printing line, the next one turns the page.
+    for (let press = 0; press < 10; press++) await user.keyboard("{Enter}");
+
+    expect(actions.startQuiz).toHaveBeenCalledWith({ locale: "ko" });
+    expect(localStorage.getItem("quiz-rules-seen")).toBe("1");
+  });
+
+  it("lets the rules be skipped", async () => {
+    localStorage.removeItem("quiz-rules-seen");
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderGame();
+
+    await user.click(screen.getByRole("button", { name: /PRESS START/ }));
+    await user.click(screen.getByRole("button", { name: "건너뛰기" }));
+
+    expect(actions.startQuiz).toHaveBeenCalledOnce();
+  });
+
+  it("starts from the keyboard on the title screen", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderGame();
+
+    await user.keyboard("{Enter}");
+
+    expect(actions.startQuiz).toHaveBeenCalledOnce();
+  });
+});
 
 describe("QuizGame", () => {
   it("starts from the lobby and shows only a silhouette and a name mask", async () => {
@@ -95,7 +135,7 @@ describe("QuizGame", () => {
   it("lets the player act during the entrance instead of waiting for it", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     renderGame();
-    await user.click(screen.getByRole("button", { name: "게임 시작" }));
+    await user.click(screen.getByRole("button", { name: /PRESS START/ }));
     expect(
       await screen.findByText("앗! 야생의 포켓몬이 나타났다!"),
     ).toBeInTheDocument();
@@ -222,12 +262,12 @@ describe("QuizGame", () => {
     actions.startQuiz.mockRejectedValueOnce(new Error("500"));
     renderGame();
 
-    await user.click(screen.getByRole("button", { name: "게임 시작" }));
+    await user.click(screen.getByRole("button", { name: /PRESS START/ }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "문제가 생겼어요",
     );
-    expect(screen.getByRole("button", { name: "게임 시작" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: /PRESS START/ })).toBeEnabled();
   });
 
   it("lets the player retry an answer after a server error", async () => {
@@ -255,11 +295,11 @@ describe("QuizGame", () => {
     });
     renderGame();
 
-    await user.click(screen.getByRole("button", { name: "게임 시작" }));
+    await user.click(screen.getByRole("button", { name: /PRESS START/ }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "게스트로 시작하지 못했어요",
     );
-    expect(screen.getByRole("button", { name: "게임 시작" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: /PRESS START/ })).toBeEnabled();
   });
 });
