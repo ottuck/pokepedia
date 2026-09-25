@@ -1,3 +1,5 @@
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -41,6 +43,10 @@ export default async function LocaleLayout({
           <SiteHeader />
           {children}
         </NextIntlClientProvider>
+        {/* Vercel Web Analytics (cookieless page views) and Speed Insights (Core Web Vitals).
+            Both only report from Vercel deployments; locally they stay inactive. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
