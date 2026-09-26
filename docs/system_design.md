@@ -184,7 +184,7 @@ main ─┬─ Vercel Production 자동 배포
 
 env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 넣으면 실행되지 않는다.
 
-- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 원작 게임 에셋은 쓰지 않는다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 직접 만들었고(AI 도움), 포켓몬 아트워크만 PokeAPI 이미지다.
+- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 모든 페이지 푸터에 비공식 팬 프로젝트이며 권리자와 관련이 없다는 고지를 둔다(`SiteFooter`). 원작 게임 에셋은 쓰지 않는다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 직접 만들었고(AI 도움), 포켓몬 아트워크만 PokeAPI 이미지다.
 
 ## 8. 테스트
 

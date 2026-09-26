@@ -98,4 +98,4 @@ pnpm dev
 
 ---
 
-<sub>소스 코드는 [MIT 라이선스](LICENSE)입니다. Pokémon과 관련 이름·아트워크의 권리는 Nintendo, Creatures Inc., GAME FREAK inc.에 있습니다. 비상업적 팬 프로젝트입니다.</sub>
+<sub>소스 코드는 [MIT 라이선스](LICENSE)입니다. Pokémon과 관련 이름·아트워크의 권리는 Nintendo, The Pokémon Company, Creatures Inc., GAME FREAK inc.에 있으며 MIT 라이선스 대상이 아닙니다. 이 프로젝트는 비공식·비상업 팬 프로젝트로, 이들과 관련이 없고 승인을 받지 않았습니다.</sub>
