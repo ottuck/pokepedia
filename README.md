@@ -4,9 +4,9 @@
 
 1세대 포켓몬 151마리 도감, 실루엣 보고 이름 맞히는 GB 배틀풍 게임, 맞히면 모이는 띠부씰 컬렉션.
 
-2023년에 팀으로 만들었던 JSP 프로젝트([PikapediaProject](https://github.com/ottuck/PikapediaProject))를 요즘 스택으로 혼자 다시 만들어 본 사이드 프로젝트다.
+코딩을 처음 배울때 JSP 로만 만들었던 ([PikapediaProject](https://github.com/ottuck/PikapediaProject))를 리메이크.
 
-**[pokepedia-rust-six.vercel.app](https://pokepedia-rust-six.vercel.app)** · [설계 문서](docs/system_design.md)
+배포: [https://pokepedia.dev/) · [설계 문서](docs/system_design.md)
 
 <table>
   <tr>
