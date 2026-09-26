@@ -99,4 +99,4 @@ pnpm dev
 
 ---
 
-<sub>Pokémon and all related names and artwork are trademarks and © of Nintendo, Creatures Inc. and GAME FREAK inc. This is a non-commercial fan project.</sub>
+<sub>Source code: [MIT](LICENSE). Pokémon and all related names and artwork are trademarks and © of Nintendo, Creatures Inc. and GAME FREAK inc. This is a non-commercial fan project.</sub>
