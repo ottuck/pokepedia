@@ -42,17 +42,25 @@ export function HeroCard({
   weight,
 }: Props) {
   const t = useTranslations("detail");
-  const stage = usePointerTilt<HTMLDivElement>({
-    maxDegrees: MAX_TILT,
-    touch: true,
-  });
+  // Mouse hover tilts; touch does not (it fought the page scroll). A tap or click spins it.
+  const stage = usePointerTilt<HTMLDivElement>({ maxDegrees: MAX_TILT });
+  const [spinning, setSpinning] = useState(false);
   const [showShiny, setShowShiny] = useState(false);
   const [shinyMounted, setShinyMounted] = useState(false);
 
   return (
     <div className="flex flex-col items-center">
       <div ref={stage} className={styles.stage}>
-        <div className={styles.card} data-shiny={showShiny ? "" : undefined}>
+        <div
+          className={styles.card}
+          data-shiny={showShiny ? "" : undefined}
+          data-spin={spinning ? "" : undefined}
+          onClick={() => setSpinning(true)}
+          onAnimationEnd={(event) => {
+            if (event.target === event.currentTarget) setSpinning(false);
+          }}
+        >
+          <div aria-hidden className={styles.back} />
           <div aria-hidden className={styles.face}>
             <div className={styles.window} />
             <div className={styles.foil} />
