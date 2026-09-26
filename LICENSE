@@ -21,7 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+Pokémon Content
 Pokémon-related trademarks, names, characters, images,
 artwork and other intellectual property are owned by
-their respective rights holders and are not covered
-by the MIT License.
+their respective rights holders (Nintendo, The Pokémon
+Company, Creatures Inc. and GAME FREAK inc.) and are not
+covered by the MIT License. In this repository that
+includes:
+
+- docs/images/ (screenshots showing Pokémon artwork)
+- scripts/sync-pokemon/__fixtures__/pokeapi.json
+  (sample PokeAPI responses, including Pokédex text)
+- Pokémon names in supabase/seed.sql and in tests
+
+Pokepedia is an unofficial, non-commercial fan project
+and is not affiliated with or endorsed by Nintendo,
+The Pokémon Company, Creatures Inc. or GAME FREAK inc.
