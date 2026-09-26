@@ -1,45 +1,72 @@
+<div align="center">
+
+<img src="src/app/icon.svg" width="64" alt="" />
+
 # Pokepedia
 
-[한국어](README.md) · [English](README.en.md) · **日本語**
+**だーれだ？** ゲームボーイ風のシルエットバトル、第1世代ポケモン図鑑、<br/>
+そして当てるたびに1枚ずつ埋まっていくシール帳。
 
-第1世代ポケモン151匹の図鑑、シルエットを見て名前を当てるゲームボーイ風バトルゲーム、正解するとたまっていくシールコレクション。
+### [pokepedia.devで遊ぶ →](https://pokepedia.dev)
 
-2023年にチームで作ったJSPプロジェクト（[PikapediaProject](https://github.com/ottuck/PikapediaProject)）を、いまどきのスタックで一人で作り直したサイドプロジェクトです。
+[English](README.md) · [한국어](README.ko.md) · **日本語**
 
-**[pokepedia-rust-six.vercel.app](https://pokepedia-rust-six.vercel.app)** · [設計ドキュメント](docs/system_design.md)（韓国語）
+<br/>
+
+<img src="docs/images/ja/battle.png" width="640" alt="ゲームボーイ風バトル画面：ポケモンのシルエット、トレーナーの後ろ姿、コマンド欄" />
+
+</div>
+
+<br/>
+
+シルエットが現れます。名前を当てれば（日本語・英語・韓国語のどれでも）シールとして自分のものに。
+3回まちがえるとゲームオーバーです。
+
+プログラミングを学び始めたころにJSPだけで作った[PikapediaProject](https://github.com/ottuck/PikapediaProject)を、
+いまどきのスタックでゼロから作り直しました。ほとんどは作るのが楽しかったからです。
+
+## ゲーム
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/images/title.png" alt="ゲームのタイトル画面" /></td>
-    <td width="50%"><img src="docs/images/battle.png" alt="ゲームボーイ風バトル画面：ポケモンのシルエット、トレーナー、コマンド欄" /></td>
-  </tr>
-  <tr>
-    <td><img src="docs/images/reward.png" alt="正解してシールをもらう画面" /></td>
-    <td><img src="docs/images/collection.png" alt="集めたシールのコレクション" /></td>
-  </tr>
-  <tr>
-    <td><img src="docs/images/dex.png" alt="151匹の図鑑とタイプフィルター" /></td>
-    <td><img src="docs/images/detail.png" alt="ホログラムカードで表示したリザードンの詳細ページ" /></td>
+    <td width="50%"><img src="docs/images/ja/title.png" alt="タイトル画面" /></td>
+    <td width="50%"><img src="docs/images/ja/reward.png" alt="正解してもらった色違いシール" /></td>
   </tr>
 </table>
 
-## できること
+- **たたかう**で答え、**バッグ**はヒント、**ポケモン**はスキップ、**にげる**でおしまい。矢印キーとZキーでも操作できます。
+- まちがえるとHPが減ります。連続で当てるとスコア倍率と色違いシールの確率が上がります。
+- ピカチュウ、Pikachu、피카츄のどれで答えても正解です。
+- 登録は不要。ゲストで始めて、あとからGoogleを連携しても集めた記録はそのままです。
 
-- **図鑑**：151匹を1ページに。日本語・英語・韓国語の名前か番号で検索でき、タイプの絞り込みと並び順はURLに残ります。
-- **詳細**：能力値、特性、進化の流れ。アートワークはマウス（スマホでは指）に合わせて傾くホログラムカードで、色違いの姿にも切り替えられます。
-- **ゲーム**：シルエットだけを見て名前を当てます。たたかう / バッグ（ヒント）/ ポケモン（スキップ）/ にげる。矢印キーとZキーでも操作できます。間違えるとHPが減り、連続で当てるとスコア倍率と色違いシールの確率が上がります。3言語どの名前でも正解です。
-- **コレクション・ランキング**：シール151枠と、プレイヤーごとのベストスコアのランキング。
-- **アカウント**：登録なしでゲストとしてすぐ遊べて、あとからGoogleを連携しても記録はそのまま引き継がれます。
-- 韓国語・英語・日本語。
+## 図鑑
 
-## スタック
+<table>
+  <tr>
+    <td width="74%"><img src="docs/images/ja/dex.png" alt="タイプフィルター付きの151匹の図鑑" /></td>
+    <td width="26%"><img src="docs/images/ja/mobile.png" alt="スマホで見た図鑑" /></td>
+  </tr>
+</table>
 
-Next.js 16 (App Router, RSC, Server Actions) · React 19 · TypeScript · Tailwind CSS v4 · Motion · Zustand · Zod · next-intl ·
-Supabase (Postgres, Auth, Storage) · Vitest · Playwright · Vercel
+<img src="docs/images/ja/detail.png" alt="ホログラムカードで表示したリザードンの詳細ページ" />
+
+- 151匹を1ページに。3言語の名前か番号で検索でき、タイプの絞り込みと並び順はURLに残ります。
+- 1匹ずつ能力値、特性、進化の流れ。アートワークはマウス（または指）に合わせて傾くホログラムカードで、タップひとつで色違いの姿に切り替わります。
+
+## シール帳
+
+<img src="docs/images/ja/collection.png" alt="色違いシール2枚が入ったコレクション" />
+
+色違いまで埋めていく151枠と、みんなのベスト記録を集めたランキング。
+
+## 中身
+
+Next.js 16 (App Router, RSC, Server Actions) · React 19 · TypeScript · Tailwind CSS v4 · Motion ·
+Zustand · Zod · next-intl · Supabase (Postgres, Auth, Storage) · Vitest · Playwright · Vercel
 
 ```mermaid
 flowchart LR
-  User((ユーザー)) --> Next["Next.js on Vercel<br/>(東京 hnd1)"]
+  User((プレイヤー)) --> Next["Next.js on Vercel<br/>(東京 hnd1)"]
   Next -- "RSC · 静的ページ<br/>(publishable key + RLS)" --> DB[(Supabase Postgres<br/>東京)]
   Next -- "Server Actions<br/>(secret key → RPC)" --> DB
   User -- 画像 --> Storage[(Supabase Storage)]
@@ -47,7 +74,11 @@ flowchart LR
   Sync --> DB & Storage
 ```
 
-ポケモンのデータと画像はPokeAPIから一度だけ取り込んでSupabaseに置いてあり、実行時に外部APIは呼びません。図鑑と詳細ページ（151 × 3言語）はビルド時にすべてprerenderしています。
+- ポケモンのデータとアートワークはPokeAPIから一度だけ取り込んでSupabaseに置いてあり、実行時に外部APIは呼びません。
+- 図鑑と詳細ページのすべて（151 × 3言語）をビルド時にprerenderしています。
+- 正誤の判定はすべてサーバーが行い、答えがブラウザに渡ることはありません。
+
+もっと詳しい話（スキーマ、ゲームのルール、ゲストの記録をGoogleアカウントにまとめる仕組み、何をなぜテストしているか）は[設計ドキュメント](docs/system_design.md)（韓国語）にあります。
 
 ## ローカルで動かす
 
