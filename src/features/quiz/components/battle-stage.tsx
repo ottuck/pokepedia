@@ -238,7 +238,6 @@ function Trainer() {
       animate={{ x: 0 }}
       transition={spring.gentle}
     >
-      <div aria-hidden className={styles.trainerPlatform} />
       <m.div
         // Losing HP: the trainer shakes and blinks, as a Pokémon does when it is hit.
         animate={phase === "hit" ? { x: [0, -10, 10, -7, 7, -3, 0] } : { x: 0 }}
