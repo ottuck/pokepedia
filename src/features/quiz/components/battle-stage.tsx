@@ -21,8 +21,8 @@ import { useTypewriter } from "./use-typewriter";
 const PHASE_DURATION: Partial<Record<QuizPhase, number>> = {
   intro: 700,
   hit: 600,
-  // The ball flies for THROW_S first, then the Pokémon is revealed.
-  reveal: 1400,
+  // The ball flies (THROW_S), the Pokémon is revealed, then the trainer levels up.
+  reveal: 1900,
 };
 const REDUCED_DURATION: Partial<Record<QuizPhase, number>> = {
   intro: 400,
@@ -32,6 +32,9 @@ const REDUCED_DURATION: Partial<Record<QuizPhase, number>> = {
 
 /** How long the ball is in the air after a correct name (matches the throw keyframes). */
 const THROW_S = 0.45;
+
+/** After a correct name the level goes up only once the throw and the reveal have played. */
+const LEVEL_UP_DELAY_MS = (THROW_S + 0.6) * 1000;
 
 /** The trainer levels up with every Pokémon named in the run. */
 const START_LEVEL = 5;
@@ -282,14 +285,36 @@ function ThrownBall() {
   );
 }
 
+/**
+ * The level on screen. The server's count goes up the moment the name is judged; on screen
+ * it waits until the reveal has played, so "level up!" comes after the Pokémon, not over it.
+ */
+function useShownLevel() {
+  const phase = useQuizStore((s) => s.phase);
+  const cleared = useQuizStore((s) => s.run?.roundsCleared ?? 0);
+  const reduceMotion = useReducedMotion();
+  const [shown, setShown] = useState(cleared);
+
+  useEffect(() => {
+    if (shown === cleared) return;
+    const wait = cleared > shown && phase === "reveal" && !reduceMotion;
+    const timer = setTimeout(
+      () => setShown(cleared),
+      wait ? LEVEL_UP_DELAY_MS : 0,
+    );
+    return () => clearTimeout(timer);
+  }, [cleared, shown, phase, reduceMotion]);
+
+  return START_LEVEL + shown;
+}
+
 function PlayerInfo() {
   const t = useTranslations("quiz");
   const round = useQuizStore((s) => s.round);
   const run = useQuizStore((s) => s.run);
   const trainerName = useTrainerName();
+  const level = useShownLevel();
   if (!round || !run) return null;
-
-  const level = START_LEVEL + run.roundsCleared;
 
   return (
     <div className={`${styles.info} ${styles.playerInfo}`}>
@@ -305,10 +330,10 @@ function PlayerInfo() {
         <m.span
           key={`up-${level}`}
           aria-hidden
-          className="absolute -top-5 right-2 text-xs font-bold text-[#e3342f]"
+          className="ml-2 inline-block text-xs font-bold text-[#e3342f]"
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: [0, 1, 1, 0], y: [4, 0, 0, -4] }}
-          transition={{ duration: 1.6 }}
+          transition={{ duration: 1.2 }}
         >
           {t("battle.levelUp")}
         </m.span>
