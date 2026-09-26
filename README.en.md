@@ -30,7 +30,7 @@ A side project: I rebuilt a JSP app my team made in 2023 ([PikapediaProject](htt
 - **Game**: name the Pokémon from its silhouette. Fight / Bag (hint) / Pokémon (skip) / Run, with arrow keys and Z too. Wrong answers cost HP; a streak raises the score multiplier and the shiny sticker odds. Names in all three languages count.
 - **Collection and leaderboard**: 151 sticker slots, and a best-score ranking per player.
 - **Accounts**: start right away as a guest; link Google later and your progress comes with you.
-- Korean, English and Japanese, light and dark mode.
+- Korean, English and Japanese.
 
 ## Stack
 
