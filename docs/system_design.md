@@ -391,7 +391,8 @@ e2e/                   Playwright 핵심 여정
 
 - 톤: 도감·상세·컬렉션은 밝고 컬러풀한 카드, 게임·마이페이지는 Pokédex 프레임 + 픽셀 폰트 배틀 UI.
 - 토큰(`app/globals.css`): 브랜드(`dex-red`, `dex-screen`, `volt`, 고정 어두운색 `charcoal`), 타입 18색 × `{base, soft, ink, softDark, inkDark}`, rarity, 시맨틱(`surface`, `card`, `ink`, `muted`, `danger`). 타입 색은 `features/pokemon/types.ts`가 단일 출처이고, 컴포넌트는 CSS 변수(`--type`, `--type-soft`, `--type-ink`, `--type-2`)로 쓴다.
-- 다크모드: 테마가 바뀌는 토큰은 모두 `light-dark(라이트, 다크)`로 정의하고, 테마 전환은 `color-scheme`만 바꾼다(`dark:` 변형을 쓰지 않음). 기본은 시스템 설정이고, 헤더 토글(시스템 → 라이트 → 다크)은 `localStorage.theme`과 `<html data-theme>`에 기록한다. 페이지가 정적이라 `<head>`의 인라인 스크립트가 첫 페인트 전에 `data-theme`을 적용한다(깜빡임 방지). 타입 색의 다크 대비(AA)는 테스트로 지킨다. 테마와 무관한 기기 부품(게임 HUD와 배틀 화면, 보상 배경막, 몬스터볼 로고)은 고정색을 쓴다.
+- 다크모드 (**현재 꺼 둠**): `lib/theme.ts`의 `DARK_MODE_ENABLED = false`라 모든 페이지가 `<html data-theme="light">`로 렌더링되고 헤더 토글과 테마 스크립트가 빠진다. 아래 구조는 그대로 남아 있어 값만 바꾸면 되살아난다. 테마가 바뀌는 토큰은 모두 `light-dark(라이트, 다크)`로 정의하고, 테마 전환은 `color-scheme`만 바꾼다(`dark:` 변형을 쓰지 않음). 기본은 시스템 설정이고, 헤더 토글(시스템 → 라이트 → 다크)은 `localStorage.theme`과 `<html data-theme>`에 기록한다. 페이지가 정적이라 `<head>`의 인라인 스크립트가 첫 페인트 전에 `data-theme`을 적용한다(깜빡임 방지). 타입 색의 다크 대비(AA)는 테스트로 지킨다. 테마와 무관한 기기 부품(게임 HUD와 배틀 화면, 보상 배경막, 몬스터볼 로고)은 고정색을 쓴다.
+- 헤더: 데스크톱은 로고 · 메뉴 알약 · 언어/계정을 한 줄에. 모바일은 첫 줄에 로고와 언어(KO/EN/JA 코드)·계정, 둘째 줄에 화면 폭을 채우는 탭 바(현재 탭은 빨간 밑줄)를 두고, 헤더 아래에 여백을 둬 페이지 제목과 띄운다.
 - 폰트: 본문 Noto Sans KR/JP, 배틀 Galmuri(ko/en) / DotGothic16(ja).
 - 에셋: 게임에서 추출한 래스터 이미지는 쓰지 않는다. 트레이너 등은 자체 SVG이고, 포켓몬 아트워크만 예외다(팬 프로젝트 고지).
 - Motion: `LazyMotion`(`domMax`, layout 애니메이션)으로 엔진을 지연 로딩하고, `MotionConfig reducedMotion="user"`, spring 프리셋 3개(`snappy`, `bouncy`, `gentle`, `lib/motion.ts`).

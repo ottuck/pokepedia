@@ -28,7 +28,7 @@ export function DexToolbar({ filters, types, onChange }: Props) {
   }, [filters.type]);
 
   return (
-    <div className="mb-6 space-y-3">
+    <div className="mb-4 space-y-3">
       <div className="flex gap-2">
         <div className="relative flex-1">
           <label htmlFor={searchId} className="sr-only">

@@ -35,7 +35,11 @@ export function LocaleSwitcher() {
                     : "block rounded-full px-2.5 py-1 whitespace-nowrap text-muted hover:text-ink sm:px-3"
                 }
               >
-                {LOCALE_NAMES[locale]}
+                {/* Phones show the code so the switcher fits next to the logo. */}
+                <span aria-hidden className="sm:hidden">
+                  {locale.toUpperCase()}
+                </span>
+                <span className="max-sm:sr-only">{LOCALE_NAMES[locale]}</span>
               </Link>
             </li>
           );
