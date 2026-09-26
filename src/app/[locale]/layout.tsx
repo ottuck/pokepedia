@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Noto_Sans_JP, Noto_Sans_KR } from "next/font/google";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { routing } from "@/i18n/routing";
 import { DARK_MODE_ENABLED, themeScript } from "@/lib/theme";
@@ -45,6 +46,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <SiteHeader />
           {children}
+          <SiteFooter />
         </NextIntlClientProvider>
         {/* Vercel Web Analytics (cookieless page views) and Speed Insights (Core Web Vitals).
             Both only report from Vercel deployments; locally they stay inactive. */}
