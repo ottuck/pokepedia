@@ -116,4 +116,21 @@ describe("QuizGame", () => {
     );
     expect(screen.getByRole("textbox")).toBeEnabled();
   });
+
+  it("keeps the other commands usable while the answer box is open", async () => {
+    // On phones the box's cancel link could end up out of view, leaving no way out.
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    actions.requestHint.mockResolvedValueOnce({
+      ok: true,
+      data: { run, round: round("r1", { hintUsed: true, hint: "피?" }) },
+    });
+    await startGame(user);
+
+    await user.click(screen.getByRole("button", { name: "싸우다" }));
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "힌트" }));
+
+    expect(actions.requestHint).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+  });
 });

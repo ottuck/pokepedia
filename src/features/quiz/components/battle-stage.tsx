@@ -400,14 +400,17 @@ function BattleMenu() {
   // The entrance and "wrong" animations can be cut short by choosing the next move, so a
   // player who knows what to do never waits for them. A faint must play out to game over.
   const skippable = phase === "intro" || (phase === "hit" && !gameOver);
-  const usable = active || skippable;
+  // While typing a name the other commands stay one tap away: picking one closes the box.
+  const answering = phase === "answering";
+  const usable = active || skippable || answering;
+  const focusable = active || skippable;
 
   useEffect(() => {
     // Keyboard players land on the menu whenever it can be used (also after the answer
-    // box closes), not on every cursor move.
-    if (usable) buttons.current[selected]?.focus();
+    // box closes), not on every cursor move. Never while typing: that would steal the input.
+    if (focusable) buttons.current[selected]?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usable]);
+  }, [focusable]);
 
   const disabled: Record<(typeof MENU)[number], boolean> = {
     fight: !usable,
@@ -418,6 +421,11 @@ function BattleMenu() {
 
   const act = (item: (typeof MENU)[number]) => {
     if (disabled[item]) return;
+    if (answering) {
+      // Fight again just keeps the box open; anything else closes it first.
+      if (item === "fight") return;
+      store.closeAnswer();
+    }
     if (skippable) store.advance();
     if (item === "fight") store.openAnswer();
     else if (item === "item") void store.hint(locale);
