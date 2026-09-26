@@ -35,7 +35,7 @@ because it was fun.
   </tr>
 </table>
 
-- **Fight** to answer, **Bag** for a hint, **Pokémon** to skip, **Run** to call it a day. Arrow keys and Z work too.
+- **Fight** to answer, **Hint** for half the name, **Skip** to move on, **Run** to call it a day. Arrow keys and Z work too.
 - Wrong answers cost HP. A streak raises the score multiplier and the odds of a shiny sticker.
 - Pikachu, 피카츄 or ピカチュウ: any of the three names counts.
 - No sign-up. You start as a guest, and linking Google later keeps everything you've collected.

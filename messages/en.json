@@ -134,8 +134,8 @@
     "menu": {
       "label": "Choose an action",
       "fight": "Fight",
-      "item": "Bag",
-      "pokemon": "Pokémon",
+      "item": "Hint",
+      "pokemon": "Skip",
       "run": "Run"
     },
     "message": {
@@ -199,8 +199,8 @@
       "heading": "How to play",
       "p1": "A wild Pokémon appears as a silhouette!\nName it to win its sticker.",
       "p2": "▶FIGHT\nType its name to attack. Korean, English and Japanese names all work.\nA wrong name costs 1 HP; at 0 HP the game is over!",
-      "p3": "▶BAG\nA hint shows half of the name.\nIt breaks your combo and halves the points.",
-      "p4": "▶POKéMON\nSwap for another Pokémon. Up to 3 times per game.",
+      "p3": "▶HINT\nShows half of the name.\nIt breaks your combo and halves the points.",
+      "p4": "▶SKIP\nMove on to another Pokémon. Up to 3 times per game.",
       "p5": "▶RUN\nEnd the game and see your results.\nStreaks raise your score and your shiny odds. Let's go!",
       "skip": "Skip",
       "next": "Next",
