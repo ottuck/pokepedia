@@ -11,7 +11,6 @@ Pokepedia의 구조와 규칙 중 코드만 봐서는 알기 어려운 것만 �
 - [6. 계정](#6-계정)
 - [7. 개발과 배포](#7-개발과-배포)
 - [8. 테스트](#8-테스트)
-- [9. 그 외](#9-그-외)
 
 ## 1. 전체 구조
 
@@ -42,8 +41,10 @@ flowchart LR
 | 데이터 | PokeAPI는 동기화 스크립트에서만 쓴다. 런타임에는 외부 API를 부르지 않는다                 |
 | 쓰기   | 브라우저는 RLS가 허용한 것만 읽고, 게임 상태를 바꾸는 쓰기는 Server Action → RPC로만 한다 |
 | 상태   | 서버 데이터는 RSC, 클라이언트 상태(Zustand)는 게임 화면만                                 |
-| 지역   | Vercel 함수(`vercel.json`의 `hnd1`)와 Supabase를 같은 도쿄에 둔다                         |
+| 지역   | Vercel 함수(`vercel.json`의 `hnd1`)와 Supabase를 같은 도쿄에 둔다(아래)                   |
 | 제외   | TanStack Query, Drizzle, GSAP. 구체적인 문제가 생기면 그때 검토                           |
+
+**지역**: Vercel 함수 기본값인 워싱턴(`iad1`)에서는 도쿄 DB까지 쿼리마다 약 170ms가 걸려, 답변 한 번에 1.6–2.5초가 걸렸다. 함수를 도쿄로 옮기고 순차 DB 왕복을 8번에서 3번으로 줄여 약 0.25초가 됐다. DB 지역을 옮기면 `vercel.json`도 같이 바꾼다.
 
 **환경**: Supabase는 remote 프로젝트 하나(`pokepedia`)를 Vercel Production과 Preview가 같이 쓴다. Preview에서 게임을 하면 실제 데이터가 된다. PR별 Supabase Branching은 유료라 쓰지 않고, DB 변경은 CI와 로컬 Supabase(`pnpm supabase start`)에서 검증한다. 프로덕션 도메인은 `pokepedia.dev`다.
 
@@ -143,7 +144,7 @@ Round : hp = 3, 힌트 1회
 
 - **판단은 TS, 커밋은 SQL**: `service.ts`가 신뢰할 수 있는 상태를 읽고 `rules.ts`로 결과를 계산한다. 반영은 RPC `quiz_commit` 하나가 한 트랜잭션으로 한다(round 갱신 → run 갱신 → 스티커 → 다음 round). `version` 낙관적 잠금으로 같은 답을 두 번 보내도 한 번만 반영된다.
 - **정답 비노출**: 브라우저로 가는 round에는 포켓몬 id와 이름이 없다. 실루엣 파일명과 이름 마스크뿐이고, 진행 중 round는 RLS로도 숨긴다.
-- **DB 왕복**: 정답 한 번에 순차 왕복 3번, 오답·힌트는 2번. 테스트로 늘지 않게 지킨다.
+- **DB 왕복**: 정답 한 번에 순차 왕복 3번, 오답·힌트는 2번(§1 지역). 테스트로 늘지 않게 지킨다.
 - **화면**: Zustand `useQuizStore`가 액션을 호출하고, phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 서버 결과를 어떤 순서로 연출할지만 정한다. 새로고침하면 로비로 돌아오고, 시작하면 진행 중 run을 이어한다.
 
 ## 6. 계정
@@ -183,7 +184,7 @@ main ─┬─ Vercel Production 자동 배포
 
 env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 넣으면 실행되지 않는다.
 
-- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 원작 게임에서 추출한 이미지는 쓰지 않는다(트레이너 도트는 자체 SVG, 포켓몬 아트워크만 예외).
+- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 원작 게임 에셋은 쓰지 않는다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 직접 만들었고(AI 도움), 포켓몬 아트워크만 PokeAPI 이미지다.
 
 ## 8. 테스트
 
@@ -199,19 +200,3 @@ env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 �
 
 - `pnpm test`, `pnpm test:db`(로컬 DB에 fixture를 쓴다), `pnpm test:e2e`(`pnpm dev`를 :3200에 띄운다).
 - E2E는 진행 중 round의 정답이 RLS로 가려져 있어서 secret key로 로컬 DB를 직접 읽는다.
-
-## 9. 그 외
-
-**실루엣 정답을 미리 알 수 없도록.** 이름 맞히기 게임이라 개발자도구를 열면 답이 보이면 곤란하다. 진행 중인 문제는 응답에 포켓몬 id나 이름을 싣지 않고 실루엣과 글자 수 마스크만 보낸다. 실루엣 파일명은 HMAC 키로 바꿔 두고, 진행 중인 round는 RLS로 아예 조회가 안 되게 막았다. 정답 키는 API에 노출되지 않는 private 스키마에 있다.
-
-**판정은 서버, 커밋은 한 번에.** 규칙은 순수 TS(`rules.ts`)로 두고, 결과 반영(점수, 띠부씰, 다음 문제 생성)은 Postgres RPC 하나로 트랜잭션 처리한다. `version` 컬럼으로 낙관적 잠금을 걸어서 같은 답을 두 번 보내도 띠부씰은 한 번만 나온다.
-
-**속도 개선을 위한 리전 변경.** Vercel 함수는 워싱턴, DB는 도쿄에 있었다. 함수 리전을 도쿄로 옮기고 순차 DB 왕복을 8번에서 3번으로 줄였더니 답변 한 번이 1.6–2.5초에서 0.25초 정도로 내려왔다. 왕복 횟수는 다시 늘지 않게 테스트로 묶어 뒀다.
-
-**게스트에서 Google 계정으로 바꿀 때.** 가입 없이 시작한 게스트가 나중에 Google을 연결하면 같은 user id를 유지한다. 이미 가입한 Google 계정이 있으면 기록을 합칠 수 있는데, 1회용 티켓(DB에는 해시만, 원본은 httpOnly 쿠키로만)으로 처리하고 기록 이동이 성공한 뒤에만 게스트를 지운다. 안 쓰는 게스트는 pg_cron이 정리하되, 띠부씰이 한 장이라도 있으면 남긴다.
-
-**권한은 DB에서 끝낸다.** 새 테이블은 권한 없이 만들고 필요한 GRANT와 RLS만 연다. 랭킹처럼 남의 기록을 보여 줘야 하는 곳은 닉네임·점수·콤보만 돌려주는 함수 하나로 해결한다.
-
-**테스트는 깨지면 곤란한 것만.** 게임 규칙, 권한, 실제로 났던 버그 위주로 남기고 화면 문구 확인 같은 건 지웠다. RLS·RPC는 로컬 Supabase에 붙여서 돌리고, E2E는 도감 → 상세 → 언어 전환 → 게임 → 컬렉션 한 줄기만 Playwright로 확인한다.
-
-**GB 느낌은 AI로 직접 제작.** 원작 에셋은 쓰지 않았다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 만들었고 포켓몬 아트워크만 PokeAPI 이미지다.
