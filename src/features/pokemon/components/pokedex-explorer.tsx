@@ -94,7 +94,7 @@ function Explorer({ entries, cards }: Props) {
     <>
       <DexToolbar filters={filters} types={types} onChange={updateFilters} />
 
-      <p aria-live="polite" className="mb-3 min-h-5 text-sm text-muted">
+      <p aria-live="polite" className="mb-3 text-sm text-muted empty:mb-0">
         {isFiltered &&
           t("resultCount", { count: visible.length, total: entries.length })}
       </p>

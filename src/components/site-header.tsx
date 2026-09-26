@@ -1,13 +1,15 @@
 import { Link } from "@/i18n/navigation";
 import { AccountMenu } from "@/features/auth/components/account-menu";
+import { DARK_MODE_ENABLED } from "@/lib/theme";
 import { LocaleSwitcher } from "./locale-switcher";
 import { ThemeToggle } from "./theme-toggle";
 import { MainNav } from "./main-nav";
 
 export function SiteHeader() {
   return (
-    // Phones: logo + controls on the first row, navigation below. From md: one row.
-    <header className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4">
+    // Phones: logo + controls on the first row, a full-width tab bar below, then room before
+    // the page title. From md: one row.
+    <header className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-4 px-4 pt-4 pb-6 md:py-4">
       <Link
         href="/"
         className="flex items-center gap-2 text-xl font-black tracking-tight"
@@ -26,7 +28,7 @@ export function SiteHeader() {
       </div>
       <div className="flex items-center gap-2">
         <LocaleSwitcher />
-        <ThemeToggle />
+        {DARK_MODE_ENABLED && <ThemeToggle />}
         <AccountMenu />
       </div>
     </header>

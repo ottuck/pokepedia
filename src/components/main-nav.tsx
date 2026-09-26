@@ -32,13 +32,15 @@ export function MainNav() {
 
   return (
     <nav aria-label={t("main")}>
-      <ul className="flex flex-wrap gap-1 text-sm font-bold">
+      {/* Phones: a full-width tab bar over a divider (spare width shared, so long
+          Japanese labels keep a gap). From md: pills next to the logo. */}
+      <ul className="flex border-b border-ink/10 text-sm font-bold md:gap-1 md:border-0">
         {ITEMS.map(({ href, key, match }) => (
-          <li key={key}>
+          <li key={key} className="flex-auto md:flex-none">
             <Link
               href={href}
               aria-current={match(pathname) ? "page" : undefined}
-              className="rounded-full px-2.5 py-1.5 whitespace-nowrap text-muted hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-surface sm:px-3"
+              className="-mb-px block border-b-2 border-transparent px-2 py-2.5 text-center whitespace-nowrap text-muted hover:text-ink aria-[current=page]:border-dex-red aria-[current=page]:text-ink md:mb-0 md:rounded-full md:border-0 md:px-3 md:py-1.5 md:aria-[current=page]:bg-ink md:aria-[current=page]:text-surface"
             >
               {t(key)}
             </Link>
