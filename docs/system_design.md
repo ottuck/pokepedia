@@ -129,8 +129,8 @@ Round : hp = 3, 힌트 1회
 
 싸우다(정답)  → 점수 + 스티커 → 다음 round
 싸우다(오답)  → hp −1, combo = 0.  hp 0이면 정답 공개 후 run 종료(fainted)
-가방(힌트)    → 이름 앞 절반 공개, combo = 0, 이번 round 점수 ×0.5
-포켓몬(스킵)  → skips_left −1, combo = 0, 점수·스티커 없음
+힌트          → 이름 앞 절반 공개, combo = 0, 이번 round 점수 ×0.5
+넘기기(스킵)  → skips_left −1, combo = 0, 점수·스티커 없음
 도망치다      → run 종료(fled)
 ```
 
@@ -145,7 +145,7 @@ Round : hp = 3, 힌트 1회
 - **판단은 TS, 커밋은 SQL**: `service.ts`가 신뢰할 수 있는 상태를 읽고 `rules.ts`로 결과를 계산한다. 반영은 RPC `quiz_commit` 하나가 한 트랜잭션으로 한다(round 갱신 → run 갱신 → 스티커 → 다음 round). `version` 낙관적 잠금으로 같은 답을 두 번 보내도 한 번만 반영된다.
 - **정답 비노출**: 브라우저로 가는 round에는 포켓몬 id와 이름이 없다. 실루엣 파일명과 이름 마스크뿐이고, 진행 중 round는 RLS로도 숨긴다.
 - **DB 왕복**: 정답 한 번에 순차 왕복 3번, 오답·힌트는 2번(§1 지역). 테스트로 늘지 않게 지킨다.
-- **화면**: Zustand `useQuizStore`가 액션을 호출하고, phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 서버 결과를 어떤 순서로 연출할지만 정한다. 새로고침하면 로비로 돌아오고, 시작하면 진행 중 run을 이어한다.
+- **화면**: Zustand `useQuizStore`가 액션을 호출하고, phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 서버 결과를 어떤 순서로 연출할지만 정한다. 새로고침하면 로비로 돌아오고, 시작하면 진행 중 run을 이어한다. 이름을 입력하는 중에도 다른 명령을 누를 수 있다(입력창이 닫힌다). 휴대폰에서는 배틀이 시작되면 기기가 한 화면에 들어오게 스크롤하고, 기기 위의 터치로는 페이지가 스크롤되지 않게 한다.
 
 ## 6. 계정
 
@@ -184,7 +184,7 @@ main ─┬─ Vercel Production 자동 배포
 
 env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 넣으면 실행되지 않는다.
 
-- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 모든 페이지 푸터에 비공식 팬 프로젝트이며 권리자와 관련이 없다는 고지를 둔다(`SiteFooter`). 원작 게임 에셋은 쓰지 않는다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 직접 만들었고(AI 도움), 포켓몬 아트워크만 PokeAPI 이미지다.
+- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 상세 페이지 카드는 마우스를 따라 기울고(터치는 기울이지 않음), 탭·클릭하면 한 바퀴 돈다. 모든 페이지 푸터에 비공식 팬 프로젝트이며 권리자와 관련이 없다는 고지를 둔다(`SiteFooter`). 원작 게임 에셋은 쓰지 않는다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 직접 만들었고(AI 도움), 포켓몬 아트워크만 PokeAPI 이미지다.
 
 ## 8. 테스트
 

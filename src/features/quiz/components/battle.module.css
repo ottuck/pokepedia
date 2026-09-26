@@ -16,7 +16,8 @@
 .field {
   position: relative;
   overflow: hidden;
-  height: clamp(14rem, 60cqw, 21rem);
+  /* Phones get a shorter field so the whole device fits on one screen (see PokedexFrame). */
+  height: clamp(12.5rem, 56cqw, 21rem);
   background: linear-gradient(#f8f8f0 0%, #f8f8f0 58%, #e9f3d9 58%, #e9f3d9);
 }
 
@@ -140,7 +141,7 @@
   z-index: 1;
   top: 4%;
   right: 6%;
-  width: min(36cqw, 13rem);
+  width: min(30cqw, 13rem);
   aspect-ratio: 1;
 }
 
@@ -200,14 +201,24 @@
 
 .console {
   display: grid;
+  /* minmax(0, …): the answer input must not widen the column past the screen. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
   padding: 0.5rem;
   background: #f8f8f0;
 }
 
 @media (min-width: 640px) {
+  .box {
+    padding: 1rem 1.25rem;
+  }
+
+  .message {
+    min-height: 6.5rem;
+  }
+
   .console {
-    grid-template-columns: 1fr 15rem;
+    grid-template-columns: minmax(0, 1fr) 15rem;
   }
 }
 
@@ -221,13 +232,13 @@
     inset 0 0 0 9px #f8f8f0,
     inset 0 0 0 11px #1f1d1a;
   background: #f8f8f0;
-  padding: 1rem 1.25rem;
+  padding: 0.85rem 1rem;
   font-weight: 700;
   color: #1f1d1a;
 }
 
 .message {
-  min-height: 6.5rem;
+  min-height: 5.5rem;
   font-size: 1rem;
   line-height: 1.8;
   cursor: pointer;
@@ -258,7 +269,7 @@
   display: flex;
   align-items: center;
   gap: 0.2rem;
-  min-height: 2.5rem;
+  min-height: 2.25rem;
   border-radius: 4px;
   padding: 0 0.2rem;
   text-align: left;

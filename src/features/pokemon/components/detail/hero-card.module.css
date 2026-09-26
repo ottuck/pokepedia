@@ -17,8 +17,6 @@
   place-items: center;
   padding: 2.5rem 1.5rem 3.5rem;
   perspective: 900px;
-  /* Horizontal drags tilt the card; vertical swipes still scroll the page. */
-  touch-action: pan-y;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -487,6 +485,45 @@
     19px 17px;
 }
 
+/* ── Tap or click: one full turn. Phones have no tilt (dragging a card under a finger felt
+      wrong), so this is how the card moves there. Halfway round, the back shows. ────── */
+
+.card > * {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.back {
+  position: absolute;
+  inset: 0;
+  border: var(--frame) solid var(--color-card);
+  border-radius: var(--radius);
+  transform: rotateY(180deg);
+  /* Our own Pokéball, as in the site logo. */
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      #fffdf7 0 9%,
+      #1f1d1a 9% 14%,
+      transparent 14%
+    ),
+    linear-gradient(#d8433a 0 47%, #1f1d1a 47% 53%, #fffdf7 53%);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--type) 45%, transparent);
+}
+
+.card[data-spin] {
+  animation: spin 900ms cubic-bezier(0.3, 0.7, 0.25, 1);
+}
+
+@keyframes spin {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(360deg);
+  }
+}
+
 /* ── Reduced motion: a flat, still card (the hook does not listen either) ────────────── */
 
 @media (prefers-reduced-motion: reduce) {
@@ -494,6 +531,9 @@
   .shadow {
     transform: none;
     transition: none;
+  }
+  .card[data-spin] {
+    animation: none;
   }
   .card .art,
   .card .aura,
