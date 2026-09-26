@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { themeScript } from "@/lib/theme";
+import { DARK_MODE_ENABLED, themeScript } from "@/lib/theme";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,10 +10,17 @@ export const metadata: Metadata = {
 // Rendered outside any [locale] layout, so it cannot use translations.
 export default function GlobalNotFound() {
   return (
-    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="h-full antialiased"
+      data-theme={DARK_MODE_ENABLED ? undefined : "light"}
+      suppressHydrationWarning
+    >
       {/* Theme before first paint; see lib/theme.ts. */}
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {DARK_MODE_ENABLED && (
+          <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        )}
       </head>
       <body className="flex min-h-full flex-col items-center justify-center gap-3 p-6 text-center">
         <p className="text-6xl font-black text-dex-red">404</p>

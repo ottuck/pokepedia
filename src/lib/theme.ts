@@ -1,3 +1,10 @@
+/**
+ * Dark mode is switched off for now: every page renders light and the header toggle is hidden.
+ * The dark tokens (globals.css), the theme script and ThemeToggle stay; set this to true to
+ * bring the toggle back.
+ */
+export const DARK_MODE_ENABLED = false;
+
 export const THEMES = ["system", "light", "dark"] as const;
 export type Theme = (typeof THEMES)[number];
 
