@@ -10,7 +10,7 @@ import { useQuizStore, type QuizPhase } from "../store";
 import styles from "./battle.module.css";
 import { ErrorNotice } from "./error-notice";
 import { RewardCard } from "./reward-card";
-import { TrainerSprite } from "./trainer-sprite";
+import { BallSprite, TrainerSprite } from "./trainer-sprite";
 import { useTrainerName } from "./use-trainer-name";
 import { useTypewriter } from "./use-typewriter";
 
@@ -21,13 +21,17 @@ import { useTypewriter } from "./use-typewriter";
 const PHASE_DURATION: Partial<Record<QuizPhase, number>> = {
   intro: 700,
   hit: 600,
-  reveal: 1100,
+  // The ball flies for THROW_S first, then the Pokémon is revealed.
+  reveal: 1400,
 };
 const REDUCED_DURATION: Partial<Record<QuizPhase, number>> = {
   intro: 400,
   hit: 500,
   reveal: 700,
 };
+
+/** How long the ball is in the air after a correct name (matches the throw keyframes). */
+const THROW_S = 0.45;
 
 /** The trainer levels up with every Pokémon named in the run. */
 const START_LEVEL = 5;
@@ -55,6 +59,7 @@ export function BattleStage() {
         <EnemyInfo />
         <EnemySprite />
         <Trainer />
+        <ThrownBall />
         <PlayerInfo />
       </div>
       <div className={styles.console}>
@@ -169,7 +174,11 @@ function EnemyInfo() {
 function EnemySprite() {
   const t = useTranslations("quiz");
   const round = useQuizStore((s) => s.round);
+  const phase = useQuizStore((s) => s.phase);
+  const reduceMotion = useReducedMotion();
   const revealed = useRevealed();
+  // After a correct name the reveal waits for the thrown ball to land.
+  const delay = phase === "reveal" && !reduceMotion ? THROW_S : 0;
   if (!round) return null;
 
   return (
@@ -180,9 +189,11 @@ function EnemySprite() {
           <m.div
             key={`reveal-${revealed.id}`}
             className="absolute inset-0"
-            initial={{ filter: "brightness(0)", scale: 0.9 }}
+            // Starts as the same black shape, so the silhouette seems to stay while the
+            // ball flies, then lights up.
+            initial={{ filter: "brightness(0)", scale: 1 }}
             animate={{ filter: "brightness(1)", scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut", delay }}
           >
             {/* Flash on reveal */}
             <m.div
@@ -190,7 +201,7 @@ function EnemySprite() {
               className="absolute inset-0 rounded-full bg-white"
               initial={{ opacity: 0.9, scale: 0.4 }}
               animate={{ opacity: 0, scale: 1.6 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.6, delay }}
             />
             <Image
               src={revealed.artworkUrl}
@@ -207,7 +218,8 @@ function EnemySprite() {
             // A new wild Pokémon slides in from the left, as in the originals.
             initial={{ x: "-160%", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
+            // Gone at once: the revealed artwork takes its place in the same frame.
+            exit={{ opacity: 0, transition: { duration: 0 } }}
             transition={spring.gentle}
           >
             <Image
@@ -226,11 +238,12 @@ function EnemySprite() {
 }
 
 /**
- * The player's trainer, always on the field. Slides in once when the battle starts and
- * shakes when HP is lost.
+ * The player's trainer, always on the field. Slides in once when the battle starts, shakes
+ * when HP is lost, and throws the ball in hand when the Pokémon is named.
  */
 function Trainer() {
   const phase = useQuizStore((s) => s.phase);
+  const throwing = phase === "reveal" || phase === "reward";
   return (
     <m.div
       className={styles.trainer}
@@ -240,13 +253,32 @@ function Trainer() {
     >
       <m.div
         // Losing HP: the trainer shakes and blinks, as a Pokémon does when it is hit.
-        animate={phase === "hit" ? { x: [0, -10, 10, -7, 7, -3, 0] } : { x: 0 }}
+        // Throwing: a quick lean toward the wild Pokémon.
+        animate={
+          phase === "hit"
+            ? { x: [0, -10, 10, -7, 7, -3, 0] }
+            : phase === "reveal"
+              ? { x: [0, 8, 0], rotate: [0, 4, 0] }
+              : { x: 0, rotate: 0 }
+        }
         transition={{ duration: 0.45 }}
         className={phase === "hit" ? styles.hurt : undefined}
       >
-        <TrainerSprite className={styles.trainerSprite} />
+        <TrainerSprite throwing={throwing} className={styles.trainerSprite} />
       </m.div>
     </m.div>
+  );
+}
+
+/** The ball in flight: from the trainer's hand to the wild Pokémon, in an arc (CSS). */
+function ThrownBall() {
+  const phase = useQuizStore((s) => s.phase);
+  const reduceMotion = useReducedMotion();
+  if (phase !== "reveal" || reduceMotion) return null;
+  return (
+    <div className={styles.thrown}>
+      <BallSprite className={styles.thrownBall} />
+    </div>
   );
 }
 
