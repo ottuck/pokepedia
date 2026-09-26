@@ -493,22 +493,145 @@
   backface-visibility: hidden;
 }
 
+/* The back: our own take on the classic blue card back (swirl, Pokéball, wordmark twice),
+   drawn in CSS. Not the official design or logo: those belong to the rights holders. It has
+   its own holo band and glitter so the foil does not vanish while the card turns. */
 .back {
   position: absolute;
   inset: 0;
-  border: var(--frame) solid var(--color-card);
+  container-type: inline-size;
+  overflow: hidden;
   border-radius: var(--radius);
+  background: #182a63;
   transform: rotateY(180deg);
-  /* Our own Pokéball, as in the site logo. */
+  box-shadow: 0 0 0 1px rgb(24 42 99 / 0.6);
+}
+
+.backSwirl {
+  position: absolute;
+  inset: 4%;
+  overflow: hidden;
+  border-radius: calc(var(--radius) - 8px);
+  background: #1d4aa0;
+}
+
+/* A blurred conic sweep reads as a swirl of light around the ball. */
+.backSwirl::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(
+      ellipse 55% 20% at 30% 34%,
+      rgb(235 244 255 / 0.85),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 50% 18% at 70% 66%,
+      rgb(235 244 255 / 0.8),
+      transparent 70%
+    ),
+    conic-gradient(
+      from 20deg at 50% 50%,
+      #0e2a70,
+      #2e63bf,
+      #b9d4f3,
+      #1c4aa3,
+      #0b235e,
+      #3a73cf,
+      #d6e6f8,
+      #1a4598,
+      #0e2a70
+    );
+  filter: blur(9px);
+  transform: rotate(-18deg);
+}
+
+.backWord {
+  position: absolute;
+  left: 50%;
+  top: 11%;
+  translate: -50% 0;
+  rotate: -7deg;
+  font-size: 15cqw;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  white-space: nowrap;
+  color: #ffcb05;
+  -webkit-text-stroke: 0.14em #2a5db0;
+  paint-order: stroke fill;
+  text-shadow: 0 0.06em 0 #142f78;
+}
+
+.backWord[data-flip] {
+  top: auto;
+  bottom: 11%;
+  rotate: 173deg;
+}
+
+.backBall {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 46%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
   background:
     radial-gradient(
       circle at 50% 50%,
-      #fffdf7 0 9%,
-      #1f1d1a 9% 14%,
-      transparent 14%
+      #e9f5ff 0 7%,
+      #9ec7e4 7% 9.5%,
+      #fdfdfd 9.5% 12%,
+      #1f1d1a 12% 17%,
+      transparent 17%
     ),
-    linear-gradient(#d8433a 0 47%, #1f1d1a 47% 53%, #fffdf7 53%);
-  box-shadow: 0 0 0 1px color-mix(in oklab, var(--type) 45%, transparent);
+    linear-gradient(
+      to bottom,
+      transparent 0 46%,
+      #1f1d1a 46% 54%,
+      transparent 54%
+    ),
+    radial-gradient(
+      circle at 34% 22%,
+      rgb(255 255 255 / 0.85),
+      transparent 22%
+    ),
+    radial-gradient(circle at 40% 30%, #ff6b57, #d92d20 45%, #9e1a12 80%) top /
+      100% 50% no-repeat,
+    radial-gradient(circle at 40% 10%, #ffffff, #d9dcdf 55%, #9ea3a8 95%)
+      bottom / 100% 50% no-repeat;
+  box-shadow:
+    inset -6px -10px 18px rgb(0 0 0 / 0.3),
+    0 10px 22px rgb(6 18 60 / 0.55);
+}
+
+/* Foil on the back: a prismatic band that drifts, and sweeps across while the card spins. */
+.backHolo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  background-image: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 36%,
+    #ff7ab8 40%,
+    #ffe066 43%,
+    #6ef3ff 46%,
+    #b388ff 49%,
+    transparent 53%,
+    transparent 100%
+  );
+  background-size: 300% 300%;
+  opacity: 0.45;
+  animation: holo-drift 7s ease-in-out infinite;
+}
+
+.card[data-spin] .backHolo {
+  opacity: 0.7;
+  animation: holo-drift 900ms ease-in-out;
 }
 
 .card[data-spin] {
@@ -532,8 +655,9 @@
     transform: none;
     transition: none;
   }
-  .card[data-spin] {
-    animation: none;
+  .card[data-spin],
+  .backHolo {
+    animation: none !important;
   }
   .card .art,
   .card .aura,

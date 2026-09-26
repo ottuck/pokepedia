@@ -60,7 +60,7 @@ export function HeroCard({
             if (event.target === event.currentTarget) setSpinning(false);
           }}
         >
-          <div aria-hidden className={styles.back} />
+          <CardBack />
           <div aria-hidden className={styles.face}>
             <div className={styles.window} />
             <div className={styles.foil} />
@@ -121,6 +121,22 @@ export function HeroCard({
       >
         ✦ {t("shinyToggle")}
       </button>
+    </div>
+  );
+}
+
+/** The card's back, seen halfway through a spin. Decorative. */
+function CardBack() {
+  return (
+    <div aria-hidden className={styles.back}>
+      <div className={styles.backSwirl} />
+      <span className={styles.backWord}>Pokepedia</span>
+      <div className={styles.backBall} />
+      <span className={styles.backWord} data-flip="">
+        Pokepedia
+      </span>
+      <div className={styles.backHolo} />
+      <div className={styles.sparkle} />
     </div>
   );
 }
