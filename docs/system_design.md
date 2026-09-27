@@ -165,14 +165,14 @@ Round : hp = 3, 힌트 1회
 ## 7. 개발과 배포
 
 ```
-feature branch → PR ─┬─ GitHub CI (check / db / e2e)
+feature branch → PR ─┬─ GitHub CI (check / db)
                      └─ Vercel Preview
 main ─┬─ Vercel Production 자동 배포
       └─ Supabase GitHub integration: 새 migration 자동 적용
 ```
 
 - 머지 조건과 위험도 분류는 `CLAUDE.md` § Merge policy가 기준이다.
-- CI: `check`(lint, typecheck, format, 단위 테스트), `db`(로컬 Supabase에 migration 적용, schema lint, 생성 타입 drift, RLS·RPC 테스트), `e2e`(Playwright). 문서만 바뀐 PR은 돌지 않는다.
+- CI: `check`(lint, typecheck, format, 단위 테스트), `db`(로컬 Supabase에 migration 적용, schema lint, 생성 타입 drift, RLS·RPC 테스트). 문서만 바뀐 PR은 돌지 않는다. E2E(Playwright)는 CI에서 돌리지 않고, 큰 변경 전에 로컬에서 직접 실행한다.
 - **DB 변경**: migration은 로컬에서 검증한 뒤 머지하면 자동 배포된다. Vercel과 Supabase가 동시에 배포되므로 migration은 현재 코드와 호환돼야 한다(expand → 코드 전환 → contract). 롤백하지 않고 새 migration으로 고친다. migration 뒤에는 `pnpm db:types`.
 - **환경변수**
 
@@ -189,7 +189,7 @@ env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 �
 
 ## 8. 테스트
 
-깨지면 곤란한 것만 테스트한다. 렌더링·문구·DOM 구조 확인은 두지 않고, 화면은 Preview와 E2E로 본다.
+깨지면 곤란한 것만 테스트한다. 렌더링·문구·DOM 구조 확인은 두지 않고, 화면은 Vercel Preview로 본다.
 
 | 도구                   | 대상                                                                                     |
 | ---------------------- | ---------------------------------------------------------------------------------------- |
@@ -197,7 +197,7 @@ env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 �
 | Vitest                 | 보안 경계(병합 티켓·콜백, open redirect, 아바타 경로, env 키 종류, 닉네임), 번역 키 일치 |
 | Vitest + RTL           | 실제로 났던 게임 화면 버그 2개(요청 실패 뒤 멈춤, 서버 오류 뒤 재입력)                   |
 | Vitest + 로컬 Supabase | RLS·RPC 권한, 게스트 병합·정리, 리더보드 공개 범위, 아바타 권한                          |
-| Playwright             | 핵심 여정 1개: 도감 검색 → 상세 → 언어 전환 → 게임 오답·정답 → 컬렉션                    |
+| Playwright (로컬 수동) | 핵심 여정 1개: 도감 검색 → 상세 → 언어 전환 → 게임 오답·정답 → 컬렉션                    |
 
 - `pnpm test`, `pnpm test:db`(로컬 DB에 fixture를 쓴다), `pnpm test:e2e`(`pnpm dev`를 :3200에 띄운다).
 - E2E는 진행 중 round의 정답이 RLS로 가려져 있어서 secret key로 로컬 DB를 직접 읽는다.
