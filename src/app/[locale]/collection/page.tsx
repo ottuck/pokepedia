@@ -77,7 +77,7 @@ export default async function CollectionPage({
           <p className="text-lg font-bold">{t("emptyTitle")}</p>
           <p className="text-sm text-muted">{t("emptyBody")}</p>
           <Link
-            href="/quiz"
+            href="/"
             className="rounded-full bg-ink px-5 py-2 text-sm font-bold text-surface"
           >
             {t("toQuiz")}

@@ -66,7 +66,7 @@ export function MyStickerBadge({ pokemonId }: { pokemonId: number }) {
       ) : (
         <>
           <span className="text-muted">{t("none")}</span>
-          <Link href="/quiz" className="font-bold underline underline-offset-2">
+          <Link href="/" className="font-bold underline underline-offset-2">
             {t("toQuiz")}
           </Link>
         </>

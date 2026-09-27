@@ -77,7 +77,7 @@ export function MyRank() {
         </p>
       )}
       <Link
-        href="/quiz"
+        href="/"
         className="rounded-full bg-ink px-4 py-2 text-sm font-bold text-surface"
       >
         {t("play")}

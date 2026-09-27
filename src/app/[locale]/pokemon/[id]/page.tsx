@@ -99,7 +99,7 @@ export default async function PokemonDetailPage({
       className="mx-auto w-full max-w-5xl px-4 pb-16"
     >
       <Link
-        href="/"
+        href="/pokedex"
         className="mb-4 inline-block text-sm font-medium text-muted hover:text-ink"
       >
         ← {t("backToDex")}
