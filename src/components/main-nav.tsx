@@ -4,15 +4,17 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 
 const ITEMS = [
+  // The game is the home page; the dex and its detail pages live under /pokedex and /pokemon.
   {
     href: "/",
-    key: "dex",
-    match: (path: string) => path === "/" || path.startsWith("/pokemon"),
+    key: "quiz",
+    match: (path: string) => path === "/",
   },
   {
-    href: "/quiz",
-    key: "quiz",
-    match: (path: string) => path.startsWith("/quiz"),
+    href: "/pokedex",
+    key: "dex",
+    match: (path: string) =>
+      path.startsWith("/pokedex") || path.startsWith("/pokemon"),
   },
   {
     href: "/collection",

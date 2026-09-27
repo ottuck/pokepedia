@@ -1,7 +1,7 @@
 # Pokepedia System Design
 
 Pokepedia의 구조와 규칙 중 코드만 봐서는 알기 어려운 것만 모은 문서다. 구조를 바꾸는 변경은 이 문서를 먼저 고친다.
-소개와 실행 방법은 [README](../README.md)에 있다. 화면에서는 "게임"이라고 부르지만 코드와 URL은 `quiz`를 쓴다.
+소개와 실행 방법은 [README](../README.md)에 있다. 화면에서는 "게임"이라고 부르지만 코드는 `quiz`(`features/quiz`)를 쓴다.
 
 - [1. 전체 구조](#1-전체-구조)
 - [2. 데이터](#2-데이터)
@@ -107,12 +107,13 @@ private.guest_merge_ticket (token_hash, from_user_id, expires_at, consumed_at)
 
 | Route                                  | 렌더링      | 클라이언트 부분                     |
 | -------------------------------------- | ----------- | ----------------------------------- |
-| `/[locale]`                            | 정적        | `PokedexExplorer`: 필터·검색·정렬   |
+| `/[locale]` (홈)                       | 정적 셸     | `QuizGame` 전체                     |
+| `/[locale]/pokedex`                    | 정적        | `PokedexExplorer`: 필터·검색·정렬   |
 | `/[locale]/pokemon/[id]`               | SSG 151 × 3 | 홀로그램 카드, "내 스티커" 배지     |
-| `/[locale]/quiz`                       | 정적 셸     | `QuizGame` 전체                     |
 | `/[locale]/leaderboard`                | ISR 60초    | "내 순위"                           |
 | `/[locale]/collection`, `/[locale]/me` | 동적        | 필터, 카드 연출, 닉네임·아바타 편집 |
 
+- 첫 화면은 게임 타이틀이다. 도감은 `/pokedex`로 옮겼고, 예전 주소는 `next.config.ts`의 redirects가 받는다(`/[locale]/quiz` → `/[locale]`, 필터가 붙은 `/[locale]?type=…` → `/[locale]/pokedex`).
 - 도감·상세는 cookie 없는 client(`lib/supabase/public.ts`)로 읽어 빌드 때 만든다. `dynamicParams = false`라 목록 밖 id는 DB 조회 없이 404다.
 - 헤더 계정 메뉴와 "내 스티커" 배지는 브라우저에서 세션과 RLS로 읽는다. layout에서 cookie를 읽으면 모든 정적 페이지가 동적으로 바뀌기 때문이다.
 - 도감과 컬렉션은 서버가 카드를 렌더링해 prop으로 넘기고, 클라이언트는 어떤 카드를 어떤 순서로 보일지만 정한다. 필터 상태는 URL(`?q=&type=&sort=`)과 동기화한다.

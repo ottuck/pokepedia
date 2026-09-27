@@ -32,7 +32,7 @@ export default async function MyPage() {
           <h1 className="text-2xl font-black">{t("emptyTitle")}</h1>
           <p className="text-sm text-muted">{t("emptyBody")}</p>
           <Link
-            href="/quiz"
+            href="/"
             className="rounded-full bg-ink px-5 py-2 text-sm font-bold text-surface"
           >
             {t("toQuiz")}

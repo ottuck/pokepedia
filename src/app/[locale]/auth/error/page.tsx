@@ -25,7 +25,7 @@ export default async function AuthErrorPage({
       <p className="text-muted">{t(key)}</p>
       {code === "identity_already_exists" && <GuestMergeButton />}
       <Link
-        href="/"
+        href="/pokedex"
         className="mt-2 rounded-full bg-ink px-4 py-2 text-sm font-medium text-surface"
       >
         {t("backHome")}

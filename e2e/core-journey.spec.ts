@@ -31,7 +31,7 @@ async function activeAnswer() {
 
 test("도감 → 상세 → 언어 전환 → 게임(오답·정답) → 컬렉션", async ({ page }) => {
   // Dex: search, open a detail page, then switch its language.
-  await page.goto("/ko");
+  await page.goto("/ko/pokedex");
   await page.getByRole("searchbox", { name: "포켓몬 검색" }).fill("피카츄");
   await page.getByRole("heading", { name: "피카츄", level: 2 }).click();
   await expect(page).toHaveURL(/\/ko\/pokemon\/25$/);
@@ -44,7 +44,7 @@ test("도감 → 상세 → 언어 전환 → 게임(오답·정답) → 컬렉�
   );
 
   // Game: the first visit starts a guest session and shows the rules once.
-  await page.goto("/ko/quiz");
+  await page.goto("/ko");
   await page.getByText("PRESS START").click();
   await page.getByRole("button", { name: "건너뛰기" }).click();
 
