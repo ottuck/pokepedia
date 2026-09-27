@@ -27,7 +27,8 @@ before structural changes. `README.md` is the public-facing overview.
 - `supabase/seed.sql` seeds a 3-Pokémon catalog for local/CI (`db reset`); run the sync for the full dex
 - `pnpm test:db` — RLS/grant/RPC tests against local Supabase (writes fixtures; local DB only)
 - `pnpm test:e2e` — one Playwright journey (dex → detail → language → game → collection) against
-  local Supabase; starts `pnpm dev` on :3200 (first run: `pnpm exec playwright install chromium`)
+  local Supabase; starts `pnpm dev` on :3200 (first run: `pnpm exec playwright install chromium`).
+  Local only, run by hand before bigger changes; not part of CI.
 - Node 24 (`engines` in `package.json`; CI pins `node-version: 24`). Package manager: pnpm
   (version pinned by `packageManager`).
 - Supabase clients: `lib/supabase/server.ts` (user, RLS), `browser.ts` (user, client side),
@@ -40,7 +41,7 @@ before structural changes. `README.md` is the public-facing overview.
 - `supabase/` — `config.toml` (local stack only), `migrations/` (auto-deployed on merge),
   `seed.sql`, `tests/` (`pnpm test:db`)
 - `scripts/sync-pokemon` — the only PokeAPI code · `e2e/` — Playwright
-- `.github/workflows/ci.yml` — check / db / e2e jobs · `vercel.json` — install command, region
+- `.github/workflows/ci.yml` — check / db jobs · `vercel.json` — install command, region
 - No `public/`: static assets are served from Supabase Storage; the favicon is `src/app/icon.svg`.
 - Local-only, gitignored: `.env.local`, `.env.remote.local`, `.cache/` (PokeAPI cache for the
   sync), `.claude/` (desktop-app preview config), `.next/`, `test-results/`, `next-env.d.ts`.
