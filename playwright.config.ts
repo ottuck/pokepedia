@@ -1,4 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
+import { loadLocalSupabaseTestEnv } from "./scripts/testing/local-supabase";
+
+loadLocalSupabaseTestEnv();
 
 const PORT = 3200;
 
@@ -20,7 +23,14 @@ export default defineConfig({
   webServer: {
     command: `pnpm dev --port ${PORT}`,
     url: `http://localhost:${PORT}/ko`,
-    reuseExistingServer: true,
+    // The existing server might use a remote project even when this process is local.
+    reuseExistingServer: false,
+    env: {
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+      SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY!,
+    },
     // Stop `next dev` (behind pnpm) cleanly so the run exits once the test is done.
     gracefulShutdown: { signal: "SIGTERM", timeout: 5_000 },
     timeout: 180_000,
