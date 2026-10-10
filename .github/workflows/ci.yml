@@ -17,6 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # E2E stays manual (`pnpm test:e2e`) to keep PR feedback fast.
+  # Do not add browser installation or Playwright execution to these jobs.
   check:
     runs-on: ubuntu-latest
     steps:

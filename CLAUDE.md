@@ -26,7 +26,8 @@ before structural changes. `README.md` is the public-facing overview.
   The dex is prerendered at build time, so a remote sync only shows after the next deploy.
 - `supabase/seed.sql` seeds a 3-Pokémon catalog for local/CI (`db reset`); run the sync for the full dex
 - `pnpm test:db` — RLS/grant/RPC tests against local Supabase (writes fixtures; local DB only)
-- `pnpm test:e2e` — one Playwright journey (dex → detail → language → game → collection) against
+- `pnpm test:e2e` — six essential Playwright journeys (catalog/rewards, battle lifecycle,
+  session/sign-out and multi-tab recovery) against
   local Supabase; starts `pnpm dev` on :3200 (first run: `pnpm exec playwright install chromium`).
   Local only, run by hand before bigger changes; not part of CI.
 - Node 24 (`engines` in `package.json`; CI pins `node-version: 24`). Package manager: pnpm

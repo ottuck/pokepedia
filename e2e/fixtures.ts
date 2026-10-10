@@ -9,6 +9,7 @@ loadLocalSupabaseTestEnv();
 type Players = {
   trackCurrent(): Promise<string>;
   activeAnswer(): Promise<string>;
+  activeRunId(): Promise<string>;
   createOtherRun(pokemonId: number): Promise<void>;
 };
 
@@ -51,6 +52,17 @@ export const test = base.extend<{ players: Players }>({
             .single();
           if (error) throw error;
           return data.pokemon.name_ko;
+        },
+        async activeRunId() {
+          const userId = await trackCurrent();
+          const { data, error } = await admin
+            .from("quiz_run")
+            .select("id")
+            .eq("user_id", userId)
+            .eq("status", "active")
+            .single();
+          if (error) throw error;
+          return data.id;
         },
         async createOtherRun(pokemonId) {
           const other = createClient<Database>(url, key, {
