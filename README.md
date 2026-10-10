@@ -95,7 +95,7 @@ pnpm dev
 
 - `pnpm check`: lint · typecheck · format · unit tests
 - `pnpm test:db`: RLS and RPC tests on the local Supabase
-- `pnpm test:e2e`: Playwright
+- `pnpm test:e2e`: 로컬 Supabase를 사용하는 필수 브라우저 시나리오 6개. CI에서는 실행하지 않고, 게임·인증 변경 및 배포 전에 수동 실행한다.
 
 ---
 

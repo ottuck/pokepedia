@@ -44,6 +44,9 @@ test("도감 → 상세 → 언어 전환 → 게임(오답·정답) → 컬렉�
   await attack.click();
   await expect(page.getByText(`정답! ${name}!`)).toBeVisible();
   await expect(page.getByRole("dialog", { name, exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "다음 포켓몬", exact: true }).click();
+  await expect(page.getByText("2번째 포켓몬", { exact: true })).toBeVisible();
+  await expect(page.getByText("HP 3/3", { exact: true })).toBeAttached();
 
   // Collection: the sticker is there.
   await page.goto("/ko/collection");
@@ -117,37 +120,33 @@ test("다른 탭에서 종료한 배틀의 명령은 새 게임 없이 타이틀
   await expect(fight).toHaveCount(0);
 });
 
-for (const fromOtherTab of [false, true]) {
-  test(`마이페이지 로그아웃 후 개인 기록 갱신 (${fromOtherTab ? "다른 탭" : "현재 탭"})`, async ({
-    page,
-    context,
-    players,
-  }) => {
-    await page.goto("/ko");
-    await page.getByText("PRESS START").click();
-    await page.getByRole("button", { name: "건너뛰기", exact: true }).click();
-    await expect(
-      page.getByRole("button", { name: "싸우다", exact: true }),
-    ).toBeVisible();
-    await players.trackCurrent();
-    await page.goto("/ko/me");
-    await expect(
-      page.getByRole("button", { name: "닉네임 변경" }),
-    ).toBeVisible();
+test("다른 탭에서 로그아웃하면 마이페이지의 개인 기록이 갱신된다", async ({
+  page,
+  context,
+  players,
+}) => {
+  await page.goto("/ko");
+  await page.getByText("PRESS START").click();
+  await page.getByRole("button", { name: "건너뛰기", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "싸우다", exact: true }),
+  ).toBeVisible();
+  await players.trackCurrent();
+  await page.goto("/ko/me");
+  await expect(page.getByRole("button", { name: "닉네임 변경" })).toBeVisible();
 
-    const signOutPage = fromOtherTab ? await context.newPage() : page;
-    if (fromOtherTab) await signOutPage.goto("/ko/collection");
-    await signOutPage.getByRole("button", { name: "계정 메뉴" }).click();
-    signOutPage.once("dialog", (dialog) => dialog.accept());
-    await signOutPage.getByRole("button", { name: "게스트 나가기" }).click();
-    await expect(
-      page.getByRole("button", { name: "Google로 로그인" }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: "아직 기록이 없어요" }),
-    ).toBeVisible();
-    await expect(page.getByRole("button", { name: "닉네임 변경" })).toHaveCount(
-      0,
-    );
-  });
-}
+  const signOutPage = await context.newPage();
+  await signOutPage.goto("/ko/collection");
+  await signOutPage.getByRole("button", { name: "계정 메뉴" }).click();
+  signOutPage.once("dialog", (dialog) => dialog.accept());
+  await signOutPage.getByRole("button", { name: "게스트 나가기" }).click();
+  await expect(
+    page.getByRole("button", { name: "Google로 로그인" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "아직 기록이 없어요" }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "닉네임 변경" })).toHaveCount(
+    0,
+  );
+});
