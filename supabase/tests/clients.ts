@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../../src/lib/supabase/database.types";
+import { assertLocalSupabase } from "../../scripts/testing/local-supabase";
 
 // src/lib/supabase/* import "server-only", which throws outside React Server Components,
 // so tests build their own clients with the same keys.
@@ -14,6 +15,7 @@ function requireEnv(name: string): string {
 }
 
 export function anonClient() {
+  assertLocalSupabase(process.env.NEXT_PUBLIC_SUPABASE_URL);
   return createClient<Database>(
     requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
     requireEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"),
@@ -22,6 +24,7 @@ export function anonClient() {
 }
 
 export function adminClient() {
+  assertLocalSupabase(process.env.NEXT_PUBLIC_SUPABASE_URL);
   return createClient<Database>(
     requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
     requireEnv("SUPABASE_SECRET_KEY"),
