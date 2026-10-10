@@ -92,6 +92,31 @@ test("게임 중 게스트 로그아웃 → 타이틀 → 새 게스트로 다�
   await expect(fight).toHaveCount(0);
 });
 
+test("다른 탭에서 종료한 배틀의 명령은 새 게임 없이 타이틀로 돌아간다", async ({
+  page,
+  context,
+  players,
+}) => {
+  await page.goto("/ko");
+  await page.getByText("PRESS START").click();
+  await page.getByRole("button", { name: "건너뛰기", exact: true }).click();
+  const fight = page.getByRole("button", { name: "싸우다", exact: true });
+  await expect(fight).toBeVisible();
+  await players.trackCurrent();
+
+  const other = await context.newPage();
+  await other.goto("/ko");
+  await other.getByText("PRESS START").click();
+  await other.getByRole("button", { name: "도망치다", exact: true }).click();
+  await expect(other.getByText("무사히 도망쳤다!")).toBeVisible();
+
+  await fight.click();
+  await page.getByPlaceholder("포켓몬 이름").fill("미싱노");
+  await page.getByRole("button", { name: "공격!", exact: true }).click();
+  await expect(page.getByRole("button", { name: /PRESS START/ })).toBeVisible();
+  await expect(fight).toHaveCount(0);
+});
+
 for (const fromOtherTab of [false, true]) {
   test(`마이페이지 로그아웃 후 개인 기록 갱신 (${fromOtherTab ? "다른 탭" : "현재 탭"})`, async ({
     page,

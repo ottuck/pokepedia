@@ -117,7 +117,8 @@ export const useQuizStore = create<QuizStore>((set, get) => {
       const request = ++generation;
       const previous = get();
       set({ phase: "starting", error: null });
-      const resumed = await call(() => startQuiz({ locale }));
+      // Recovery may only resume: another tab could have ended the run meanwhile.
+      const resumed = await call(() => startQuiz({ locale, resumeOnly: true }));
       if (request !== generation) return;
       if (!resumed.ok) {
         set({ ...initial, error: resumed.code });

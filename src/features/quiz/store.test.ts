@@ -94,6 +94,29 @@ it("authentication failure returns to START instead of retrying an expired sessi
   });
 });
 
+it.each(["conflict", "run_not_active", "round_not_active", "not_found"])(
+  "returns to START without creating a game when recovery from %s finds an ended run",
+  async (code) => {
+    actions.submitAnswer.mockResolvedValueOnce({ ok: false, code });
+    actions.startQuiz.mockResolvedValueOnce({
+      ok: false,
+      code: "run_not_active",
+    });
+    useQuizStore.getState().openAnswer();
+    await useQuizStore.getState().answer("피카츄", "ko");
+    expect(actions.startQuiz).toHaveBeenCalledExactlyOnceWith({
+      locale: "ko",
+      resumeOnly: true,
+    });
+    expect(useQuizStore.getState()).toMatchObject({
+      phase: "lobby",
+      run: null,
+      round: null,
+      error: "run_not_active",
+    });
+  },
+);
+
 it("keeps a first guest sign-in and token refresh, but clears a different player's battle", () => {
   useQuizStore.setState({ phase: "starting", run: null, round: null });
   useQuizStore.getState().syncSessionUser(null);

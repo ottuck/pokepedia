@@ -148,9 +148,11 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
     async startOrResume(
       userId: string,
       locale: Locale,
+      { resumeOnly = false } = {},
     ): Promise<ActionResult<QuizState>> {
       let active = await repo.findActiveRun(userId);
       if (!active) {
+        if (resumeOnly) return fail("run_not_active");
         const first = pickNextPokemon(
           await repo.allPokemonIds(),
           new Set(),
