@@ -242,6 +242,31 @@ describe("startOrResume", () => {
     expect(again.round.id).toBe(first.round.id);
     expect(repo.runs.size).toBe(1);
   });
+
+  it("only resumes an existing run during recovery", async () => {
+    const first = await start();
+    const resumed = await service().startOrResume("ash", "ko", {
+      resumeOnly: true,
+    });
+    expect(resumed).toMatchObject({ ok: true, data: first });
+    expect(repo.runs.size).toBe(1);
+  });
+
+  it("does not create a run when recovery finds none or a finished run", async () => {
+    const startRun = vi.spyOn(repo, "startRun");
+    expect(
+      await service().startOrResume("ash", "ko", { resumeOnly: true }),
+    ).toEqual({ ok: false, code: "run_not_active" });
+    expect(startRun).not.toHaveBeenCalled();
+    await start();
+    await service().flee("ash", "ko");
+    startRun.mockClear();
+    expect(
+      await service().startOrResume("ash", "ko", { resumeOnly: true }),
+    ).toEqual({ ok: false, code: "run_not_active" });
+    expect(startRun).not.toHaveBeenCalled();
+    expect(repo.runs.size).toBe(1);
+  });
 });
 
 describe("answer", () => {

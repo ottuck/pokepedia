@@ -79,6 +79,8 @@ type QuizStore = {
   /** Called when the current phase's animation has finished. */
   advance(): void;
   reset(): void;
+  /** Auth may change while the game is mounted or while another page is open. */
+  syncSessionUser(userId: string | null): void;
 };
 
 const initial = {
@@ -94,21 +96,45 @@ const initial = {
 };
 
 export const useQuizStore = create<QuizStore>((set, get) => {
+  // A reset/start invalidates pending requests: a late response must not restore an old game.
+  let generation = 0;
+  let sessionUserId: string | null = null;
+
   /** A conflict means another tab moved the game on: resync from the server. */
   async function recover(code: QuizErrorCode, locale: Locale) {
+    if (code === "unauthenticated") {
+      get().reset();
+      set({ error: code });
+      return;
+    }
     set({ error: code });
     if (
       code === "conflict" ||
+      code === "run_not_active" ||
       code === "round_not_active" ||
       code === "not_found"
     ) {
-      const resumed = await call(() => startQuiz({ locale }));
-      if (resumed.ok)
-        set({
-          run: resumed.data.run,
-          round: resumed.data.round,
-          phase: "menu",
-        });
+      const request = ++generation;
+      const previous = get();
+      set({ phase: "starting", error: null });
+      // Recovery may only resume: another tab could have ended the run meanwhile.
+      const resumed = await call(() => startQuiz({ locale, resumeOnly: true }));
+      if (request !== generation) return;
+      if (!resumed.ok) {
+        set({ ...initial, error: resumed.code });
+        return;
+      }
+      set({
+        ...initial,
+        run: resumed.data.run,
+        round: resumed.data.round,
+        phase: "menu",
+        error: code,
+        stickersThisRun:
+          previous.run?.id === resumed.data.run.id
+            ? previous.stickersThisRun
+            : [],
+      });
     } else if (get().phase === "judging") {
       set({ phase: "answering" });
     }
@@ -118,8 +144,10 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     ...initial,
 
     async start(locale) {
+      const request = ++generation;
       set({ ...initial, phase: "starting" });
       const result = await call(() => startQuiz({ locale }));
+      if (request !== generation) return;
       if (!result.ok) return set({ phase: "lobby", error: result.code });
       // A first game signs the player in as a guest on the server; tell the header.
       announceAccountChange();
@@ -137,11 +165,13 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     async answer(answer, locale) {
       const { round, phase } = get();
       if (!round || phase !== "answering" || answer.trim() === "") return;
+      const request = generation;
       set({ phase: "judging", error: null });
 
       const result = await call(() =>
         submitAnswer({ roundId: round.id, answer, locale }),
       );
+      if (request !== generation) return;
       if (!result.ok) return recover(result.code, locale);
       const data = result.data;
 
@@ -176,9 +206,11 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     async hint(locale) {
       const { round, phase } = get();
       if (!round || phase !== "menu" || round.hintUsed) return;
+      const request = generation;
       const result = await call(() =>
         requestHint({ roundId: round.id, locale }),
       );
+      if (request !== generation) return;
       if (!result.ok) return recover(result.code, locale);
       set({ run: result.data.run, round: result.data.round });
     },
@@ -186,9 +218,11 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     async skip(locale) {
       const { round, phase } = get();
       if (!round || phase !== "menu") return;
+      const request = generation;
       const result = await call(() =>
         skipQuizRound({ roundId: round.id, locale }),
       );
+      if (request !== generation) return;
       if (!result.ok) return recover(result.code, locale);
       set({
         run: result.data.run,
@@ -200,7 +234,9 @@ export const useQuizStore = create<QuizStore>((set, get) => {
 
     async flee(locale) {
       if (get().phase !== "menu") return;
+      const request = generation;
       const result = await call(() => fleeQuiz({ locale }));
+      if (request !== generation) return;
       if (!result.ok) return recover(result.code, locale);
       set({
         run: result.data.run,
@@ -225,7 +261,19 @@ export const useQuizStore = create<QuizStore>((set, get) => {
     },
 
     reset() {
+      generation++;
+      sessionUserId = null;
       set(initial);
+    },
+
+    syncSessionUser(userId) {
+      // The first guest sign-in belongs to start(); a different existing player does not.
+      if (
+        (userId === null && get().run !== null) ||
+        (sessionUserId !== null && sessionUserId !== userId)
+      )
+        get().reset();
+      sessionUserId = userId;
     },
   };
 });

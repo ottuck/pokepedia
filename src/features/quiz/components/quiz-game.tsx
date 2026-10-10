@@ -9,11 +9,13 @@ import { GameOver } from "./game-over";
 import { Lobby } from "./lobby";
 import { PokedexFrame } from "./pokedex-frame";
 import { QuizSounds } from "./quiz-sounds";
+import { useQuizSession } from "./use-quiz-session";
 
 const PHONE = "(max-width: 639px)";
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
 export function QuizGame() {
+  useQuizSession();
   const phase = useQuizStore((s) => s.phase);
   const frame = useRef<HTMLDivElement>(null);
   const inBattle =

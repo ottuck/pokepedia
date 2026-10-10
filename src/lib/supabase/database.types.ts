@@ -346,14 +346,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      cleanup_inactive_guests: {
-        Args: {
-          p_dry_run?: boolean
-          p_inactive_before?: string
-          p_limit?: number
-        }
-        Returns: number
-      }
+      cleanup_inactive_guests:
+        | {
+            Args: {
+              p_dry_run?: boolean
+              p_inactive_before?: string
+              p_limit?: number
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              p_dry_run?: boolean
+              p_inactive_before?: string
+              p_limit?: number
+              p_user_ids: string[]
+            }
+            Returns: number
+          }
       guest_merge_create_ticket: {
         Args: {
           p_from_user: string

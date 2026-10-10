@@ -95,22 +95,17 @@ export function createSupabaseQuizRepository(db: Client): QuizRepository {
       const run = maybe(
         await db
           .from("quiz_run")
-          .select("*")
+          // One SQL snapshot: a clear between separate run/round reads could pair an
+          // old score with the new round's version and let flee overwrite earned points.
+          .select("*, quiz_round(*)")
           .eq("user_id", userId)
           .eq("status", "active")
+          .eq("quiz_round.status", "active")
           .maybeSingle(),
         "find active run",
       );
       if (!run) return null;
-      const round = maybe(
-        await db
-          .from("quiz_round")
-          .select("*")
-          .eq("run_id", run.id)
-          .eq("status", "active")
-          .maybeSingle(),
-        "find active round",
-      );
+      const round = run.quiz_round[0];
       // An active run always has an active round; anything else is corrupt state.
       if (!round) throw new Error(`Active run ${run.id} has no active round`);
       return { run: toRun(run), round: toRound(round) };

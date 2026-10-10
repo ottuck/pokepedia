@@ -8,12 +8,13 @@ import {
 
 const PIKACHU = 25;
 
-// Test users are brand new, so the cutoff is moved into the future to make them count as
-// inactive. (Test files run one at a time, so this cannot delete users another file is using.)
+// A future cutoff makes brand-new fixtures inactive. Every cleanup call names its fixtures
+// explicitly, so other local accounts are never deletion candidates.
 const future = () => new Date(Date.now() + 60_000).toISOString();
 
-function cleanup(inactiveBefore: string, dryRun = false) {
+function cleanup(userIds: string[], inactiveBefore?: string, dryRun = false) {
   return adminClient().rpc("cleanup_inactive_guests", {
+    p_user_ids: userIds,
     p_inactive_before: inactiveBefore,
     p_dry_run: dryRun,
   });
@@ -57,23 +58,26 @@ async function finishedGame(userId: string) {
 
 describe("cleanup_inactive_guests", () => {
   it("cannot be run by players", async () => {
-    const { client } = await anonymousPlayer();
+    const { client, userId } = await anonymousPlayer();
 
     for (const caller of [anonClient(), client]) {
-      const { error } = await caller.rpc("cleanup_inactive_guests", {
-        p_dry_run: true,
-      });
-      expect(error?.code).toBe("42501");
+      for (const args of [
+        { p_dry_run: true },
+        { p_user_ids: [userId], p_dry_run: true },
+      ]) {
+        const { error } = await caller.rpc("cleanup_inactive_guests", args);
+        expect(error?.code).toBe("42501");
+      }
     }
   });
 
   it("only counts in a dry run", async () => {
     const guest = await anonymousPlayer();
 
-    const { data, error } = await cleanup(future(), true);
+    const { data, error } = await cleanup([guest.userId], future(), true);
 
     expect(error).toBeNull();
-    expect(data).toBeGreaterThanOrEqual(1);
+    expect(data).toBe(1);
     expect(await exists(guest.userId)).toBe(true);
   });
 
@@ -81,7 +85,7 @@ describe("cleanup_inactive_guests", () => {
     const guest = await anonymousPlayer();
     await finishedGame(guest.userId);
 
-    const { error } = await cleanup(future());
+    const { error } = await cleanup([guest.userId], future());
 
     expect(error).toBeNull();
     expect(await exists(guest.userId)).toBe(false);
@@ -102,7 +106,7 @@ describe("cleanup_inactive_guests", () => {
     const guest = await anonymousPlayer();
     await giveSticker(guest.userId);
 
-    await cleanup(future());
+    await cleanup([guest.userId], future());
 
     expect(await exists(guest.userId)).toBe(true);
   });
@@ -111,7 +115,7 @@ describe("cleanup_inactive_guests", () => {
     const guest = await anonymousPlayer();
     await startGame(guest.userId);
 
-    await cleanup(future());
+    await cleanup([guest.userId], future());
 
     expect(await exists(guest.userId)).toBe(true);
   });
@@ -119,7 +123,7 @@ describe("cleanup_inactive_guests", () => {
   it("keeps guests active within the window (the default 60 days)", async () => {
     const guest = await anonymousPlayer();
 
-    const { error } = await adminClient().rpc("cleanup_inactive_guests");
+    const { error } = await cleanup([guest.userId]);
 
     expect(error).toBeNull();
     expect(await exists(guest.userId)).toBe(true);
@@ -129,8 +133,39 @@ describe("cleanup_inactive_guests", () => {
     const client = await authenticatedClient();
     const { data } = await client.auth.getUser();
 
-    await cleanup(future());
+    await cleanup([data.user!.id], future());
 
     expect(await exists(data.user!.id)).toBe(true);
+  });
+
+  it("only deletes the named fixture, leaving another eligible guest untouched", async () => {
+    const alice = await anonymousPlayer();
+    const bob = await anonymousPlayer();
+
+    const { data, error } = await cleanup([alice.userId], future());
+
+    expect(error).toBeNull();
+    expect(data).toBe(1);
+    expect(await exists(alice.userId)).toBe(false);
+    expect(await exists(bob.userId)).toBe(true);
+  });
+
+  it("an empty scope deletes no users", async () => {
+    const guest = await anonymousPlayer();
+
+    const { data, error } = await cleanup([], future());
+
+    expect(error).toBeNull();
+    expect(data).toBe(0);
+    expect(await exists(guest.userId)).toBe(true);
+  });
+
+  it("keeps the existing unscoped RPC compatible without deleting fixtures", async () => {
+    const { data, error } = await adminClient().rpc("cleanup_inactive_guests", {
+      p_dry_run: true,
+      p_limit: 0,
+    });
+    expect(error).toBeNull();
+    expect(data).toBe(0);
   });
 });

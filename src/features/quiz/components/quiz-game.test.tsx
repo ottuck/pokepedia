@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../../messages/ko.json";
 import { useQuizStore } from "../store";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import type { RoundView, RunView } from "../types";
 import { QuizGame } from "./quiz-game";
 
@@ -15,9 +16,22 @@ const actions = vi.hoisted(() => ({
   skipQuizRound: vi.fn(),
   fleeQuiz: vi.fn(),
 }));
+const auth = vi.hoisted(() => ({
+  listener: null as
+    ((event: AuthChangeEvent, session: Session | null) => void) | null,
+  getClaims: vi.fn(),
+  unsubscribe: vi.fn(),
+}));
 vi.mock("../actions", () => actions);
 vi.mock("@/lib/supabase/browser", () => ({
   createClient: () => ({
+    auth: {
+      getClaims: auth.getClaims,
+      onAuthStateChange: (listener: typeof auth.listener) => {
+        auth.listener = listener;
+        return { data: { subscription: { unsubscribe: auth.unsubscribe } } };
+      },
+    },
     from: () => ({
       select: () => ({
         maybeSingle: async () => ({ data: { nickname: "레드" } }),
@@ -68,6 +82,8 @@ beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
   vi.clearAllMocks();
   useQuizStore.getState().reset();
+  auth.listener = null;
+  auth.getClaims.mockResolvedValue({ data: { claims: { sub: "guest-1" } } });
   // Returning player by default: PRESS START goes straight into the battle.
   localStorage.setItem("quiz-rules-seen", "1");
   actions.startQuiz.mockResolvedValue({
@@ -115,6 +131,59 @@ describe("QuizGame", () => {
       "문제가 생겼어요",
     );
     expect(screen.getByRole("textbox")).toBeEnabled();
+  });
+
+  it("returns to a usable title when conflict recovery fails, then resumes on START", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await startGame(user);
+    actions.submitAnswer.mockResolvedValueOnce({ ok: false, code: "conflict" });
+    actions.startQuiz.mockRejectedValueOnce(new Error("network down"));
+
+    await user.click(screen.getByRole("button", { name: "싸우다" }));
+    await user.type(screen.getByRole("textbox"), "피카츄{Enter}");
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "문제가 생겼어요",
+    );
+    expect(screen.getByRole("button", { name: /PRESS START/ })).toBeEnabled();
+
+    actions.startQuiz.mockResolvedValueOnce({
+      ok: true,
+      data: { run, round: round("r2") },
+    });
+    await user.click(screen.getByRole("button", { name: /PRESS START/ }));
+    await finishAnimation();
+    expect(screen.getByRole("button", { name: "싸우다" })).toBeInTheDocument();
+    expect(useQuizStore.getState().round?.id).toBe("r2");
+  });
+
+  it("sign-out clears the battle and a late answer cannot bring it back", async () => {
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    await startGame(user);
+    let respond!: (value: unknown) => void;
+    actions.submitAnswer.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          respond = resolve;
+        }),
+    );
+    await user.click(screen.getByRole("button", { name: "싸우다" }));
+    await user.type(screen.getByRole("textbox"), "피카츄{Enter}");
+    expect(useQuizStore.getState().phase).toBe("judging");
+
+    act(() => auth.listener?.("SIGNED_OUT", null));
+    expect(
+      screen.getByRole("button", { name: /PRESS START/ }),
+    ).toBeInTheDocument();
+    await act(async () => {
+      respond({
+        ok: true,
+        data: { outcome: "wrong", run, round: round("r1", { hp: 2 }) },
+      });
+    });
+    expect(
+      screen.getByRole("button", { name: /PRESS START/ }),
+    ).toBeInTheDocument();
+    expect(useQuizStore.getState().run).toBeNull();
   });
 
   it("keeps the other commands usable while the answer box is open", async () => {

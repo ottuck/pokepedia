@@ -24,6 +24,7 @@ const locale = z.enum(routing.locales);
 const roundInput = z.object({ roundId: z.uuid(), locale });
 const answerInput = roundInput.extend({ answer: z.string().max(40) });
 const localeInput = z.object({ locale });
+const startInput = localeInput.extend({ resumeOnly: z.boolean().optional() });
 
 /** Uniform [0, 1) from the platform CSPRNG, so sticker rolls are not predictable. */
 function secureRandom(): number {
@@ -72,11 +73,12 @@ export async function startQuiz(
   input: unknown,
 ): Promise<ActionResult<QuizState>> {
   return guarded("startQuiz", async () => {
-    const parsed = localeInput.safeParse(input);
+    const parsed = startInput.safeParse(input);
     if (!parsed.success) return invalid;
 
     let userId = await sessionUserId();
     if (!userId) {
+      if (parsed.data.resumeOnly) return unauthenticated;
       const supabase = await createClient();
       const { data, error } = await supabase.auth.signInAnonymously();
       if (error || !data.user) {
@@ -85,7 +87,9 @@ export async function startQuiz(
       }
       userId = data.user.id;
     }
-    return quizService().startOrResume(userId, parsed.data.locale);
+    return quizService().startOrResume(userId, parsed.data.locale, {
+      resumeOnly: parsed.data.resumeOnly,
+    });
   });
 }
 
