@@ -22,15 +22,18 @@ export function MyRank() {
   useEffect(() => {
     const supabase = createClient();
     let cancelled = false;
+    let version = 0;
 
     async function load() {
+      const request = ++version;
       const { data: session } = await supabase.auth.getClaims();
+      if (cancelled || request !== version) return;
       if (!session?.claims) {
         if (!cancelled) setStanding({ status: "signedOut" });
         return;
       }
       const { data } = await supabase.rpc("my_leaderboard_rank");
-      if (cancelled) return;
+      if (cancelled || request !== version) return;
       const row = data?.[0];
       setStanding(
         row

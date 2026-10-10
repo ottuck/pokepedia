@@ -20,9 +20,12 @@ export function MyStickerBadge({ pokemonId }: { pokemonId: number }) {
   useEffect(() => {
     const supabase = createClient();
     let cancelled = false;
+    let version = 0;
 
     async function load() {
+      const request = ++version;
       const { data } = await supabase.auth.getClaims();
+      if (cancelled || request !== version) return;
       const userId = data?.claims.sub;
       if (!userId) {
         if (!cancelled) setHolding(null);
@@ -33,7 +36,7 @@ export function MyStickerBadge({ pokemonId }: { pokemonId: number }) {
         .select("variant, quantity")
         .eq("user_id", userId)
         .eq("pokemon_id", pokemonId);
-      if (cancelled || !rows) return;
+      if (cancelled || request !== version || !rows) return;
       const next = { normal: 0, shiny: 0 };
       for (const row of rows) next[row.variant] += row.quantity;
       setHolding(next);

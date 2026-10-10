@@ -5,7 +5,7 @@ import { useEffect, useId, useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { googlePicture, pickAvatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/browser";
-import { onAccountChange } from "../account-events";
+import { announceAccountChange, onAccountChange } from "../account-events";
 import { continueWithGoogle } from "../google";
 
 type AccountState =
@@ -31,9 +31,13 @@ export function AccountMenu() {
 
   useEffect(() => {
     const supabase = createClient();
+    let cancelled = false;
+    let version = 0;
 
     async function load() {
+      const request = ++version;
       const { data } = await supabase.auth.getClaims();
+      if (cancelled || request !== version) return;
       const claims = data?.claims;
       if (!claims) {
         setAccount({ status: "signedOut" });
@@ -43,7 +47,9 @@ export function AccountMenu() {
         .from("profile")
         // "*": works before and after the avatars migration (see features/profile/queries.ts).
         .select("*")
+        .eq("id", claims.sub)
         .maybeSingle();
+      if (cancelled || request !== version) return;
       setAccount({
         status: "signedIn",
         isAnonymous: claims.is_anonymous === true,
@@ -63,16 +69,24 @@ export function AccountMenu() {
         event === "SIGNED_OUT" ||
         event === "USER_UPDATED"
       ) {
+        version++;
+        if (event === "SIGNED_OUT") setAccount({ status: "signedOut" });
         // Supabase warns against awaiting its own calls inside this callback.
-        setTimeout(() => void load(), 0);
+        setTimeout(() => {
+          if (cancelled) return;
+          announceAccountChange();
+          // Cookies changed in the browser: personal RSC pages need a fresh render too.
+          router.refresh();
+        }, 0);
       }
     });
     const stopListening = onAccountChange(() => void load());
     return () => {
+      cancelled = true;
       subscription.subscription.unsubscribe();
       stopListening();
     };
-  }, []);
+  }, [router]);
 
   if (account.status === "loading") {
     return (

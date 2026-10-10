@@ -14,15 +14,17 @@ export function useTrainerName() {
 
   useEffect(() => {
     let cancelled = false;
+    let version = 0;
     const supabase = createClient();
 
     async function load() {
+      const request = ++version;
       try {
         const { data } = await supabase
           .from("profile")
           .select("nickname")
           .maybeSingle();
-        if (!cancelled) setName(data?.nickname ?? null);
+        if (!cancelled && request === version) setName(data?.nickname ?? null);
       } catch {
         // Only a label: the info box falls back to a generic name.
       }
