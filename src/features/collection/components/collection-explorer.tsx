@@ -20,7 +20,7 @@ type Props = {
 
 export function CollectionExplorer({ ids, holdings, cards }: Props) {
   const t = useTranslations("collection.filters");
-  const [filter, setFilter] = useState<CollectionFilter>("all");
+  const [filter, setFilter] = useState<CollectionFilter>("collected");
   const visible = ids.filter((id) => matchesFilter(holdings[id], filter));
 
   return (
