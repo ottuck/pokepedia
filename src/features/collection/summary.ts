@@ -37,12 +37,8 @@ export function summarizeCollection(
   };
 }
 
-export const COLLECTION_FILTERS = [
-  "all",
-  "collected",
-  "missing",
-  "shiny",
-] as const;
+// "collected" comes first and is the default: a missing sticker is only a blank numbered card.
+export const COLLECTION_FILTERS = ["collected", "shiny", "all"] as const;
 export type CollectionFilter = (typeof COLLECTION_FILTERS)[number];
 
 export function matchesFilter(
@@ -54,8 +50,6 @@ export function matchesFilter(
       return true;
     case "collected":
       return holding !== undefined;
-    case "missing":
-      return holding === undefined;
     case "shiny":
       return (holding?.shiny ?? 0) > 0;
   }
