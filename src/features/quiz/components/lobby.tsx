@@ -26,16 +26,16 @@ function rememberRules() {
 }
 
 /**
- * Before a game: the title screen, then (first time only, or on request) the rules, then
- * the battle. The server call starts on the last step; its "getting ready" state shows in
- * whichever screen is up.
+ * Before a game: the title screen, then (first time only) a short intro or (on request) the
+ * full rules, then the battle. The server call starts on the last step; its "getting ready"
+ * state shows in whichever screen is up.
  */
 export function Lobby() {
   const locale = useLocale();
   const phase = useQuizStore((s) => s.phase);
   const start = useQuizStore((s) => s.start);
   const starting = phase === "starting";
-  const [screen, setScreen] = useState<"title" | "rules">("title");
+  const [screen, setScreen] = useState<"title" | "intro" | "rules">("title");
 
   const play = () => {
     rememberRules();
@@ -47,11 +47,15 @@ export function Lobby() {
       {screen === "title" ? (
         <TitleScreen
           starting={starting}
-          onStart={() => (rulesSeen() ? play() : setScreen("rules"))}
+          onStart={() => (rulesSeen() ? play() : setScreen("intro"))}
           onShowRules={() => setScreen("rules")}
         />
       ) : (
-        <RulesScreen starting={starting} onDone={play} />
+        <RulesScreen
+          mode={screen === "intro" ? "intro" : "full"}
+          starting={starting}
+          onDone={play}
+        />
       )}
       <div className="absolute inset-x-4 bottom-4 z-10">
         <ErrorNotice />

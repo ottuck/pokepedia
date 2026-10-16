@@ -280,6 +280,59 @@
   animation: blink 0.8s steps(1, end) infinite;
 }
 
+/* Score page: a table inside the text box instead of typed text. */
+.score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  /* Keeps the blinking ▼ clear of the last row. */
+  padding-bottom: 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.scoreTitle {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #e3342f;
+}
+
+.scoreList {
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 2px dotted #1f1d1a;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.scoreRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 1rem;
+}
+
+/* A long value drops under its label instead of squeezing it. */
+.scoreRow dt {
+  white-space: nowrap;
+}
+
+.scoreRow dd {
+  margin: 0;
+  margin-left: auto;
+  text-align: right;
+  /* Korean wraps at spaces, never inside a word. */
+  word-break: keep-all;
+}
+
+.scorePoints {
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+}
+
 .skip {
   border: 2px solid #1f1d1a;
   border-radius: 8px;
