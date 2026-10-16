@@ -28,6 +28,7 @@ const MAX_COMBO_MULTIPLIER = multiplier(
 /** The score page is a table rather than typed text; every number comes from `RULES`. */
 function ScoreTable() {
   const t = useTranslations("quiz.rulesScreen.score");
+  // rules.ts lists the tiers from the highest combo down; the test pins that order.
   const [top, mid, base] = RULES.shinyTiers;
 
   return (
@@ -81,15 +82,15 @@ export function RulesScreen({ mode, starting, onDone }: Props) {
   const id = pages[index];
   const isScore = id === "score";
 
-  const pageText = (pageId: Exclude<(typeof pages)[number], "score">) =>
-    t(pageId, {
-      max: MAX_COMBO_MULTIPLIER,
-      multiplier: multiplier(RULES.hintMultiplier),
-      skips: RULES.skipsPerRun,
-    });
-
   // The table has no text to print, so the typewriter is already done there.
-  const text = useTypewriter(isScore ? "" : pageText(id));
+  const pageText = isScore
+    ? ""
+    : t(id, {
+        max: MAX_COMBO_MULTIPLIER,
+        multiplier: multiplier(RULES.hintMultiplier),
+        skips: RULES.skipsPerRun,
+      });
+  const text = useTypewriter(pageText);
   const last = index === pages.length - 1;
 
   const advance = () => {
@@ -137,14 +138,14 @@ export function RulesScreen({ mode, starting, onDone }: Props) {
         aria-live="polite"
         aria-atomic="true"
       >
-        {isScore ? (
+        {isScore && !starting ? (
           <ScoreTable />
         ) : (
           <>
             {/* Screen readers get the whole page at once, not letter by letter. */}
             <span aria-hidden>{starting ? t("starting") : text.shown}</span>
             <span className="sr-only">
-              {starting ? t("starting") : pageText(id)}
+              {starting ? t("starting") : pageText}
             </span>
           </>
         )}

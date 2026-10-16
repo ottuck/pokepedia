@@ -27,8 +27,8 @@ function rememberRules() {
 
 /**
  * Before a game: the title screen, then (first time only) a short intro or (on request) the
- * full rules, then the battle. The server call starts on the last step; its "getting ready" state shows in
- * whichever screen is up.
+ * full rules, then the battle. The server call starts on the last step; its "getting ready"
+ * state shows in whichever screen is up.
  */
 export function Lobby() {
   const locale = useLocale();
