@@ -22,6 +22,11 @@ const ITEMS = [
     match: (path: string) => path.startsWith("/collection"),
   },
   {
+    href: "/battle",
+    key: "battle",
+    match: (path: string) => path.startsWith("/battle"),
+  },
+  {
     href: "/leaderboard",
     key: "leaderboard",
     match: (path: string) => path.startsWith("/leaderboard"),
