@@ -78,7 +78,7 @@ export function StickerCard({ pokemon, holding, locale }: Props) {
             )}
             alt=""
             fill
-            sizes="(min-width: 1024px) 140px, (min-width: 640px) 22vw, 30vw"
+            sizes="(min-width: 672px) 150px, (min-width: 640px) 22vw, 30vw"
             className="object-contain p-1 drop-shadow"
           />
           {shiny && (

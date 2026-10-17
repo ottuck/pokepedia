@@ -63,7 +63,7 @@ export async function generateMetadata({
 }
 
 // The artwork fills most of a card at most 20rem wide.
-const ARTWORK_SIZES = "(min-width: 768px) 300px, 80vw";
+const ARTWORK_SIZES = "(min-width: 672px) 512px, 80vw";
 
 export default async function PokemonDetailPage({
   params,
@@ -96,7 +96,7 @@ export default async function PokemonDetailPage({
   return (
     <main
       style={typeStyle(pokemon.type_1, pokemon.type_2)}
-      className="mx-auto w-full max-w-5xl px-4 pb-16"
+      className="mx-auto w-full max-w-page px-4 pb-16"
     >
       <Link
         href="/pokedex"
@@ -105,11 +105,10 @@ export default async function PokemonDetailPage({
         ← {t("backToDex")}
       </Link>
 
-      <article className="overflow-hidden rounded-[2rem] bg-card shadow-sm ring-1 ring-ink/5 md:grid md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        {/* The Pokémon card on a soft type-tinted stage; it stays in view while the long info
-            column scrolls on wide screens. */}
+      <article className="overflow-hidden rounded-[2rem] bg-card shadow-sm ring-1 ring-ink/5">
+        {/* The Pokémon card on a soft type-tinted stage, above the info. */}
         <div className="bg-linear-to-br from-(--type-soft) via-card to-(--type-soft)">
-          <div className="md:sticky md:top-0">
+          <div>
             <HeroCard
               number={formatDexNumber(pokemon.id)}
               name={name}
@@ -145,7 +144,7 @@ export default async function PokemonDetailPage({
           </div>
         </div>
 
-        <div className="space-y-6 p-6 md:p-8">
+        <div className="space-y-6 p-6">
           <header>
             <p className="font-mono text-sm font-bold text-(--type-ink)">
               {formatDexNumber(pokemon.id)}

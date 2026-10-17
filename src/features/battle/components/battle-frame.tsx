@@ -18,8 +18,8 @@ const WIDE = 640;
 const CHROME_X = 32 + 40 + 16;
 /** Site header, title and intro, the frame's lights row and paddings: room kept above and below. */
 const CHROME_Y = 200;
-/** The <main> of the battle page is max-w-6xl. */
-const MAIN_MAX = 1152;
+/** The page column (max-w-page, 42rem). */
+const MAIN_MAX = 672;
 
 function subscribe(onChange: () => void) {
   window.addEventListener("resize", onChange);
@@ -58,16 +58,17 @@ export function BattleFrame({ locale, owned }: Props) {
     // Phones: edge to edge, the game fills the width. The game scales its pixels by whole
     // numbers, so the extra width often reaches the next scale step (a 375px phone at 2x:
     // 343px → 2x, 375px → 3x).
-    // Wider screens: the quiz's red Pokédex device, shrunk around a screen sized by
-    // fitBattleScreen. A bigger screen than that made the low-res art look broken.
-    <div className="-mx-4 w-[calc(100%+2rem)] sm:mx-auto sm:w-fit sm:rounded-[2rem] sm:bg-dex-red sm:p-5 sm:shadow-xl">
+    // Wider screens: the quiz's red Pokédex device at the same width as the quiz (the page
+    // column), with the screen sized by fitBattleScreen and centered on the dark bezel. A bigger
+    // screen than that made the low-res art look broken.
+    <div className="-mx-4 w-[calc(100%+2rem)] sm:mx-0 sm:w-full sm:rounded-[2rem] sm:bg-dex-red sm:p-5 sm:shadow-xl">
       <div aria-hidden className="mb-3 hidden items-center gap-2 px-1 sm:flex">
         <span className="size-7 rounded-full border-4 border-white bg-sky-400 shadow-inner" />
         <span className="size-3 rounded-full bg-red-300" />
         <span className="size-3 rounded-full bg-volt" />
         <span className="size-3 rounded-full bg-green-400" />
       </div>
-      <div className="bg-[#262a35] sm:rounded-2xl sm:p-2">
+      <div className="bg-[#262a35] sm:flex sm:justify-center sm:rounded-2xl sm:p-2">
         <iframe
           ref={frame}
           src={battleUrl(locale)}

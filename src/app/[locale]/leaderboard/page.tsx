@@ -25,7 +25,7 @@ export default async function LeaderboardPage() {
   ]);
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pb-16">
+    <main className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 pb-16">
       <header>
         <h1 className="text-3xl font-black tracking-tight">{t("title")}</h1>
         <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>

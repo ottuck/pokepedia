@@ -48,6 +48,12 @@
     var(--font-noto-jp), system-ui, sans-serif;
 }
 
+/* The page column: every page, the header and the footer share this width (mobile first —
+   wide screens get the same narrow column, centered). Used as max-w-page. */
+@theme {
+  --container-page: 42rem;
+}
+
 body {
   background: var(--surface);
   color: var(--ink);

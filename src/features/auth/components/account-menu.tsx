@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
+import { placeUnder } from "@/components/anchored-popover";
 import { googlePicture, pickAvatar } from "@/features/profile/avatar";
 import { createClient } from "@/lib/supabase/browser";
 import { announceAccountChange, onAccountChange } from "../account-events";
@@ -117,6 +118,7 @@ export function AccountMenu() {
       <button
         type="button"
         popoverTarget={menuId}
+        onClick={(event) => placeUnder(event.currentTarget, menuId)}
         aria-label={t("accountMenu")}
         className="flex h-9 items-center gap-2 rounded-full bg-ink/5 pr-3 pl-1 text-sm font-semibold hover:bg-ink/10"
       >
@@ -127,7 +129,7 @@ export function AccountMenu() {
       <div
         id={menuId}
         popover="auto"
-        className="fixed inset-auto top-16 right-4 m-0 w-64 rounded-2xl bg-card p-3 text-sm shadow-xl ring-1 ring-ink/10"
+        className="fixed inset-auto m-0 w-64 rounded-2xl bg-card p-3 text-sm shadow-xl ring-1 ring-ink/10"
       >
         <p className="truncate px-2 font-bold">{nickname}</p>
         <p className="px-2 pb-2 text-xs text-muted">
