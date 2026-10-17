@@ -228,6 +228,7 @@
     "shiny": "色違いのポケモン",
     "missing": "まだあつめていないポケモン",
     "shinyBadge": "色違い",
+    "battle": "バトル",
     "quantity": "ふつう{normal}まい、色違い{shiny}まい",
     "emptyTitle": "まだシールがありません",
     "emptyBody": "ゲームでポケモンを当てると、そのポケモンのシールがもらえます。",

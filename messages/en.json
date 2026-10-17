@@ -228,6 +228,7 @@
     "shiny": "Shiny Pokémon",
     "missing": "Not collected yet",
     "shinyBadge": "Shiny",
+    "battle": "Battle",
     "quantity": "{normal} normal, {shiny} shiny",
     "emptyTitle": "No stickers yet",
     "emptyBody": "Name a Pokémon in the game to get its sticker.",

@@ -151,7 +151,7 @@ Round : hp = 3, 힌트 1회
 - **정답 비노출**: 브라우저로 가는 round에는 포켓몬 id와 이름이 없다. 실루엣 파일명과 이름 마스크뿐이고, 진행 중 round는 RLS로도 숨긴다.
 - **DB 왕복**: 정답 한 번에 순차 왕복 3번, 오답·힌트는 2번(§1 지역). 테스트로 늘지 않게 지킨다.
 - **화면**: Zustand `useQuizStore`가 액션을 호출하고, phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 서버 결과를 어떤 순서로 연출할지만 정한다. 새로고침하면 로비로 돌아오고, 시작하면 진행 중 run을 이어한다. 이름을 입력하는 중에도 다른 명령을 누를 수 있다(입력창이 닫힌다). 휴대폰에서는 배틀이 시작되면 기기가 한 화면에 들어오게 스크롤하고, 기기 위의 터치로는 페이지가 스크롤되지 않게 한다.
-- **배틀**: 배틀은 별도 저장소 `pokepedia-unity`의 Unity 웹 게임이고 `https://battle.pokepedia.dev`(Cloudflare Pages)에서 iframe으로 띄운다. `/battle` 페이지가 서버에서 세션의 `user_sticker`를 읽어 두고, 게임이 보내는 `ready`(origin 확인)에 보유 스티커 전체를 `init`으로 답한다(`features/battle/host.ts`). 어떤 포켓몬으로 배틀할 수 있는지는 게임이 정한다(지금은 피카츄만, 없으면 게임이 안내와 데모 체험을 보여 준다). 배틀 결과는 저장하지 않고 보상·랭킹도 없어서 DB 변경이 없다. 메시지 규약의 단일 출처는 `pokepedia-unity`의 `docs/PROJECT.md` §9.2다.
+- **배틀**: 배틀은 별도 저장소 `pokepedia-unity`의 Unity 웹 게임이고 `https://battle.pokepedia.dev`(Cloudflare Pages)에서 iframe으로 띄운다. `/battle` 페이지가 서버에서 세션의 `user_sticker`를 읽어 두고, 게임이 보내는 `ready`(origin 확인)에 보유 스티커 전체를 `init`으로 답한다(`features/battle/host.ts`). 어떤 포켓몬으로 배틀할 수 있는지는 게임이 정한다(지금은 피카츄만, 없으면 게임이 안내와 데모 체험을 보여 준다). 컬렉션에서 배틀할 수 있는 띠부씰은 금색 테두리(색이 다른 스티커의 노란 테두리와 구분)와 "배틀하기" 배지로 게임에 들어가는 입구가 된다. 배틀할 수 있는 포켓몬 ID는 게임의 `roster.json` `playable`과 같은 값을 `BATTLE_PLAYABLE_IDS`에 둔다. 배틀 결과는 저장하지 않고 보상·랭킹도 없어서 DB 변경이 없다. 메시지 규약의 단일 출처는 `pokepedia-unity`의 `docs/PROJECT.md` §9.2다.
 - **복구**: 충돌 시 `startQuiz({ resumeOnly: true })`로 진행 중 run만 다시 읽는다. 다른 탭에서 종료했거나 재동기화가 실패하면 오류와 함께 타이틀로 돌아가 START로 재시도하며, 자동으로 새 게임이나 게스트를 만들지 않는다. 로그아웃·사용자 변경은 클라이언트 게임 상태를 초기화하며, 초기화 전에 시작한 요청의 늦은 결과는 무시한다.
 
 ## 6. 계정
