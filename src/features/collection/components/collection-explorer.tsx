@@ -47,7 +47,7 @@ export function CollectionExplorer({ ids, holdings, cards }: Props) {
         {visible.length === 0 ? (
           <p className="py-16 text-center text-muted">{t("empty")}</p>
         ) : (
-          <ul className="relative grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 md:grid-cols-6 lg:grid-cols-8">
+          <ul className="relative grid grid-cols-3 gap-x-2 gap-y-4 sm:grid-cols-4 sm:gap-x-3 sm:gap-y-5 md:grid-cols-6 lg:grid-cols-8">
             <AnimatePresence mode="popLayout" initial={false}>
               {visible.map((id) => (
                 <m.li
