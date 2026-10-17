@@ -10,7 +10,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 26rem;
+  /* Taller on wide screens (the device is as wide as the collection page), within the window. */
+  min-height: clamp(26rem, min(42vw, 100dvh - 16rem), 34rem);
   padding: 2.5rem 1rem 1.25rem;
   background: linear-gradient(
     #7cc4ff 0%,

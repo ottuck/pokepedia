@@ -14,13 +14,18 @@
 }
 
 .field {
-  /* Sprite sizes, shared by the sprites and the thrown ball's path. */
-  --trainer-w: min(24cqw, 9.5rem);
-  --enemy-w: min(30cqw, 13rem);
+  /*
+   * The field grows with the device, which is as wide as the collection page, but never so
+   * tall that the command box drops below the window. Phones get the same short field as
+   * before so the whole device fits on one screen (see PokedexFrame).
+   */
+  --field-h: clamp(12.5rem, min(56cqw, 100dvh - 22rem), 30rem);
+  /* Sprite sizes, shared by the sprites and the thrown ball's path: follow the field height. */
+  --trainer-w: min(24cqw, var(--field-h) * 0.46);
+  --enemy-w: min(30cqw, var(--field-h) * 0.62);
   position: relative;
   overflow: hidden;
-  /* Phones get a shorter field so the whole device fits on one screen (see PokedexFrame). */
-  height: clamp(12.5rem, 56cqw, 21rem);
+  height: var(--field-h);
   background: linear-gradient(#f8f8f0 0%, #f8f8f0 58%, #e9f3d9 58%, #e9f3d9);
 }
 
