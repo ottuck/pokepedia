@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { BATTLE_ORIGIN, initFor, toBattleStickers } from "./host";
+import {
+  BATTLE_ORIGIN,
+  fitBattleScreen,
+  initFor,
+  toBattleStickers,
+} from "./host";
 
 const owned = toBattleStickers([
   { pokemon_id: 25, variant: "normal", quantity: 2 },
@@ -43,5 +48,21 @@ describe("battle host messages", () => {
     expect(
       initFor({ origin: BATTLE_ORIGIN, data: null }, "ko", owned),
     ).toBeNull();
+  });
+});
+
+describe("battle screen size", () => {
+  it("is a whole-number scale of 240×216 in device pixels, capped at 720 CSS px wide", () => {
+    // 100% display, roomy window: 3× = 720×648
+    expect(fitBattleScreen(1100, 700, 1)).toMatchObject({ scale: 3 });
+    // 150% display: 4× (960 device px) = 640 CSS px; 5× would pass the cap
+    expect(fitBattleScreen(1100, 700, 1.5)).toMatchObject({ scale: 4 });
+    // short window: the height decides
+    expect(fitBattleScreen(1100, 500, 1)).toMatchObject({ scale: 2 });
+    const { width, height, scale } = fitBattleScreen(1100, 700, 1.25);
+    expect([width * 1.25 - 2, height * 1.25 - 2]).toEqual([
+      scale * 240,
+      scale * 216,
+    ]);
   });
 });
