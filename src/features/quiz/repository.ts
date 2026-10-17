@@ -46,6 +46,8 @@ export interface QuizRepository {
   findRoundSecret(userId: string, roundId: string): Promise<RoundSecret | null>;
   /** Pokémon already met in the run this round belongs to (the round's own included). */
   seenPokemonIds(userId: string, roundId: string): Promise<Set<number>>;
+  /** Whether the player has a sticker of this Pokémon in any variant. */
+  ownsSticker(userId: string, pokemonId: number): Promise<boolean>;
   /** Catalog reads: static between syncs, so implementations may cache them. */
   allPokemonIds(): Promise<number[]>;
   pokemonNames(pokemonId: number): Promise<PokemonNames>;

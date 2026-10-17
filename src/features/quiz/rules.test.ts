@@ -7,6 +7,7 @@ import {
   nameMask,
   newRound,
   newRun,
+  pickFirstPokemon,
   pickNextPokemon,
   resolveAnswer,
   scoreForClear,
@@ -203,6 +204,13 @@ describe("pickNextPokemon", () => {
     const seen = new Set([1, 2, 3]);
     expect(pickNextPokemon(ids, seen, always(0))).toBe(4);
     expect(pickNextPokemon(ids, seen, always(0.99))).toBe(4);
+  });
+});
+
+describe("pickFirstPokemon", () => {
+  it("serves the battle starter first to a player who lacks its sticker", () => {
+    expect(pickFirstPokemon([1, 25, 3], 25, always(0))).toBe(25);
+    expect(pickFirstPokemon([1, 25, 3], null, always(0))).toBe(1);
   });
 });
 

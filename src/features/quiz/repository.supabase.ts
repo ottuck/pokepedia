@@ -160,6 +160,16 @@ export function createSupabaseQuizRepository(db: Client): QuizRepository {
       );
     },
 
+    async ownsSticker(userId, pokemonId) {
+      const { count, error } = await db
+        .from("user_sticker")
+        .select("pokemon_id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("pokemon_id", pokemonId);
+      if (error) throw new Error(`Failed to read stickers: ${error.message}`);
+      return (count ?? 0) > 0;
+    },
+
     async allPokemonIds() {
       return [...(await loadCatalog(db)).keys()];
     },

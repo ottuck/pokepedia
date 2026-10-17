@@ -216,6 +216,19 @@ export function pickNextPokemon(
   return pool[Math.floor(random() * pool.length)];
 }
 
+/**
+ * The first Pokémon of a new run. A player without a sticker of the battle starter meets it
+ * first, so clearing it opens the battle with that Pokémon; otherwise any Pokémon.
+ */
+export function pickFirstPokemon(
+  allIds: readonly number[],
+  starterId: number | null,
+  random: () => number,
+): number {
+  if (starterId !== null && allIds.includes(starterId)) return starterId;
+  return pickNextPokemon(allIds, new Set(), random);
+}
+
 /** "???" for each letter, keeping spaces and punctuation so "Mr. Mime" reads "??. ????". */
 export function nameMask(name: string): string {
   return Array.from(name, (char) =>

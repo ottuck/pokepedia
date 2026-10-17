@@ -92,6 +92,11 @@ class InMemoryQuizRepository implements QuizRepository {
         .map((r) => r.pokemonId),
     );
   }
+  async ownsSticker(userId: string, pokemonId: number) {
+    return [...this.stickers.keys()].some((key) =>
+      key.startsWith(`${userId}:${pokemonId}:`),
+    );
+  }
   async allPokemonIds() {
     return POKEMON.map((p) => p.id);
   }
@@ -234,6 +239,20 @@ describe("startOrResume", () => {
     ]) {
       expect(sent).not.toContain(leak);
     }
+  });
+
+  it("opens with Pikachu (the battle starter) until the player owns its sticker", async () => {
+    const pickRaichu = () => 0.5; // index 1 of [25, 26, 151]
+    const firstOf = async (userId: string) => {
+      const result = await service(pickRaichu).startOrResume(userId, "ko");
+      if (!result.ok) throw new Error(result.code);
+      return (await repo.findRoundSecret(userId, result.data.round.id))!
+        .pokemonId;
+    };
+
+    expect(await firstOf("new-player")).toBe(25);
+    repo.stickers.set("collector:25:shiny", 1);
+    expect(await firstOf("collector")).toBe(26);
   });
 
   it("resumes the run in progress instead of starting another", async () => {

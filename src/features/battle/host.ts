@@ -8,6 +8,12 @@ import type { OwnedSticker } from "@/features/collection/summary";
  */
 export const BATTLE_ORIGIN = "https://battle.pokepedia.dev";
 
+/** Pokémon the player can battle with (Unity `roster.json` `playable`). */
+export const BATTLE_PLAYABLE_IDS: readonly number[] = [25];
+
+/** A new player's first quiz Pokémon, so that clearing it opens the battle (Pikachu). */
+export const BATTLE_STARTER_ID = BATTLE_PLAYABLE_IDS[0];
+
 export type BattleSticker = { id: number; shiny: boolean };
 
 export type BattleInit = {
