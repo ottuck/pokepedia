@@ -62,8 +62,8 @@ export async function generateMetadata({
   };
 }
 
-// The artwork fills most of a card at most 20rem wide.
-const ARTWORK_SIZES = "(min-width: 672px) 512px, 80vw";
+// The artwork fills most of a card at most 20rem wide (~282px, hero-card.module.css).
+const ARTWORK_SIZES = "(min-width: 400px) 300px, 80vw";
 
 export default async function PokemonDetailPage({
   params,
