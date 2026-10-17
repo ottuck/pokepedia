@@ -29,7 +29,7 @@ export type PokemonNames = {
 
 // ── What the browser sees ──────────────────────────────────────────────────────────
 // Never includes the Pokémon of a round still in play: only its silhouette (opaque file
-// name) and a mask of its name.
+// name), and half its name once the hint is used.
 
 export type RunView = RunState & { id: string };
 
@@ -38,8 +38,6 @@ export type RoundView = {
   seq: number;
   hp: number;
   hintUsed: boolean;
-  /** "???" per letter of the name in the player's language. */
-  mask: string;
   /** Half the name, once the hint has been used. */
   hint: string | null;
   silhouetteUrl: string;
