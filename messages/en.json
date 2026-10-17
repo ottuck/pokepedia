@@ -113,6 +113,7 @@
     "quiz": "Game",
     "main": "Main menu",
     "collection": "Collection",
+    "battle": "Battle",
     "leaderboard": "Ranking"
   },
   "quiz": {
@@ -242,6 +243,12 @@
       "save": "Save to Google account"
     },
     "merged": "Your guest record was merged into this account."
+  },
+  "battle": {
+    "title": "Battle",
+    "intro": "Battle with the Pikachu sticker you won in the quiz. No sticker yet? Try the demo.",
+    "note": "Battle results are not saved. The first load takes a moment.",
+    "frameTitle": "Pokepedia battle game"
   },
   "me": {
     "title": "My page",
