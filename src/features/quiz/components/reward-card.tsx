@@ -15,6 +15,7 @@ export function RewardCard() {
   const t = useTranslations("quiz.reward");
   const reward = useQuizStore((s) => s.reward);
   const advance = useQuizStore((s) => s.advance);
+  const seq = useQuizStore((s) => s.round?.seq);
   if (!reward) return null;
 
   const { revealed, sticker, scoreGained } = reward;
@@ -23,8 +24,11 @@ export function RewardCard() {
   // active, so coming back to the game resumes it.
   const canBattle = BATTLE_PLAYABLE_IDS.includes(revealed.id);
   // The first time: one gold button, so a new player's first sticker leads straight into the
-  // battle. Later clears of the same Pokémon keep both choices.
-  const firstBattle = canBattle && sticker.isNew;
+  // battle. Only players with no sticker of it get it as question 1 (service.ts), and isNew counts
+  // one variant only, so question 1 is what marks "first ever". Later clears keep both choices.
+  // Battle links also advance(): the next round is installed only by advance(), so leaving
+  // without it would bring the player back to this same reward on return.
+  const firstBattle = canBattle && sticker.isNew && seq === 1;
 
   return (
     <m.div
@@ -127,6 +131,7 @@ export function RewardCard() {
             >
               <Link
                 href="/battle"
+                onClick={advance}
                 autoFocus
                 className="block rounded-full bg-linear-to-r from-amber-300 via-yellow-200 to-amber-400 px-7 py-2.5 font-black text-ink"
               >
@@ -139,6 +144,7 @@ export function RewardCard() {
             {canBattle && (
               <Link
                 href="/battle"
+                onClick={advance}
                 className="rounded-full bg-ink px-6 py-2 font-black text-surface shadow-lg"
               >
                 {t("battle", { name: revealed.name })}
