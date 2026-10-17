@@ -229,13 +229,6 @@ export function pickFirstPokemon(
   return pickNextPokemon(allIds, new Set(), random);
 }
 
-/** "???" for each letter, keeping spaces and punctuation so "Mr. Mime" reads "??. ????". */
-export function nameMask(name: string): string {
-  return Array.from(name, (char) =>
-    /[\p{L}\p{N}ー]/u.test(char) ? "?" : char,
-  ).join("");
-}
-
 /**
  * The legacy hint: the first half of the name revealed, rest masked. Rounds down, so a
  * one-letter name (뮤) reveals nothing rather than the whole answer.

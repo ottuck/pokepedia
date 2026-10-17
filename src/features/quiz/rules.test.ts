@@ -4,7 +4,6 @@ import {
   comboMultiplier,
   hintText,
   isCorrectAnswer,
-  nameMask,
   newRound,
   newRun,
   pickFirstPokemon,
@@ -214,17 +213,16 @@ describe("pickFirstPokemon", () => {
   });
 });
 
-describe("nameMask / hintText", () => {
+describe("hintText", () => {
   it.each([
-    ["피카츄", "???", "피??"],
-    ["Pikachu", "???????", "Pik????"],
-    ["Mr. Mime", "??. ????", "Mr. M???"],
-    ["ピカチュウ", "?????", "ピカ???"],
-    ["뮤", "?", "?"], // a one-letter hint must not give the answer away
-    ["Mew", "???", "M??"],
-    ["Nidoran♀", "???????♀", "Nid????♀"],
-  ])("%s → %s / %s", (name, mask, hint) => {
-    expect(nameMask(name)).toBe(mask);
+    ["피카츄", "피??"],
+    ["Pikachu", "Pik????"],
+    ["Mr. Mime", "Mr. M???"],
+    ["ピカチュウ", "ピカ???"],
+    ["뮤", "?"], // a one-letter hint must not give the answer away
+    ["Mew", "M??"],
+    ["Nidoran♀", "Nid????♀"],
+  ])("%s → %s", (name, hint) => {
     expect(hintText(name)).toBe(hint);
   });
 });

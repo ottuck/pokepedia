@@ -57,7 +57,6 @@ const round = (id: string, overrides: Partial<RoundView> = {}): RoundView => ({
   seq: 1,
   hp: 3,
   hintUsed: false,
-  mask: "???",
   hint: null,
   silhouetteUrl: "https://example.test/sil.webp",
   ...overrides,
