@@ -44,9 +44,13 @@ export default async function LocaleLayout({
       </head>
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
-          <SiteHeader />
-          {children}
-          <SiteFooter />
+          {/* The page column as one card from top to bottom: the surface colour with a soft edge on
+              the deeper backdrop once the window is wider than the column. */}
+          <div className="mx-auto flex w-full max-w-page flex-1 flex-col bg-surface min-[42rem]:shadow-[0_0_48px_rgb(31_29_26/0.10)] min-[42rem]:ring-1 min-[42rem]:ring-ink/5">
+            <SiteHeader />
+            {children}
+            <SiteFooter />
+          </div>
         </NextIntlClientProvider>
         {/* Vercel Web Analytics (cookieless page views) and Speed Insights (Core Web Vitals).
             Both only report from Vercel deployments; locally they stay inactive. */}
