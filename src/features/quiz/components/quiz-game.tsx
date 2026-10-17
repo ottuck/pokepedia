@@ -2,7 +2,6 @@
 
 import { LazyMotion, MotionConfig } from "motion/react";
 import { useEffect, useRef } from "react";
-import { BattleTeaser } from "@/features/battle/components/battle-teaser";
 import { loadMotionFeatures } from "@/lib/motion";
 import { useQuizStore } from "../store";
 import { BattleStage } from "./battle-stage";
@@ -36,7 +35,6 @@ export function QuizGame() {
     <LazyMotion features={loadMotionFeatures} strict>
       <MotionConfig reducedMotion="user">
         <QuizSounds />
-        <BattleTeaser />
         <PokedexFrame ref={frame} locked={inBattle}>
           {phase === "lobby" || phase === "starting" ? (
             <Lobby />

@@ -220,13 +220,6 @@
       "next": "다음",
       "start": "배틀 시작",
       "starting": "준비 중…"
-    },
-    "teaser": {
-      "newTitle": "정답을 맞히면 포켓몬 배틀!",
-      "newBody": "첫 문제를 맞히면 그 포켓몬으로 바로 배틀할 수 있어요.",
-      "ownerTitle": "내 피카츄로 배틀할 수 있어요",
-      "ownerBody": "띠부씰을 모으다가 언제든 배틀하러 가요.",
-      "ownerLink": "배틀하기"
     }
   },
   "collection": {

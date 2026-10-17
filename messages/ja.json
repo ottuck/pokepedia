@@ -220,13 +220,6 @@
       "next": "つぎへ",
       "start": "バトル開始",
       "starting": "準備中…"
-    },
-    "teaser": {
-      "newTitle": "正解したらポケモンバトル！",
-      "newBody": "最初の問題に正解すると、そのポケモンですぐにバトルできます。",
-      "ownerTitle": "ピカチュウでバトルできます",
-      "ownerBody": "シールを集めながら、いつでもバトルへ。",
-      "ownerLink": "バトル"
     }
   },
   "collection": {
