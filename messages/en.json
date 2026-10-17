@@ -163,7 +163,8 @@
       "shiny": "Shiny sticker!",
       "scoreGained": "+{score}",
       "continue": "Next Pokémon",
-      "battle": "Battle with my {name}"
+      "battle": "Battle with my {name}",
+      "battleUnlocked": "You can now battle with {name}!"
     },
     "gameover": {
       "fainted": "The trainer fainted!",
