@@ -163,7 +163,8 @@
       "shiny": "色違いのシール！",
       "scoreGained": "+{score}てん",
       "continue": "つぎのポケモン",
-      "battle": "{name}でバトル"
+      "battle": "{name}でバトル",
+      "battleUnlocked": "{name}でバトルできるようになりました！"
     },
     "gameover": {
       "fainted": "トレーナーは たおれてしまった！",

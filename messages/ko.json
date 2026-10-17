@@ -163,7 +163,8 @@
       "shiny": "색이 다른 띠부씰!",
       "scoreGained": "+{score}점",
       "continue": "다음 포켓몬",
-      "battle": "내 {name}로 배틀"
+      "battle": "내 {name}로 배틀",
+      "battleUnlocked": "이제 {name}로 배틀할 수 있어요!"
     },
     "gameover": {
       "fainted": "트레이너가 쓰러졌다!",
