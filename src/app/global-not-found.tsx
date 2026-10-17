@@ -22,7 +22,8 @@ export default function GlobalNotFound() {
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         )}
       </head>
-      <body className="flex min-h-full flex-col items-center justify-center gap-3 p-6 text-center">
+      {/* No page column here: the plain surface, not the backdrop the locale layout sits on. */}
+      <body className="flex min-h-full flex-col items-center justify-center gap-3 bg-surface p-6 text-center">
         <p className="text-6xl font-black text-dex-red">404</p>
         <p className="text-muted">
           페이지를 찾을 수 없어요 · Page not found · ページが見つかりません
