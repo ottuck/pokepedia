@@ -112,7 +112,7 @@ export function StickerCard({ pokemon, holding, locale }: Props) {
         // A sibling of the card link (links cannot nest), over its bottom edge.
         <Link
           href="/battle"
-          className="absolute -bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-linear-to-r from-amber-400 to-amber-600 px-2.5 py-0.5 text-[10px] font-black whitespace-nowrap text-white shadow-md"
+          className="absolute -bottom-3 left-1/2 z-10 -translate-x-1/2 rounded-full bg-linear-to-r from-amber-400 to-amber-600 px-3.5 py-1.5 text-xs font-black whitespace-nowrap text-white shadow-md"
         >
           ⚔ {t("battle")}
         </Link>

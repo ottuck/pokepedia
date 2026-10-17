@@ -24,7 +24,9 @@ export function BattleFrame({ locale, owned }: Props) {
   }, [locale, owned]);
 
   return (
-    <div className="mx-auto w-full max-w-[640px] overflow-hidden rounded-2xl bg-[#0f380f] shadow-lg ring-1 ring-ink/10">
+    // Phones: edge to edge. The game scales its pixels by whole numbers, so the extra width
+    // often reaches the next scale step (a 375px phone at 2x: 343px → 2x, 375px → 3x).
+    <div className="-mx-4 w-[calc(100%+2rem)] overflow-hidden bg-[#0f380f] sm:mx-auto sm:w-full sm:max-w-[640px] sm:rounded-2xl sm:shadow-lg sm:ring-1 sm:ring-ink/10">
       <iframe
         ref={frame}
         src={battleUrl(locale)}
