@@ -1,5 +1,6 @@
 import type { Locale } from "next-intl";
 import { localizedName } from "@/features/pokemon/format";
+import { BATTLE_STARTER_ID } from "@/features/battle/host";
 import {
   ActiveRunExistsError,
   QuizConflictError,
@@ -11,6 +12,7 @@ import {
   hintText,
   isCorrectAnswer,
   nameMask,
+  pickFirstPokemon,
   pickNextPokemon,
   resolveAnswer,
   skipRound,
@@ -153,9 +155,14 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
       let active = await repo.findActiveRun(userId);
       if (!active) {
         if (resumeOnly) return fail("run_not_active");
-        const first = pickNextPokemon(
-          await repo.allPokemonIds(),
-          new Set(),
+        // Read together: both are only needed when a new run starts.
+        const [ids, ownsStarter] = await Promise.all([
+          repo.allPokemonIds(),
+          repo.ownsSticker(userId, BATTLE_STARTER_ID),
+        ]);
+        const first = pickFirstPokemon(
+          ids,
+          ownsStarter ? null : BATTLE_STARTER_ID,
           random,
         );
         try {

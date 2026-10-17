@@ -162,7 +162,8 @@
       "duplicate": "Sticker ×{quantity}",
       "shiny": "Shiny sticker!",
       "scoreGained": "+{score}",
-      "continue": "Next Pokémon"
+      "continue": "Next Pokémon",
+      "battle": "Battle with my {name}"
     },
     "gameover": {
       "fainted": "The trainer fainted!",

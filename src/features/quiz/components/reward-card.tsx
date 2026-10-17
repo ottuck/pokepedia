@@ -4,6 +4,8 @@ import { m } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Tilt } from "@/components/tilt";
+import { Link } from "@/i18n/navigation";
+import { BATTLE_PLAYABLE_IDS } from "@/features/battle/host";
 import { spring } from "@/lib/motion";
 import { formatDexNumber } from "@/features/pokemon/format";
 import { useQuizStore } from "../store";
@@ -17,6 +19,9 @@ export function RewardCard() {
 
   const { revealed, sticker, scoreGained } = reward;
   const shiny = sticker.variant === "shiny";
+  // A sticker the battle game can use: invite the player to battle with it. The run stays
+  // active, so coming back to the game resumes it.
+  const canBattle = BATTLE_PLAYABLE_IDS.includes(revealed.id);
 
   return (
     <m.div
@@ -98,14 +103,24 @@ export function RewardCard() {
           </span>
         </m.p>
 
-        <button
-          type="button"
-          autoFocus
-          onClick={advance}
-          className="rounded-full bg-volt px-6 py-2 font-black text-ink shadow-lg"
-        >
-          {t("continue")}
-        </button>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {canBattle && (
+            <Link
+              href="/battle"
+              className="rounded-full bg-ink px-6 py-2 font-black text-surface shadow-lg"
+            >
+              {t("battle", { name: revealed.name })}
+            </Link>
+          )}
+          <button
+            type="button"
+            autoFocus
+            onClick={advance}
+            className="rounded-full bg-volt px-6 py-2 font-black text-ink shadow-lg"
+          >
+            {t("continue")}
+          </button>
+        </div>
       </div>
     </m.div>
   );

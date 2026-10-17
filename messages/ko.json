@@ -162,7 +162,8 @@
       "duplicate": "띠부씰 ×{quantity}",
       "shiny": "색이 다른 띠부씰!",
       "scoreGained": "+{score}점",
-      "continue": "다음 포켓몬"
+      "continue": "다음 포켓몬",
+      "battle": "내 {name}로 배틀"
     },
     "gameover": {
       "fainted": "트레이너가 쓰러졌다!",

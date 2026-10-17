@@ -162,7 +162,8 @@
       "duplicate": "シール ×{quantity}",
       "shiny": "色違いのシール！",
       "scoreGained": "+{score}てん",
-      "continue": "つぎのポケモン"
+      "continue": "つぎのポケモン",
+      "battle": "{name}でバトル"
     },
     "gameover": {
       "fainted": "トレーナーは たおれてしまった！",
