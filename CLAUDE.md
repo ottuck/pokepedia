@@ -105,6 +105,8 @@ before structural changes. `README.md` is the public-facing overview.
 ## Merge policy (risk-based autonomy)
 
 Claude merges its own PRs (squash) when the change is low-risk and every gate passes.
+**Do not stop to ask when nothing is wrong** (user instruction, 2026-10-17: asking only
+interrupts the work). Ask only for the "Needs the user's approval" list below.
 
 **Gates — all required, otherwise do not merge:**
 
@@ -118,7 +120,9 @@ Claude merges its own PRs (squash) when the change is low-risk and every gate pa
 **Low-risk (Claude may merge):** UI / CSS / Motion, components and ordinary features,
 tests, additive non-destructive migrations (new tables/columns/indexes/functions without
 new or changed grants/policies), Pokémon data code under `scripts/`, patch/minor updates of
-existing dependencies, dependencies already planned in `docs/system_design.md`, docs.
+existing dependencies, dependencies already planned in `docs/system_design.md`, docs, and
+architecture or game-rule changes that need no item below (update `docs/system_design.md`
+in the same PR).
 
 **Needs the user's approval before merge** — label the PR `needs-approval`, ask, and wait:
 
@@ -127,7 +131,6 @@ existing dependencies, dependencies already planned in `docs/system_design.md`, 
 - Deleting or bulk-changing production data; running seed/sync against remote
 - Secrets, environment variables, domains, billing, third-party integrations
 - New dependencies not planned in `docs/system_design.md`; major-version upgrades
-- Architecture changes (anything that should update `docs/system_design.md` beyond wording)
 
 **After merge:**
 
