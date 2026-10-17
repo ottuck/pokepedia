@@ -3,6 +3,7 @@ import type { Locale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { Tilt } from "@/components/tilt";
 import { Link } from "@/i18n/navigation";
+import { BATTLE_PLAYABLE_IDS } from "@/features/battle/host";
 import { artworkUrl } from "@/features/pokemon/assets";
 import { formatDexNumber, localizedName } from "@/features/pokemon/format";
 import type { PokedexEntry } from "@/features/pokemon/queries";
@@ -15,10 +16,16 @@ type Props = {
   locale: Locale;
 };
 
+// A metallic gold border for stickers the battle game can use, drawn as a border-box gradient
+// so the card keeps the same size as the others (the shiny frame is the flat volt yellow).
+const BATTLE_FRAME =
+  "linear-gradient(var(--color-card), var(--color-card)) padding-box, linear-gradient(135deg, #fde68a, #d97706 40%, #fff7c2 55%, #b45309) border-box";
+
 /**
  * A 띠부씰 (sticker) in the legacy layout: name and number on top, artwork, the little
  * Poké Ball and "Pokémon" mark at the bottom. Missing ones are a "?" card with the number,
- * like the legacy empty slots. Owning a shiny shows the shiny art in a gold frame.
+ * like the legacy empty slots. Owning a shiny shows the shiny art in a volt frame; a sticker
+ * the battle game can use gets a gold frame and a "battle" badge that opens the game.
  */
 export function StickerCard({ pokemon, holding, locale }: Props) {
   const t = useTranslations("collection");
@@ -41,16 +48,22 @@ export function StickerCard({ pokemon, holding, locale }: Props) {
 
   const name = localizedName(pokemon, locale);
   const shiny = holding.shiny > 0;
+  const battle = BATTLE_PLAYABLE_IDS.includes(pokemon.id);
 
   return (
     <Tilt holo={shiny} className="rounded-2xl">
       <Link
         href={`/pokemon/${pokemon.id}`}
-        style={typeStyle(pokemon.type_1, pokemon.type_2)}
+        style={{
+          ...typeStyle(pokemon.type_1, pokemon.type_2),
+          ...(battle ? { background: BATTLE_FRAME } : {}),
+        }}
         className={`group relative flex aspect-[3/4] flex-col rounded-2xl border-4 bg-card p-2 shadow-sm ${
-          shiny
-            ? "border-volt shadow-volt/40"
-            : "border-card ring-1 ring-ink/10"
+          battle
+            ? "border-transparent shadow-lg shadow-amber-500/40"
+            : shiny
+              ? "border-volt shadow-volt/40"
+              : "border-card ring-1 ring-ink/10"
         }`}
       >
         <div className="flex items-baseline justify-between gap-1">
@@ -95,6 +108,15 @@ export function StickerCard({ pokemon, holding, locale }: Props) {
           </span>
         </div>
       </Link>
+      {battle && (
+        // A sibling of the card link (links cannot nest), over its bottom edge.
+        <Link
+          href="/battle"
+          className="absolute -bottom-2 left-1/2 z-10 -translate-x-1/2 rounded-full bg-linear-to-r from-amber-400 to-amber-600 px-2.5 py-0.5 text-[10px] font-black whitespace-nowrap text-white shadow-md"
+        >
+          ⚔ {t("battle")}
+        </Link>
+      )}
     </Tilt>
   );
 }

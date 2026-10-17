@@ -228,6 +228,7 @@
     "shiny": "색이 다른 포켓몬",
     "missing": "아직 못 모은 포켓몬",
     "shinyBadge": "색이 다른",
+    "battle": "배틀하기",
     "quantity": "일반 {normal}장, 색이 다른 {shiny}장",
     "emptyTitle": "아직 모은 띠부씰이 없어요",
     "emptyBody": "게임에서 포켓몬을 맞히면 그 포켓몬의 띠부씰을 받아요.",
