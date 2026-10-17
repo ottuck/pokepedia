@@ -220,13 +220,6 @@
       "next": "Next",
       "start": "Start battle",
       "starting": "Getting ready…"
-    },
-    "teaser": {
-      "newTitle": "Guess right, then battle!",
-      "newBody": "Get the first one right and battle with that Pokémon right away.",
-      "ownerTitle": "Your Pikachu is ready to battle",
-      "ownerBody": "Take a break from collecting and battle anytime.",
-      "ownerLink": "Battle"
     }
   },
   "collection": {
