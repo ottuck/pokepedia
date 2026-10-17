@@ -39,6 +39,10 @@ vi.mock("@/lib/supabase/browser", () => ({
     }),
   }),
 }));
+// The battle banner above the game reads stickers on its own; these tests cover the game flow.
+vi.mock("@/features/battle/components/battle-teaser", () => ({
+  BattleTeaser: () => null,
+}));
 vi.mock("@/i18n/navigation", () => ({
   Link: ({ href, ...props }: { href: string }) => <a href={href} {...props} />,
 }));
