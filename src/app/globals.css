@@ -9,6 +9,9 @@
   color-scheme: light dark;
 
   --surface: light-dark(#fffdf7, #141318);
+  /* Outside the page column on wide screens: a shade deeper than the surface, so the column reads
+     as an app screen set on a table (on phones the column fills the width and this never shows). */
+  --backdrop: light-dark(#efe8d9, #0b0a0e);
   /* Raised surfaces: cards, panels, message boxes. Keep in sync with DARK_CARD in types.test.ts. */
   --card: light-dark(#ffffff, #1f1e24);
   --ink: light-dark(#1f1d1a, #f1ede4);
@@ -35,6 +38,7 @@
   --color-charcoal: #1f1d1a;
 
   --color-surface: var(--surface);
+  --color-backdrop: var(--backdrop);
   --color-card: var(--card);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
@@ -55,7 +59,7 @@
 }
 
 body {
-  background: var(--surface);
+  background: var(--backdrop);
   color: var(--ink);
   font-family: var(--font-sans);
 }
