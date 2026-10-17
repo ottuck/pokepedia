@@ -27,7 +27,7 @@ export default async function MyPage() {
 
   if (!me) {
     return (
-      <main className="mx-auto w-full max-w-3xl px-4 pb-16">
+      <main className="mx-auto w-full max-w-page px-4 pb-16">
         <div className="flex flex-col items-center gap-3 rounded-2xl bg-card p-10 text-center ring-1 ring-ink/5">
           <h1 className="text-2xl font-black">{t("emptyTitle")}</h1>
           <p className="text-sm text-muted">{t("emptyBody")}</p>
@@ -63,7 +63,7 @@ export default async function MyPage() {
   ];
 
   return (
-    <main className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 pb-16">
+    <main className="mx-auto flex w-full max-w-page flex-col gap-8 px-4 pb-16">
       <header className="flex flex-col gap-4">
         <AvatarEditor
           // Remount after a change so the picture and buttons follow the new profile.

@@ -8,8 +8,7 @@ import { typeStyle } from "../types";
 import { TypeBadge } from "./type-badge";
 
 // Must match GRID_CLASS in pokedex-explorer.tsx so the browser picks a right-sized image.
-const ARTWORK_SIZES =
-  "(min-width: 1280px) 180px, (min-width: 1024px) 18vw, (min-width: 768px) 23vw, (min-width: 640px) 31vw, 46vw";
+const ARTWORK_SIZES = "(min-width: 672px) 200px, (min-width: 640px) 31vw, 46vw";
 
 type Props = {
   pokemon: PokedexEntry;

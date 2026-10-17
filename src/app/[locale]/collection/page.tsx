@@ -41,7 +41,7 @@ export default async function CollectionPage({
   );
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 pb-16">
+    <main className="mx-auto w-full max-w-page px-4 pb-16">
       <h1 className="mb-4 text-3xl font-black tracking-tight">{t("title")}</h1>
 
       <section

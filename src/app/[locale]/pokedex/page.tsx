@@ -45,7 +45,7 @@ export default async function PokedexPage() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 pb-16">
+    <main className="mx-auto w-full max-w-page px-4 pb-16">
       <div className="mb-4 flex items-baseline justify-between gap-4">
         <h1 className="text-3xl font-black tracking-tight">{t("title")}</h1>
         <p className="text-sm text-muted">
