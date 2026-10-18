@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import { getFormatter, getTranslations } from "next-intl/server";
+import Image from "next/image";
+import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 import { MyRank } from "@/features/leaderboard/components/my-rank";
 import { getLeaderboard } from "@/features/leaderboard/queries";
+import { artworkUrl } from "@/features/pokemon/assets";
+import { getPokedexList } from "@/features/pokemon/queries";
+import { trainerName } from "@/features/profile/display";
 
 // Rankings change as games finish; a minute of staleness keeps the page cached and cheap.
 export const revalidate = 60;
@@ -18,11 +22,16 @@ const MEDALS: Record<number, string> = {
 };
 
 export default async function LeaderboardPage() {
-  const [t, format, rows] = await Promise.all([
+  const locale = await getLocale();
+  const [t, format, rows, pokedex] = await Promise.all([
     getTranslations("leaderboard"),
     getFormatter(),
-    getLeaderboard(),
+    getLeaderboard(locale),
+    // Only the icons need it: without the list the ranking still shows, names only.
+    getPokedexList().catch(() => []),
   ]);
+  // Each player's profile Pokémon next to the name; uploaded pictures stay off the ranking.
+  const artwork = new Map(pokedex.map((p) => [p.id, p.artwork_path]));
 
   return (
     <main className="mx-auto flex w-full max-w-page flex-col gap-6 px-4 pb-16">
@@ -75,7 +84,31 @@ export default async function LeaderboardPage() {
                     {row.rank}
                   </span>
                 </td>
-                <td className="truncate px-2 py-3 font-bold">{row.nickname}</td>
+                <td className="px-2 py-3 font-bold">
+                  <span className="flex items-center gap-2">
+                    <span className="relative size-7 shrink-0 rounded-full bg-dex-screen">
+                      {row.avatar_pokemon_id !== null &&
+                        artwork.has(row.avatar_pokemon_id) && (
+                          <Image
+                            src={artworkUrl(
+                              artwork.get(row.avatar_pokemon_id)!,
+                            )}
+                            alt=""
+                            fill
+                            sizes="28px"
+                            className="object-contain p-0.5"
+                          />
+                        )}
+                    </span>
+                    <span className="min-w-0 truncate">
+                      {trainerName(
+                        row.nickname,
+                        row.adjective,
+                        row.pokemon_name,
+                      )}
+                    </span>
+                  </span>
+                </td>
                 <td className="px-2 py-3 text-right font-mono font-black tabular-nums">
                   {format.number(row.score)}
                 </td>
