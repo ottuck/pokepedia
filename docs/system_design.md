@@ -78,7 +78,9 @@ ability, pokemon_ability
 private.pokemon_quiz (pokemon_id, silhouette_path, answer_keys text[])
 
 -- 사용자
-profile      (id → auth.users, nickname 2–20자, avatar_path)      -- 가입 trigger가 생성
+profile      (id → auth.users, nickname 2–20자, avatar_path,
+              nickname_adjective_id, avatar_pokemon_id)            -- 가입 trigger가 생성
+nickname_adjective (id, name_ko/en/ja)                              -- 생성 이름의 형용사(공개)
 quiz_run     (user_id, status, end_reason fainted|fled, score, combo, best_combo, skips_left …)
 quiz_round   (run_id, seq, pokemon_id, status active|cleared|failed|skipped, hp, hint_used, version …)
 user_sticker (user_id, pokemon_id, variant normal|shiny, quantity)
@@ -90,16 +92,17 @@ private.guest_merge_ticket (token_hash, from_user_id, expires_at, consumed_at)
 
 **권한**: publishable key는 공개돼 있으므로, `anon`/`authenticated`에 허용한 것은 누구나 브라우저에서 직접 호출할 수 있다고 본다.
 
-| 대상                                    | anon / authenticated                                  |
-| --------------------------------------- | ----------------------------------------------------- |
-| `pokemon`, `ability`, `pokemon_ability` | SELECT                                                |
-| `private.*`                             | 없음                                                  |
-| `profile`                               | 본인 SELECT, `nickname` 컬럼만 UPDATE                 |
-| `quiz_run`, `user_sticker`              | 본인 SELECT                                           |
-| `quiz_round`                            | 본인 SELECT, 끝난 round만(진행 중 문제는 숨김)        |
-| 게임·병합·정리 RPC                      | 없음(secret key를 쓰는 서버만)                        |
-| `leaderboard`, `my_leaderboard_rank`    | EXECUTE(닉네임·점수·콤보만 돌려주는 유일한 공개 창구) |
-| storage `avatars`                       | Google 계정 본인 폴더만 INSERT/DELETE                 |
+| 대상                                           | anon / authenticated                                |
+| ---------------------------------------------- | --------------------------------------------------- |
+| `pokemon`, `ability`, `pokemon_ability`        | SELECT                                              |
+| `private.*`                                    | 없음                                                |
+| `profile`                                      | 본인 SELECT, `nickname` 컬럼만 UPDATE               |
+| `quiz_run`, `user_sticker`                     | 본인 SELECT                                         |
+| `quiz_round`                                   | 본인 SELECT, 끝난 round만(진행 중 문제는 숨김)      |
+| 게임·병합·정리 RPC                             | 없음(secret key를 쓰는 서버만)                      |
+| `leaderboard(_entries)`, `my_leaderboard_rank` | EXECUTE(이름·점수·콤보만 돌려주는 유일한 공개 창구) |
+| `nickname_adjective`                           | 누구나 SELECT                                       |
+| storage `avatars`                              | Google 계정 본인 폴더만 INSERT/DELETE               |
 
 - 새 테이블에는 기본 권한이 없다(`api.auto_expose_new_tables = false`). migration마다 필요한 GRANT만 연다.
 - 방어 계층: `proxy.ts`(세션 갱신·locale) → Server Action / RSC(`getClaims()`로 사용자 확인) → RLS(최종 방어선).
@@ -165,10 +168,10 @@ Round : hp = 3, 힌트 1회
   3. 이동이 성공한 뒤에만 게스트 user를 지운다.
 - **비활성 게스트 정리**: pg_cron이 매일 `cleanup_inactive_guests()`를 돈다. 게스트이고, 60일 넘게 활동이 없고, 스티커가 0장이고, 진행 중 게임이 없는 계정만 지운다.
 - 정리 RPC의 `p_user_ids` 오버로드는 지정한 사용자만 검사한다. 빈 배열은 아무도 지우지 않고, 기존 인자와 cron 호출은 전체 범위를 유지한다. 테스트는 자신이 만든 사용자 ID만 넘긴다.
-- **프로필**: 가입 trigger가 `Trainer-XXXX` 닉네임으로 만든다. 닉네임은 2–20자이고 본인만 바꾼다.
+- **프로필**: 가입 trigger가 무작위 형용사(게임의 "성격" 위주 30개)와 포켓몬을 골라 "용감한 피카츄" 같은 생성 이름을 준다. 형용사·포켓몬 번호만 저장하고 보는 사람 언어로 읽는다(실제 이름처럼 보이지 않고, 한 계정이 세 언어로 자연스럽게 읽힌다). 그 포켓몬은 기본 프로필 사진이기도 하다(올린 사진 > Google 사진 > 포켓몬). 닉네임(2–20자, 본인만)을 직접 정하면 trigger가 형용사를 비워 그 닉네임이 보이고 포켓몬 사진은 남는다. `nickname` 컬럼에는 새 계정도 `Trainer-XXXX`가 들어가 생성 이름이 없을 때의 대체 이름이 된다.
 - 브라우저의 로그인·로그아웃·사용자 갱신 이벤트는 계정 표시와 개인 위젯을 다시 읽고 현재 RSC 페이지를 갱신한다. 다른 탭에서 로그아웃해도 마이페이지의 이전 기록이 남지 않으며, 이전 계정 조회의 늦은 결과는 무시한다.
 - **아바타**(Google 계정만): 브라우저가 256px 정사각형 webp로 만들어 `avatars/{user_id}/…`에 직접 올리고, `setAvatar`가 경로를 다시 확인한 뒤 `profile.avatar_path`를 바꾼다. 리더보드에는 보여 주지 않는다.
-- **리더보드**: 사용자마다 한 판 최고 점수 하나. 공개 정보는 닉네임, 점수, 그 판의 최고 콤보뿐이다.
+- **리더보드**: 사용자마다 한 판 최고 점수 하나. 공개 정보는 이름(생성 이름이면 보는 사람 언어의 형용사·포켓몬 이름), 프로필 포켓몬 번호, 점수, 그 판의 최고 콤보뿐이다(`leaderboard_entries`).
 - 원격 Auth 설정(익명 로그인, Manual linking, Google, Site URL, Redirect URLs)은 Supabase 대시보드에서 한다. `config.toml`은 로컬에만 적용된다.
 
 ## 7. 개발과 배포

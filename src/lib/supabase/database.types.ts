@@ -42,6 +42,27 @@ export type Database = {
         }
         Relationships: []
       }
+      nickname_adjective: {
+        Row: {
+          id: number
+          name_en: string
+          name_ja: string
+          name_ko: string
+        }
+        Insert: {
+          id: number
+          name_en: string
+          name_ja: string
+          name_ko: string
+        }
+        Update: {
+          id?: number
+          name_en?: string
+          name_ja?: string
+          name_ko?: string
+        }
+        Relationships: []
+      }
       pokemon: {
         Row: {
           artwork_path: string
@@ -176,23 +197,44 @@ export type Database = {
       profile: {
         Row: {
           avatar_path: string | null
+          avatar_pokemon_id: number | null
           created_at: string
           id: string
           nickname: string
+          nickname_adjective_id: number | null
         }
         Insert: {
           avatar_path?: string | null
+          avatar_pokemon_id?: number | null
           created_at?: string
           id: string
           nickname: string
+          nickname_adjective_id?: number | null
         }
         Update: {
           avatar_path?: string | null
+          avatar_pokemon_id?: number | null
           created_at?: string
           id?: string
           nickname?: string
+          nickname_adjective_id?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profile_avatar_pokemon_id_fkey"
+            columns: ["avatar_pokemon_id"]
+            isOneToOne: false
+            referencedRelation: "pokemon"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_nickname_adjective_id_fkey"
+            columns: ["nickname_adjective_id"]
+            isOneToOne: false
+            referencedRelation: "nickname_adjective"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quiz_round: {
         Row: {
@@ -381,6 +423,18 @@ export type Database = {
         Returns: {
           best_combo: number
           nickname: string
+          rank: number
+          score: number
+        }[]
+      }
+      leaderboard_entries: {
+        Args: { p_limit?: number; p_locale?: string }
+        Returns: {
+          adjective: string
+          avatar_pokemon_id: number
+          best_combo: number
+          nickname: string
+          pokemon_name: string
           rank: number
           score: number
         }[]
