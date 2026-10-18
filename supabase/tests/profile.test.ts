@@ -12,6 +12,39 @@ describe("profile", () => {
     expect(data?.nickname).toMatch(/^Trainer-[0-9A-F]{4}$/);
   });
 
+  it("gets a generated name and a Pokémon picture, readable in every language", async () => {
+    const { client } = await anonymousPlayer();
+
+    const { data, error } = await client
+      .from("profile")
+      .select(
+        "nickname_adjective(name_ko, name_en, name_ja), avatar_pokemon:pokemon(name_ko, artwork_path)",
+      )
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.nickname_adjective).toEqual({
+      name_ko: expect.any(String),
+      name_en: expect.any(String),
+      name_ja: expect.any(String),
+    });
+    expect(data?.avatar_pokemon?.artwork_path).toEqual(expect.any(String));
+  });
+
+  it("drops the generated name, but keeps the picture, once the owner picks a nickname", async () => {
+    const { client, userId } = await anonymousPlayer();
+
+    const { data } = await client
+      .from("profile")
+      .update({ nickname: "레드" })
+      .eq("id", userId)
+      .select("nickname_adjective_id, avatar_pokemon_id")
+      .single();
+
+    expect(data?.nickname_adjective_id).toBeNull();
+    expect(data?.avatar_pokemon_id).toEqual(expect.any(Number));
+  });
+
   it("is only visible to its owner", async () => {
     const alice = await anonymousPlayer();
     const bob = await anonymousPlayer();
@@ -73,12 +106,16 @@ describe("profile", () => {
       .from("profile")
       .update({ created_at: "2000-01-01T00:00:00Z" })
       .eq("id", userId);
+    const pickName = await client
+      .from("profile")
+      .update({ nickname_adjective_id: 1, avatar_pokemon_id: 25 })
+      .eq("id", userId);
     const insert = await client
       .from("profile")
       .insert({ id: crypto.randomUUID(), nickname: "ghost" });
     const remove = await client.from("profile").delete().eq("id", userId);
 
-    for (const { error } of [moveDate, insert, remove]) {
+    for (const { error } of [moveDate, pickName, insert, remove]) {
       expect(error?.code).toBe("42501");
     }
   });

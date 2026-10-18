@@ -124,6 +124,65 @@ describe("leaderboard", () => {
   });
 });
 
+describe("leaderboard_entries", () => {
+  async function entries(locale: string) {
+    const { data, error } = await anonClient().rpc("leaderboard_entries", {
+      p_locale: locale,
+      p_limit: 100,
+    });
+    if (error) throw error;
+    return data;
+  }
+
+  it("gives a generated name's words in the viewer's language", async () => {
+    const guest = await anonymousPlayer();
+    const { data: profile } = await adminClient()
+      .from("profile")
+      .select(
+        "nickname, nickname_adjective(name_en, name_ja), avatar_pokemon:pokemon(id, name_en, name_ja)",
+      )
+      .eq("id", guest.userId)
+      .single();
+    await game(guest.userId, nextScore());
+
+    const mine = (rows: Awaited<ReturnType<typeof entries>>) =>
+      rows.find((row) => row.nickname === profile!.nickname);
+
+    expect(mine(await entries("en"))).toMatchObject({
+      adjective: profile!.nickname_adjective!.name_en,
+      pokemon_name: profile!.avatar_pokemon!.name_en,
+      avatar_pokemon_id: profile!.avatar_pokemon!.id,
+    });
+    expect(mine(await entries("ja"))).toMatchObject({
+      adjective: profile!.nickname_adjective!.name_ja,
+      pokemon_name: profile!.avatar_pokemon!.name_ja,
+    });
+  });
+
+  it("leaves the words out for a chosen nickname, and exposes nothing private", async () => {
+    const name = tag();
+    const { userId } = await player(name);
+    await game(userId, nextScore());
+
+    const rows = await entries("ko");
+    const mine = rows.find((row) => row.nickname === name);
+
+    expect(mine).toMatchObject({ adjective: null, pokemon_name: null });
+    expect(Object.keys(mine!).sort()).toEqual(
+      [
+        "adjective",
+        "avatar_pokemon_id",
+        "best_combo",
+        "nickname",
+        "pokemon_name",
+        "rank",
+        "score",
+      ].sort(),
+    );
+    expect(JSON.stringify(rows)).not.toContain(userId);
+  });
+});
+
 describe("my_leaderboard_rank", () => {
   it("returns the signed-in player's own standing", async () => {
     const { client, userId } = await player(tag());
