@@ -36,6 +36,8 @@ export function AccountMenu() {
   const router = useRouter();
   const menuId = useId();
   const [account, setAccount] = useState<AccountState>({ status: "loading" });
+  // A guest's sign-out asks first, inside the menu: the guest account cannot be entered again.
+  const [confirmingSignOut, setConfirmingSignOut] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -120,7 +122,10 @@ export function AccountMenu() {
       <button
         type="button"
         popoverTarget={menuId}
-        onClick={(event) => placeUnder(event.currentTarget, menuId)}
+        onClick={(event) => {
+          setConfirmingSignOut(false);
+          placeUnder(event.currentTarget, menuId);
+        }}
         aria-label={t("accountMenu")}
         className="flex h-9 items-center gap-2 rounded-full bg-ink/5 pr-3 pl-1 text-sm font-semibold hover:bg-ink/10"
       >
@@ -151,7 +156,8 @@ export function AccountMenu() {
           {t("myPage")}
         </Link>
 
-        {isAnonymous && (
+        {/* While a guest confirms signing out, the warning below takes this block's place. */}
+        {isAnonymous && !confirmingSignOut && (
           <>
             <p className="rounded-xl bg-volt/20 p-2 text-xs">
               {t("guestNotice")}
@@ -167,17 +173,44 @@ export function AccountMenu() {
           </>
         )}
 
-        <button
-          type="button"
-          onClick={() => {
-            if (isAnonymous && !window.confirm(t("guestSignOutWarning")))
-              return;
-            void createClient().auth.signOut();
-          }}
-          className="mt-1 w-full rounded-xl px-2 py-2 text-left text-muted hover:bg-ink/5 hover:text-ink"
-        >
-          {isAnonymous ? t("leaveGuest") : t("signOut")}
-        </button>
+        {confirmingSignOut ? (
+          <div
+            role="alert"
+            className="mt-2 rounded-xl bg-danger/10 p-3 text-xs"
+          >
+            <p className="font-bold text-danger">{t("guestSignOutTitle")}</p>
+            <p className="mt-1">{t("guestSignOutWarning")}</p>
+            <div className="mt-3 flex flex-col gap-1">
+              <button
+                type="button"
+                autoFocus
+                onClick={() => void continueWithGoogle(true, router)}
+                className="flex items-center gap-2 rounded-lg bg-ink px-2 py-2 font-semibold text-surface"
+              >
+                <GoogleMark />
+                {t("saveWithGoogle")}
+              </button>
+              <button
+                type="button"
+                onClick={() => void createClient().auth.signOut()}
+                className="rounded-lg px-2 py-2 text-left font-semibold text-danger hover:bg-danger/10"
+              >
+                {t("signOutAnyway")}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              if (isAnonymous) setConfirmingSignOut(true);
+              else void createClient().auth.signOut();
+            }}
+            className="mt-1 w-full rounded-xl px-2 py-2 text-left text-muted hover:bg-ink/5 hover:text-ink"
+          >
+            {t("signOut")}
+          </button>
+        )}
       </div>
     </>
   );

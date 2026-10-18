@@ -12,6 +12,7 @@ test("도감 → 상세 → 언어 전환 → 게임(오답·정답) → 컬렉�
   await expect(page).toHaveURL(/\/ko\/pokemon\/25$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("피카츄");
 
+  await page.getByRole("button", { name: /언어/ }).click();
   await page.getByRole("link", { name: "English" }).click();
   await expect(page).toHaveURL(/\/en\/pokemon\/25$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
@@ -67,8 +68,8 @@ test("게임 중 게스트 로그아웃 → 타이틀 → 새 게스트로 다�
   await players.trackCurrent();
 
   await page.getByRole("button", { name: "계정 메뉴" }).click();
-  page.once("dialog", (dialog) => dialog.accept());
-  await page.getByRole("button", { name: "게스트 나가기" }).click();
+  await page.getByRole("button", { name: "로그아웃" }).click();
+  await page.getByRole("button", { name: "그래도 로그아웃" }).click();
   await expect(
     page.getByRole("button", { name: "Google로 로그인" }),
   ).toBeVisible();
@@ -85,8 +86,8 @@ test("게임 중 게스트 로그아웃 → 타이틀 → 새 게스트로 다�
   // Signing out on another page must also clear the stored battle when returning.
   await page.getByRole("link", { name: "컬렉션", exact: true }).click();
   await page.getByRole("button", { name: "계정 메뉴" }).click();
-  page.once("dialog", (dialog) => dialog.accept());
-  await page.getByRole("button", { name: "게스트 나가기" }).click();
+  await page.getByRole("button", { name: "로그아웃" }).click();
+  await page.getByRole("button", { name: "그래도 로그아웃" }).click();
   await expect(
     page.getByRole("button", { name: "Google로 로그인" }),
   ).toBeVisible();
@@ -138,8 +139,8 @@ test("다른 탭에서 로그아웃하면 마이페이지의 개인 기록이 �
   const signOutPage = await context.newPage();
   await signOutPage.goto("/ko/collection");
   await signOutPage.getByRole("button", { name: "계정 메뉴" }).click();
-  signOutPage.once("dialog", (dialog) => dialog.accept());
-  await signOutPage.getByRole("button", { name: "게스트 나가기" }).click();
+  await signOutPage.getByRole("button", { name: "로그아웃" }).click();
+  await signOutPage.getByRole("button", { name: "그래도 로그아웃" }).click();
   await expect(
     page.getByRole("button", { name: "Google로 로그인" }),
   ).toBeVisible();

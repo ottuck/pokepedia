@@ -86,8 +86,9 @@
     "googleAccount": "Googleアカウント",
     "guestNotice": "ゲストの記録はこのブラウザにしか残りません。Googleアカウントに保存すると、ほかの端末でも続きから遊べます。",
     "saveWithGoogle": "Googleアカウントに保存",
-    "guestSignOutWarning": "ゲストで集めた記録は、ぬけると元に戻せません。ぬけますか？",
-    "leaveGuest": "ゲストをやめる",
+    "guestSignOutTitle": "ゲストアカウントです",
+    "guestSignOutWarning": "ログアウトすると、このアカウントには戻れず、集めたシールとスコアはすべて消えます。記録を残すには、先にGoogleアカウントに保存してください。",
+    "signOutAnyway": "それでもログアウト",
     "signOut": "ログアウト",
     "errors": {
       "title": "ログインできませんでした",
