@@ -1,10 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { placeUnder } from "@/components/anchored-popover";
-import { googlePicture, pickAvatar } from "@/features/profile/avatar";
+import { ProfileAvatar } from "@/features/profile/components/profile-avatar";
+import {
+  NAME_COLUMNS,
+  profileName,
+  profilePicture,
+  type ProfilePicture,
+} from "@/features/profile/display";
 import { createClient } from "@/lib/supabase/browser";
 import { announceAccountChange, onAccountChange } from "../account-events";
 import { continueWithGoogle } from "../google";
@@ -15,8 +21,8 @@ type AccountState =
   | {
       status: "signedIn";
       isAnonymous: boolean;
-      nickname: string;
-      avatarUrl: string | null;
+      name: string;
+      picture: ProfilePicture | null;
     };
 
 /**
@@ -26,6 +32,7 @@ type AccountState =
  */
 export function AccountMenu() {
   const t = useTranslations("auth");
+  const locale = useLocale();
   const router = useRouter();
   const menuId = useId();
   const [account, setAccount] = useState<AccountState>({ status: "loading" });
@@ -46,20 +53,15 @@ export function AccountMenu() {
       }
       const { data: profile } = await supabase
         .from("profile")
-        // "*": works before and after the avatars migration (see features/profile/queries.ts).
-        .select("*")
+        .select(`avatar_path, ${NAME_COLUMNS}`)
         .eq("id", claims.sub)
         .maybeSingle();
       if (cancelled || request !== version) return;
       setAccount({
         status: "signedIn",
         isAnonymous: claims.is_anonymous === true,
-        nickname: profile?.nickname ?? "",
-        // An uploaded avatar wins over the Google picture.
-        avatarUrl: pickAvatar(
-          profile?.avatar_path,
-          googlePicture(claims.user_metadata),
-        ),
+        name: profile ? profileName(profile, locale) : "",
+        picture: profilePicture(profile, claims.user_metadata),
       });
     }
 
@@ -87,7 +89,7 @@ export function AccountMenu() {
       subscription.subscription.unsubscribe();
       stopListening();
     };
-  }, [router]);
+  }, [router, locale]);
 
   if (account.status === "loading") {
     return (
@@ -111,7 +113,7 @@ export function AccountMenu() {
     );
   }
 
-  const { isAnonymous, nickname, avatarUrl } = account;
+  const { isAnonymous, name, picture } = account;
 
   return (
     <>
@@ -122,8 +124,12 @@ export function AccountMenu() {
         aria-label={t("accountMenu")}
         className="flex h-9 items-center gap-2 rounded-full bg-ink/5 pr-3 pl-1 text-sm font-semibold hover:bg-ink/10"
       >
-        <Avatar nickname={nickname} avatarUrl={avatarUrl} />
-        <span className="hidden max-w-32 truncate sm:inline">{nickname}</span>
+        <ProfileAvatar
+          name={name}
+          picture={picture}
+          className="size-7 text-xs"
+        />
+        <span className="hidden max-w-32 truncate sm:inline">{name}</span>
       </button>
 
       <div
@@ -131,7 +137,7 @@ export function AccountMenu() {
         popover="auto"
         className="fixed inset-auto m-0 w-64 rounded-2xl bg-card p-3 text-sm shadow-xl ring-1 ring-ink/10"
       >
-        <p className="truncate px-2 font-bold">{nickname}</p>
+        <p className="truncate px-2 font-bold">{name}</p>
         <p className="px-2 pb-2 text-xs text-muted">
           {isAnonymous ? t("guestAccount") : t("googleAccount")}
         </p>
@@ -174,35 +180,6 @@ export function AccountMenu() {
         </button>
       </div>
     </>
-  );
-}
-
-function Avatar({
-  nickname,
-  avatarUrl,
-}: {
-  nickname: string;
-  avatarUrl: string | null;
-}) {
-  if (avatarUrl) {
-    // A plain img: Google avatar hosts are not worth adding to next/image remotePatterns.
-    return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={avatarUrl}
-        alt=""
-        referrerPolicy="no-referrer"
-        className="size-7 rounded-full object-cover"
-      />
-    );
-  }
-  return (
-    <span
-      aria-hidden
-      className="flex size-7 items-center justify-center rounded-full bg-dex-red text-xs font-black text-white"
-    >
-      {nickname.slice(0, 1).toUpperCase()}
-    </span>
   );
 }
 
