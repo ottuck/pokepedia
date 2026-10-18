@@ -99,7 +99,7 @@ export default async function LeaderboardPage() {
                           />
                         )}
                     </span>
-                    <span className="truncate">
+                    <span className="min-w-0 truncate">
                       {trainerName(
                         row.nickname,
                         row.adjective,
