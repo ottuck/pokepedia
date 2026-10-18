@@ -27,7 +27,8 @@ export default async function LeaderboardPage() {
     getTranslations("leaderboard"),
     getFormatter(),
     getLeaderboard(locale),
-    getPokedexList(),
+    // Only the icons need it: without the list the ranking still shows, names only.
+    getPokedexList().catch(() => []),
   ]);
   // Each player's profile Pokémon next to the name; uploaded pictures stay off the ranking.
   const artwork = new Map(pokedex.map((p) => [p.id, p.artwork_path]));
