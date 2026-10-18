@@ -23,9 +23,9 @@ export function RewardCard() {
   // A sticker the battle game can use: invite the player to battle with it. The run stays
   // active, so coming back to the game resumes it.
   const canBattle = BATTLE_PLAYABLE_IDS.includes(revealed.id);
-  // The first time: one gold button, so a new player's first sticker leads straight into the
-  // battle. Only players with no sticker of it get it as question 1 (service.ts), and isNew counts
-  // one variant only, so question 1 is what marks "first ever". Later clears keep both choices.
+  // The first time: the battle button leads (focused, a volt ring) and "next Pokémon" steps
+  // back to a plain secondary button. Only players with no sticker of it get it as question 1
+  // (service.ts), and isNew counts one variant only, so question 1 is what marks "first ever".
   // Battle links also advance(): the next round is installed only by advance(), so leaving
   // without it would bring the player back to this same reward on return.
   const firstBattle = canBattle && sticker.isNew && seq === 1;
@@ -110,56 +110,36 @@ export function RewardCard() {
           </span>
         </m.p>
 
-        {firstBattle ? (
-          <m.div
-            className="flex flex-col items-center gap-2"
+        {firstBattle && (
+          <m.p
+            className="rounded-full bg-card px-3 py-1 text-xs font-bold"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2 }}
           >
-            <p className="rounded-full bg-card px-3 py-1 text-xs font-bold">
-              {t("battleUnlocked", { name: revealed.name })}
-            </p>
-            <m.div
-              className="rounded-full bg-linear-to-br from-amber-200 via-amber-500 to-yellow-700 p-[3px] shadow-[0_0_28px_rgba(245,158,11,0.7)]"
-              animate={{ scale: [1, 1.06, 1] }}
-              transition={{
-                duration: 1.6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            >
-              <Link
-                href="/battle"
-                onClick={advance}
-                autoFocus
-                className="block rounded-full bg-linear-to-r from-amber-300 via-yellow-200 to-amber-400 px-7 py-2.5 font-black text-ink"
-              >
-                ⚔ {t("battle", { name: revealed.name })}
-              </Link>
-            </m.div>
-          </m.div>
-        ) : (
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {canBattle && (
-              <Link
-                href="/battle"
-                onClick={advance}
-                className="rounded-full bg-ink px-6 py-2 font-black text-surface shadow-lg"
-              >
-                {t("battle", { name: revealed.name })}
-              </Link>
-            )}
-            <button
-              type="button"
-              autoFocus
-              onClick={advance}
-              className="rounded-full bg-volt px-6 py-2 font-black text-ink shadow-lg"
-            >
-              {t("continue")}
-            </button>
-          </div>
+            {t("battleUnlocked", { name: revealed.name })}
+          </m.p>
         )}
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {canBattle && (
+            <Link
+              href="/battle"
+              onClick={advance}
+              autoFocus={firstBattle}
+              className={`rounded-full bg-ink px-6 py-2 font-black text-surface shadow-lg ${firstBattle ? "ring-2 ring-volt ring-offset-2 ring-offset-charcoal" : ""}`}
+            >
+              {t("battle", { name: revealed.name })}
+            </Link>
+          )}
+          <button
+            type="button"
+            autoFocus={!firstBattle}
+            onClick={advance}
+            className={`rounded-full px-6 py-2 font-black text-ink shadow-lg ${firstBattle ? "bg-card" : "bg-volt"}`}
+          >
+            {t("continue")}
+          </button>
+        </div>
       </div>
     </m.div>
   );
