@@ -15,16 +15,18 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `${t("title")} · Pokepedia`, description: t("subtitle") };
 }
 
-/** Medal colours appear only as the ring around a podium avatar. */
+/** Grid column per podium slot (1st in the middle), so a lone winner is still centred. */
+const PODIUM_PLACE = [
+  "col-start-2 row-start-1 pt-5 pb-6",
+  "col-start-1 row-start-1 pt-4 pb-4",
+  "col-start-3 row-start-1 pt-4 pb-4",
+];
+
+/** Medal colours appear only as the ring around a podium avatar; text stays in theme colours. */
 const MEDAL_RING: Record<number, string> = {
   1: "ring-volt",
   2: "ring-ink/25",
   3: "ring-[#c08457]",
-};
-const MEDAL_TEXT: Record<number, string> = {
-  1: "text-[#b8860b]",
-  2: "text-muted",
-  3: "text-[#a0663a]",
 };
 
 type Entry = NonNullable<Awaited<ReturnType<typeof getLeaderboard>>>[number];
@@ -102,11 +104,9 @@ export default async function LeaderboardPage() {
             {podium.map((entry, index) => (
               <li
                 key={index}
-                className={`flex min-w-0 flex-col items-center gap-1.5 rounded-2xl bg-card px-2 text-center ring-1 ring-ink/5 ${index === 0 ? "order-2 pt-5 pb-6" : index === 1 ? "order-1 pt-4 pb-4" : "order-3 pt-4 pb-4"}`}
+                className={`flex min-w-0 flex-col items-center gap-1.5 rounded-2xl bg-card px-2 text-center ring-1 ring-ink/5 ${PODIUM_PLACE[index]}`}
               >
-                <span
-                  className={`font-mono text-xs font-black tabular-nums ${MEDAL_TEXT[entry.rank] ?? "text-muted"}`}
-                >
+                <span className="font-mono text-xs font-black tabular-nums">
                   {entry.rank}
                 </span>
                 <Avatar
