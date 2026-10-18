@@ -11,7 +11,6 @@ import {
   flee,
   hintText,
   isCorrectAnswer,
-  nameMask,
   pickFirstPokemon,
   pickNextPokemon,
   resolveAnswer,
@@ -63,17 +62,17 @@ export function createQuizService({ repo, random, urls }: QuizServiceDeps) {
   ): Promise<RoundView> {
     const secret = known ?? (await repo.findRoundSecret(userId, round.id));
     if (!secret) throw new Error(`Round ${round.id} has no quiz data`);
-    const name = localizedName(
-      await repo.pokemonNames(secret.pokemonId),
-      locale,
-    );
+    const hint = round.hintUsed
+      ? hintText(
+          localizedName(await repo.pokemonNames(secret.pokemonId), locale),
+        )
+      : null;
     return {
       id: round.id,
       seq: round.seq,
       hp: round.hp,
       hintUsed: round.hintUsed,
-      mask: nameMask(name),
-      hint: round.hintUsed ? hintText(name) : null,
+      hint,
       silhouetteUrl: urls.silhouette(secret.silhouettePath),
     };
   }

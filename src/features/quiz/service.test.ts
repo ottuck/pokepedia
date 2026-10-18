@@ -211,7 +211,7 @@ async function start(userId = "ash") {
 }
 
 describe("startOrResume", () => {
-  it("starts a run whose round shows only a silhouette and a name mask", async () => {
+  it("starts a run whose round shows only a silhouette", async () => {
     const state = await start();
 
     expect(state.run).toMatchObject({
@@ -224,7 +224,6 @@ describe("startOrResume", () => {
       seq: 1,
       hp: 3,
       hintUsed: false,
-      mask: "???",
       hint: null,
       silhouetteUrl: "sil/sil-25.webp",
     });

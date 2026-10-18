@@ -39,6 +39,9 @@ const LEVEL_UP_DELAY_MS = (THROW_S + 0.6) * 1000;
 /** The trainer levels up with every Pokémon named in the run. */
 const START_LEVEL = 5;
 
+/** The wild Pokémon's name until it is revealed, as in the games; its length gives nothing away. */
+const UNKNOWN_NAME = "???";
+
 /**
  * The battle, laid out like a Game Boy battle screen: the wild Pokémon and its info box on
  * top, the trainer's back and the player's info box below, then the text and command boxes.
@@ -161,7 +164,7 @@ function EnemyInfo() {
   return (
     <div className={`${styles.info} ${styles.enemyInfo}`}>
       <p aria-live="polite" className={`${styles.name} tabular-nums`}>
-        {revealed?.name ?? round.hint ?? round.mask}
+        {revealed?.name ?? round.hint ?? UNKNOWN_NAME}
       </p>
       <span aria-hidden className={styles.level}>
         :L??
@@ -351,7 +354,6 @@ function MessageBox() {
   const t = useTranslations("quiz");
   const locale = useLocale();
   const phase = useQuizStore((s) => s.phase);
-  const round = useQuizStore((s) => s.round);
   const reward = useQuizStore((s) => s.reward);
   const skipped = useQuizStore((s) => s.skipped);
   const gameOver = useQuizStore((s) => s.gameOver);
@@ -406,7 +408,7 @@ function MessageBox() {
   if (phase === "intro")
     message = skipped
       ? t("message.skipped", { name: skipped.name })
-      : t("message.appeared", { name: round?.mask ?? "???" });
+      : t("message.appeared", { name: UNKNOWN_NAME });
   else if (phase === "hit")
     message = gameOver
       ? t("message.fainted", { name: gameOver.revealed.name })
