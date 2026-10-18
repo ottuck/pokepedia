@@ -1,8 +1,8 @@
 import type { ProfilePicture } from "../display";
 
 /**
- * A round profile picture: a photo fills the circle, a Pokémon sits on the Pokédex screen
- * blue, and without either the name's initial shows. Size and ring come from `className`.
+ * A round profile picture: a photo fills the circle, a Pokémon sits on a plain card-coloured
+ * disc with a hairline border, and without either the name's initial shows. Size and ring come from `className`.
  */
 export function ProfileAvatar({
   name,
@@ -23,7 +23,9 @@ export function ProfileAvatar({
   }
   const pokemon = picture.kind === "pokemon";
   return (
-    <span className={`${circle} ${pokemon ? "bg-dex-screen" : ""}`}>
+    <span
+      className={`${circle} ${pokemon ? "border border-ink/10 bg-card" : ""}`}
+    >
       {/* A plain img: Google picture hosts are not worth adding to next/image remotePatterns. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -31,7 +33,7 @@ export function ProfileAvatar({
         alt=""
         referrerPolicy="no-referrer"
         className={
-          pokemon ? "size-[85%] object-contain" : "size-full object-cover"
+          pokemon ? "size-[78%] object-contain" : "size-full object-cover"
         }
       />
     </span>
