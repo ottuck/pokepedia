@@ -138,8 +138,8 @@ test("다른 탭에서 로그아웃하면 마이페이지의 개인 기록이 �
   const signOutPage = await context.newPage();
   await signOutPage.goto("/ko/collection");
   await signOutPage.getByRole("button", { name: "계정 메뉴" }).click();
-  signOutPage.once("dialog", (dialog) => dialog.accept());
-  await signOutPage.getByRole("button", { name: "게스트 나가기" }).click();
+  await signOutPage.getByRole("button", { name: "로그아웃" }).click();
+  await signOutPage.getByRole("button", { name: "그래도 로그아웃" }).click();
   await expect(
     page.getByRole("button", { name: "Google로 로그인" }),
   ).toBeVisible();

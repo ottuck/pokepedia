@@ -86,8 +86,9 @@
     "googleAccount": "Google account",
     "guestNotice": "Guest progress lives only in this browser. Save it to Google to keep playing on any device.",
     "saveWithGoogle": "Save to Google account",
-    "guestSignOutWarning": "Guest progress can’t be recovered after you leave. Leave anyway?",
-    "leaveGuest": "Leave guest mode",
+    "guestSignOutTitle": "This is a guest account",
+    "guestSignOutWarning": "Once you sign out, you can’t get back into it, and your stickers and scores are lost. Save to Google first to keep them.",
+    "signOutAnyway": "Sign out anyway",
     "signOut": "Sign out",
     "errors": {
       "title": "Couldn’t sign you in",
