@@ -6,17 +6,19 @@ import { announceAccountChange } from "@/features/auth/account-events";
 import { createClient } from "@/lib/supabase/browser";
 import { setAvatar, type AvatarResult } from "../actions";
 import { AVATAR_BUCKET, newAvatarPath } from "../avatar";
+import type { ProfilePicture } from "../display";
 import {
   AvatarImageFailure,
   toAvatarImage,
   type AvatarImageError,
 } from "../resize";
+import { ProfileAvatar } from "./profile-avatar";
 
 type Props = {
   userId: string;
-  nickname: string;
-  /** What is shown now: the uploaded avatar, else the Google picture, else null. */
-  pictureUrl: string | null;
+  name: string;
+  /** What is shown now: the uploaded avatar, else the Google picture, else the Pokémon. */
+  picture: ProfilePicture | null;
   /** Whether an uploaded avatar exists (the reset button removes only that). */
   hasUpload: boolean;
   isGuest: boolean;
@@ -34,8 +36,8 @@ type Failure =
  */
 export function AvatarEditor({
   userId,
-  nickname,
-  pictureUrl,
+  name,
+  picture,
   hasUpload,
   isGuest,
 }: Props) {
@@ -75,19 +77,11 @@ export function AvatarEditor({
 
   return (
     <div className="flex items-center gap-4">
-      <span className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-dex-red text-3xl font-black text-white ring-4 ring-card">
-        {pictureUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element -- Google pictures are not in next/image remotePatterns
-          <img
-            src={pictureUrl}
-            alt=""
-            referrerPolicy="no-referrer"
-            className="size-full object-cover"
-          />
-        ) : (
-          <span aria-hidden>{nickname.slice(0, 1).toUpperCase()}</span>
-        )}
-      </span>
+      <ProfileAvatar
+        name={name}
+        picture={picture}
+        className="size-20 text-3xl ring-4 ring-card"
+      />
 
       {isGuest ? (
         <p className="text-sm text-muted">{t("googleOnly")}</p>

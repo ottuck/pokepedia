@@ -22,7 +22,7 @@ export default async function MyPage() {
     getTranslations("me"),
     getFormatter(),
     getPokedexList(),
-    getMyPage(),
+    getLocale().then(getMyPage),
   ]);
 
   if (!me) {
@@ -67,10 +67,10 @@ export default async function MyPage() {
       <header className="flex flex-col gap-4">
         <AvatarEditor
           // Remount after a change so the picture and buttons follow the new profile.
-          key={me.avatar.url ?? "none"}
+          key={me.avatar.picture?.url ?? "none"}
           userId={me.userId}
-          nickname={me.nickname}
-          pictureUrl={me.avatar.url}
+          name={me.name}
+          picture={me.avatar.picture}
           hasUpload={me.avatar.hasUpload}
           isGuest={me.isAnonymous}
         />
@@ -79,7 +79,7 @@ export default async function MyPage() {
             {me.isAnonymous ? t("guestAccount") : t("googleAccount")}
           </p>
           {/* Keyed so a saved nickname resets the form to its read-only state. */}
-          <NicknameForm key={me.nickname} nickname={me.nickname} />
+          <NicknameForm key={me.name} nickname={me.name} />
         </div>
       </header>
 

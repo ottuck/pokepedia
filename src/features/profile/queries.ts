@@ -1,7 +1,8 @@
 import "server-only";
+import type { Locale } from "next-intl";
 import { createClient } from "@/lib/supabase/server";
 import { summarizeCollection } from "@/features/collection/summary";
-import { googlePicture, pickAvatar } from "./avatar";
+import { NAME_COLUMNS, profileName, profilePicture } from "./display";
 import { clearRate } from "./stats";
 
 const RECENT_RUNS = 5;
@@ -11,7 +12,7 @@ const RECENT_STICKERS = 8;
  * Everything the my page shows, read with the player's own session so RLS scopes every row
  * (active rounds stay hidden, see the quiz migration). Null when there is no session yet.
  */
-export async function getMyPage() {
+export async function getMyPage(locale: Locale) {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const claims = data?.claims;
@@ -45,9 +46,7 @@ export async function getMyPage() {
   ] = await Promise.all([
     supabase
       .from("profile")
-      // "*" rather than naming avatar_path: right after a deploy the code can run before the
-      // avatars migration, and naming a missing column would fail the whole page.
-      .select("*")
+      .select(`avatar_path, ${NAME_COLUMNS}`)
       .eq("id", userId)
       .maybeSingle(),
     supabase
@@ -94,12 +93,9 @@ export async function getMyPage() {
 
   return {
     userId,
-    nickname: profile.data?.nickname ?? "",
+    name: profile.data ? profileName(profile.data, locale) : "",
     avatar: {
-      url: pickAvatar(
-        profile.data?.avatar_path,
-        googlePicture(claims.user_metadata),
-      ),
+      picture: profilePicture(profile.data, claims.user_metadata),
       hasUpload: Boolean(profile.data?.avatar_path),
     },
     isAnonymous: claims.is_anonymous === true,
