@@ -9,8 +9,6 @@ and a sticker book that fills up every time you get one right.
 
 ### [Play at pokepedia.dev →](https://pokepedia.dev)
 
-**English** · [한국어](README.ko.md) · [日本語](README.ja.md)
-
 <br/>
 
 <img src="docs/images/en/battle.png" width="640" alt="Game Boy–style battle: a Pokémon silhouette, the trainer's back and the command box" />
@@ -23,7 +21,7 @@ A silhouette appears. Name it (in English, Korean or Japanese) and it's yours as
 Miss three times and the run is over.
 
 This is a remake of [PikapediaProject](https://github.com/ottuck/PikapediaProject), a JSP-only app
-from back when I was first learning to code. I rebuilt it from scratch on a current stack, mostly
+from back when I was first learning to code. I rebuilt it from scratch on a modern stack, mostly
 because it was fun.
 
 ## The game
@@ -38,7 +36,7 @@ because it was fun.
 - **Fight** to answer, **Hint** for half the name, **Skip** to move on, **Run** to call it a day. Arrow keys and Z work too.
 - Wrong answers cost HP. A streak raises the score multiplier and the odds of a shiny sticker.
 - Pikachu, 피카츄 or ピカチュウ: any of the three names counts.
-- No sign-up. You start as a guest, and linking Google later keeps everything you've collected.
+- No sign-up. You start as a guest, and linking a Google account later keeps everything you've collected.
 
 ## The Pokédex
 
@@ -51,14 +49,14 @@ because it was fun.
 
 <img src="docs/images/en/detail.png" alt="Charizard's detail page with a holographic card" />
 
-- All 151 on one page. Search by name in any of the three languages or by number; the type filter and sort live in the URL.
-- Stats, abilities and the evolution line for each one. The artwork is a holographic card that tilts with your cursor (or finger), and flips to the shiny version with one tap.
+- All 151 on one page. Search by name in any of the three languages or by number. Type filters and sort order are kept in the URL.
+- Each one has stats, abilities and its evolution line. The artwork is a holographic card that tilts with your cursor (or finger), and flips to its shiny version with a tap.
 
 ## The sticker book
 
 <img src="docs/images/en/collection.png" alt="The sticker collection with two shiny stickers" />
 
-151 slots to fill, shiny ones included, plus a leaderboard of everyone's best run.
+151 slots to fill, shinies included, plus a leaderboard of everyone's best runs.
 
 ## Under the hood
 
@@ -75,27 +73,11 @@ flowchart LR
   Sync --> DB & Storage
 ```
 
-- Pokémon data and artwork are pulled from PokeAPI once and kept in Supabase; nothing calls an outside API at runtime.
+- Pokémon data and artwork are pulled from PokeAPI once and stored in Supabase; nothing calls an outside API at runtime.
 - The dex and all detail pages (151 × 3 languages) are prerendered at build time.
-- The server judges every answer, so the answer never reaches the browser.
+- Answers are checked on the server, so the correct name never reaches the browser.
 
-The longer story (schema, game rules, how guests merge into Google accounts, what's tested and why) is in the [design notes](docs/system_design.md) (Korean).
-
-## Running it locally
-
-You need Node 24, pnpm and Docker.
-
-```bash
-pnpm install
-pnpm supabase start            # local Postgres, Auth, Storage (Docker)
-cp .env.example .env.local     # values from `pnpm supabase status -o env`
-pnpm sync:pokemon              # PokeAPI → local DB and Storage (once; otherwise only the 3 seed Pokémon)
-pnpm dev
-```
-
-- `pnpm check`: lint · typecheck · format · unit tests
-- `pnpm test:db`: RLS and RPC tests on the local Supabase
-- `pnpm test:e2e`: 로컬 Supabase를 사용하는 필수 브라우저 시나리오 6개. CI에서는 실행하지 않고, 게임·인증 변경 및 배포 전에 수동 실행한다.
+The longer story (schema, game rules, how guests merge into Google accounts, what's tested and why) is in the [design notes](docs/system_design.md) (in Korean).
 
 ---
 
