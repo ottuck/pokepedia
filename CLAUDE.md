@@ -96,6 +96,10 @@ before structural changes. `README.md` is the public-facing overview.
   before opening a PR also `pnpm build`.
 - Never commit secrets (.env*, secret keys, SILHOUETTE_SECRET, wallets).
 - Dependent work: branch from the unmerged branch and note "Depends on #N" in the PR.
+- Remove a worktree with `git worktree remove` (and its local branch) as soon as its work is merged or
+  abandoned. At the start of a session run `git worktree list` and remove any that have no changes and a
+  merged PR. If one has uncommitted changes or unmerged commits, leave it and tell the user (each worktree
+  installs its own dependencies and takes hundreds of MB).
 - Git text (commit messages, PR title/body) in natural Korean; branch names and technical terms
   stay English.
 - Every PR: assignee `ottuck`, one type label (`enhancement`, `bug`, `documentation`, `chore`,
