@@ -77,7 +77,7 @@ flowchart LR
 - The dex and all detail pages (151 × 3 languages) are prerendered at build time.
 - Answers are checked on the server, so the correct name never reaches the browser.
 
-The longer story (schema, game rules, how guests merge into Google accounts, what's tested and why) is in the [design notes](docs/system_design.md) (in Korean).
+The longer story (schema, game rules, how guests merge into Google accounts, what's tested and why) is in the [design notes](docs/system_design.md).
 
 ---
 
