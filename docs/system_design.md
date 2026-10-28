@@ -1,218 +1,218 @@
 # Pokepedia System Design
 
-Pokepedia의 구조와 규칙 중 코드만 봐서는 알기 어려운 것만 모은 문서다. 구조를 바꾸는 변경은 이 문서를 먼저 고친다.
-소개와 실행 방법은 [README](../README.md)에 있다. 화면에서는 "게임"이라고 부르지만 코드는 `quiz`(`features/quiz`)를 쓴다.
+This document collects only the parts of Pokepedia's structure and rules that are hard to see from the code alone. Changes to the structure update this document first.
+The introduction and how to run the project are in the [README](../README.md). The UI calls it the "game", but the code uses `quiz` (`features/quiz`).
 
-- [1. 전체 구조](#1-전체-구조)
-- [2. 데이터](#2-데이터)
-- [3. DB와 권한](#3-db와-권한)
-- [4. 렌더링과 i18n](#4-렌더링과-i18n)
-- [5. 게임](#5-게임)
-- [6. 계정](#6-계정)
-- [7. 개발과 배포](#7-개발과-배포)
-- [8. 테스트](#8-테스트)
+- [1. Architecture](#1-architecture)
+- [2. Data](#2-data)
+- [3. Database and permissions](#3-database-and-permissions)
+- [4. Rendering and i18n](#4-rendering-and-i18n)
+- [5. Game](#5-game)
+- [6. Accounts](#6-accounts)
+- [7. Development and deployment](#7-development-and-deployment)
+- [8. Testing](#8-testing)
 
-## 1. 전체 구조
+## 1. Architecture
 
 ```mermaid
 flowchart LR
-  UI["브라우저<br/>RSC 페이지 + client island"]
-  subgraph Vercel["Vercel · hnd1 도쿄"]
-    Pages[페이지 렌더링]
-    Actions[Server Actions<br/>게임 · 프로필 · 병합]
+  UI["Browser<br/>RSC pages + client islands"]
+  subgraph Vercel["Vercel · hnd1 Tokyo"]
+    Pages[Page rendering]
+    Actions[Server Actions<br/>game · profile · merge]
   end
-  subgraph Supabase["Supabase · 도쿄"]
-    Auth[Auth<br/>익명 · Google]
+  subgraph Supabase["Supabase · Tokyo"]
+    Auth[Auth<br/>anonymous · Google]
     DB[(Postgres<br/>RLS · RPC · pg_cron)]
-    Storage[(Storage<br/>아트워크 · 실루엣 · 아바타)]
+    Storage[(Storage<br/>artwork · silhouettes · avatars)]
   end
-  PokeAPI[(PokeAPI)] --> Sync[scripts/sync-pokemon<br/>수동 실행]
+  PokeAPI[(PokeAPI)] --> Sync[scripts/sync-pokemon<br/>run by hand]
   Sync --> DB & Storage
   UI --> Pages -- publishable key --> DB
   UI --> Actions -- secret key · RPC --> DB
   UI -- publishable key · RLS --> DB
   UI --> Auth
-  UI -- 이미지 --> Storage
-  UI -- "iframe · postMessage" --> Battle["battle.pokepedia.dev<br/>Unity 배틀 게임 (Cloudflare Pages)"]
+  UI -- images --> Storage
+  UI -- "iframe · postMessage" --> Battle["battle.pokepedia.dev<br/>Unity battle game (Cloudflare Pages)"]
 ```
 
-| 영역   | 결정                                                                                      |
-| ------ | ----------------------------------------------------------------------------------------- |
-| 범위   | 1세대 #001–151. 타입은 현재 공식 기준(피피 = 페어리). 진화는 1세대 안에서 자른다          |
-| 데이터 | PokeAPI는 동기화 스크립트에서만 쓴다. 런타임에는 외부 API를 부르지 않는다                 |
-| 쓰기   | 브라우저는 RLS가 허용한 것만 읽고, 게임 상태를 바꾸는 쓰기는 Server Action → RPC로만 한다 |
-| 상태   | 서버 데이터는 RSC, 클라이언트 상태(Zustand)는 게임 화면만                                 |
-| 지역   | Vercel 함수(`vercel.json`의 `hnd1`)와 Supabase를 같은 도쿄에 둔다(아래)                   |
-| 제외   | TanStack Query, Drizzle, GSAP. 구체적인 문제가 생기면 그때 검토                           |
+| Area     | Decision                                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Scope    | Generation 1, #001–151. Types follow the current official data (Clefairy = Fairy). Evolutions are cut off at Generation 1 |
+| Data     | PokeAPI is used only by the sync script. Nothing calls an outside API at runtime                                          |
+| Writes   | The browser reads only what RLS allows; writes that change game state go only through Server Action → RPC                 |
+| State    | Server data lives in RSC; client state (Zustand) only on the game screen                                                  |
+| Region   | Vercel functions (`hnd1` in `vercel.json`) and Supabase both sit in Tokyo (below)                                         |
+| Excluded | TanStack Query, Drizzle, GSAP. Reconsider when a concrete problem appears                                                 |
 
-**지역**: Vercel 함수 기본값인 워싱턴(`iad1`)에서는 도쿄 DB까지 쿼리마다 약 170ms가 걸려, 답변 한 번에 1.6–2.5초가 걸렸다. 함수를 도쿄로 옮기고 순차 DB 왕복을 8번에서 3번으로 줄여 약 0.25초가 됐다. DB 지역을 옮기면 `vercel.json`도 같이 바꾼다.
+**Region**: from Washington (`iad1`), the Vercel function default, every query to the Tokyo database took about 170 ms, and a single answer took 1.6–2.5 s. Moving the functions to Tokyo and cutting sequential database round trips from 8 to 3 brought it to about 0.25 s. If the database region moves, change `vercel.json` with it.
 
-**환경**: Supabase는 remote 프로젝트 하나(`pokepedia`)를 Vercel Production과 Preview가 같이 쓴다. Preview에서 게임을 하면 실제 데이터가 된다. PR별 Supabase Branching은 유료라 쓰지 않고, DB 변경은 CI와 로컬 Supabase(`pnpm supabase start`)에서 검증한다. 프로덕션 도메인은 `pokepedia.dev`다.
+**Environments**: one remote Supabase project (`pokepedia`) serves both Vercel Production and Preview. Playing the game on a Preview creates real data. Per-PR Supabase Branching is a paid feature and is not used; database changes are verified in CI and on local Supabase (`pnpm supabase start`). The production domain is `pokepedia.dev`.
 
-## 2. 데이터
+## 2. Data
 
 ```
-pnpm sync:pokemon  (로컬에서 수동 실행, idempotent)
-  ① PokeAPI에서 1–151 species / pokemon / evolution-chain / ability 조회 (.cache/에 원본 캐시)
-  ② Zod로 검증 → DB row로 변환
-  ③ sharp: 아트워크 webp(normal, shiny) + 검은 실루엣 webp
-  ④ Storage 업로드 + RPC sync_pokemon_catalog 한 번으로 DB 반영
+pnpm sync:pokemon  (run by hand locally, idempotent)
+  ① Fetch species / pokemon / evolution-chain / ability for 1–151 from PokeAPI (raw responses cached in .cache/)
+  ② Validate with Zod → convert to DB rows
+  ③ sharp: artwork webp (normal, shiny) + black silhouette webp
+  ④ Upload to Storage + apply to the DB with a single RPC sync_pokemon_catalog
 ```
 
-- 기본 대상은 로컬(`.env.local`)이다. remote는 `--env-file .env.remote.local --yes`를 줘야만 실행되고, 사용자가 요청할 때만 돌린다.
-- 도감은 빌드 때 prerender되므로 remote 동기화 결과는 다음 배포 뒤에 보인다.
-- 실루엣 파일명은 `HMAC-SHA256(SILHOUETTE_SECRET, id)` 앞 16자리다. 파일명으로 정답을 바로 알 수 없게 하는 정도의 방어다.
-- 정답 키는 게임 채점과 같은 `features/quiz/normalize.ts`로 만든다.
-- 버킷: `pokemon-artwork`, `quiz-silhouette`(둘 다 public, 쓰기는 secret key만), `avatars`(§6).
-- `supabase/seed.sql`은 로컬·CI용 3마리 카탈로그다(이미지 없음). production에는 적용하지 않는다.
+- The default target is local (`.env.local`). Remote runs only with `--env-file .env.remote.local --yes`, and only when the user asks for it.
+- The dex is prerendered at build time, so the result of a remote sync shows only after the next deployment.
+- A silhouette file name is the first 16 characters of `HMAC-SHA256(SILHOUETTE_SECRET, id)`. It is only enough to keep the answer from being read straight off the file name.
+- Answer keys are built with `features/quiz/normalize.ts`, the same code that grades the game.
+- Buckets: `pokemon-artwork`, `quiz-silhouette` (both public, writable only with the secret key), `avatars` (§6).
+- `supabase/seed.sql` is a 3-Pokémon catalog for local and CI (no images). It is never applied to production.
 
-## 3. DB와 권한
+## 3. Database and permissions
 
 ```sql
--- 도감 (public read)
-pokemon (id 1–151, name/genus/description × ko·en·ja, type_1, type_2, 키·몸무게, 능력치 6종,
+-- Pokédex (public read)
+pokemon (id 1–151, name/genus/description × ko·en·ja, type_1, type_2, height·weight, 6 base stats,
          evolves_from_id, evolution jsonb, artwork_path, shiny_artwork_path, is_legendary, is_mythical)
 ability, pokemon_ability
 
--- 게임 비밀 데이터: Data API에 노출하지 않는 private 스키마
+-- Game secrets: a private schema not exposed through the Data API
 private.pokemon_quiz (pokemon_id, silhouette_path, answer_keys text[])
 
--- 사용자
-profile      (id → auth.users, nickname 2–20자, avatar_path,
-              nickname_adjective_id, avatar_pokemon_id)            -- 가입 trigger가 생성
-nickname_adjective (id, name_ko/en/ja)                              -- 생성 이름의 형용사(공개)
+-- Users
+profile      (id → auth.users, nickname 2–20 chars, avatar_path,
+              nickname_adjective_id, avatar_pokemon_id)            -- created by a sign-up trigger
+nickname_adjective (id, name_ko/en/ja)                              -- adjective of the generated name (public)
 quiz_run     (user_id, status, end_reason fainted|fled, score, combo, best_combo, skips_left …)
 quiz_round   (run_id, seq, pokemon_id, status active|cleared|failed|skipped, hp, hint_used, version …)
 user_sticker (user_id, pokemon_id, variant normal|shiny, quantity)
 private.guest_merge_ticket (token_hash, from_user_id, expires_at, consumed_at)
 ```
 
-- 진행 중 run과 round는 사용자당 하나다(partial unique index).
-- 스티커 = 포켓몬 × variant라 스티커 테이블을 따로 두지 않는다. 결과와 최근 획득은 `quiz_round`에서 읽는다.
+- Each user has at most one run and one round in progress (partial unique index).
+- A sticker is Pokémon × variant, so there is no separate sticker table. Results and recent rewards are read from `quiz_round`.
 
-**권한**: publishable key는 공개돼 있으므로, `anon`/`authenticated`에 허용한 것은 누구나 브라우저에서 직접 호출할 수 있다고 본다.
+**Permissions**: the publishable key is public, so anything granted to `anon`/`authenticated` is treated as callable by anyone directly from a browser.
 
-| 대상                                           | anon / authenticated                                |
-| ---------------------------------------------- | --------------------------------------------------- |
-| `pokemon`, `ability`, `pokemon_ability`        | SELECT                                              |
-| `private.*`                                    | 없음                                                |
-| `profile`                                      | 본인 SELECT, `nickname` 컬럼만 UPDATE               |
-| `quiz_run`, `user_sticker`                     | 본인 SELECT                                         |
-| `quiz_round`                                   | 본인 SELECT, 끝난 round만(진행 중 문제는 숨김)      |
-| 게임·병합·정리 RPC                             | 없음(secret key를 쓰는 서버만)                      |
-| `leaderboard(_entries)`, `my_leaderboard_rank` | EXECUTE(이름·점수·콤보만 돌려주는 유일한 공개 창구) |
-| `nickname_adjective`                           | 누구나 SELECT                                       |
-| storage `avatars`                              | Google 계정 본인 폴더만 INSERT/DELETE               |
+| Target                                         | anon / authenticated                                                      |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| `pokemon`, `ability`, `pokemon_ability`        | SELECT                                                                    |
+| `private.*`                                    | None                                                                      |
+| `profile`                                      | SELECT own row, UPDATE of the `nickname` column only                      |
+| `quiz_run`, `user_sticker`                     | SELECT own rows                                                           |
+| `quiz_round`                                   | SELECT own rows, finished rounds only (the current question stays hidden) |
+| Game, merge and cleanup RPCs                   | None (only the server, using the secret key)                              |
+| `leaderboard(_entries)`, `my_leaderboard_rank` | EXECUTE (the only public window: returns just name, score and combo)      |
+| `nickname_adjective`                           | SELECT for everyone                                                       |
+| storage `avatars`                              | INSERT/DELETE only in the user's own folder, Google accounts only         |
 
-- 새 테이블에는 기본 권한이 없다(`api.auto_expose_new_tables = false`). migration마다 필요한 GRANT만 연다.
-- 방어 계층: `proxy.ts`(세션 갱신·locale) → Server Action / RSC(`getClaims()`로 사용자 확인) → RLS(최종 방어선).
+- New tables get no privileges by default (`api.auto_expose_new_tables = false`). Each migration grants only what is needed.
+- Layers of defense: `proxy.ts` (session refresh, locale) → Server Action / RSC (user checked with `getClaims()`) → RLS (the last line of defense).
 
-## 4. 렌더링과 i18n
+## 4. Rendering and i18n
 
-| Route                                  | 렌더링      | 클라이언트 부분                     |
-| -------------------------------------- | ----------- | ----------------------------------- |
-| `/[locale]` (홈)                       | 정적 셸     | `QuizGame` 전체                     |
-| `/[locale]/pokedex`                    | 정적        | `PokedexExplorer`: 필터·검색·정렬   |
-| `/[locale]/pokemon/[id]`               | SSG 151 × 3 | 홀로그램 카드, "내 스티커" 배지     |
-| `/[locale]/leaderboard`                | ISR 60초    | "내 순위"                           |
-| `/[locale]/collection`, `/[locale]/me` | 동적        | 필터, 카드 연출, 닉네임·아바타 편집 |
-| `/[locale]/battle`                     | 동적        | `BattleFrame`: Unity 게임 iframe    |
+| Route                                  | Rendering    | Client parts                                 |
+| -------------------------------------- | ------------ | -------------------------------------------- |
+| `/[locale]` (home)                     | Static shell | All of `QuizGame`                            |
+| `/[locale]/pokedex`                    | Static       | `PokedexExplorer`: filter, search, sort      |
+| `/[locale]/pokemon/[id]`               | SSG 151 × 3  | Holographic card, "My stickers" badge        |
+| `/[locale]/leaderboard`                | ISR 60 s     | "My rank"                                    |
+| `/[locale]/collection`, `/[locale]/me` | Dynamic      | Filters, card effects, nickname/avatar edits |
+| `/[locale]/battle`                     | Dynamic      | `BattleFrame`: Unity game iframe             |
 
-- 첫 화면은 게임 타이틀이다. 도감은 `/pokedex`로 옮겼고, 예전 주소는 `next.config.ts`의 redirects가 받는다(`/[locale]/quiz` → `/[locale]`, 필터가 붙은 `/[locale]?type=…` → `/[locale]/pokedex`).
-- 도감·상세는 cookie 없는 client(`lib/supabase/public.ts`)로 읽어 빌드 때 만든다. `dynamicParams = false`라 목록 밖 id는 DB 조회 없이 404다.
-- 화면은 모바일 퍼스트다. 넓은 화면에서도 모든 페이지·헤더·푸터가 같은 좁은 단(`max-w-page`, 42rem)을 가운데에 쓴다. 단은 위에서 아래까지 이어진 카드(바탕색 + 은은한 그림자)이고, 넓은 화면의 바깥은 한 톤 짙은 `--backdrop`이라 앱 화면을 가운데 띄운 것처럼 보인다(휴대폰에서는 단이 꽉 차 보이지 않는다). 페이지마다 폭이 달라 보이던 문제를 없애고, 휴대폰 사용자가 많아서다. 헤더는 어느 화면에서나 로고·언어·계정 한 줄 + 메뉴 탭 바(게임 → 배틀 → 도감 → 컬렉션 → 랭킹)이고, 언어는 지구본 + 코드 버튼을 누르면 목록이 열린다(국기는 쓰지 않는다: 언어 ≠ 나라, Windows는 국기 이모지를 글자로 보여 준다). 헤더 팝오버는 버튼 바로 아래에 붙인다(`components/anchored-popover.ts`). 게임 기기와 배틀 기기도 이 단의 폭으로 같고, 배틀 화면은 정수 배율 크기로 그 안 가운데에 놓인다.
-- 헤더 계정 메뉴와 "내 스티커" 배지는 브라우저에서 세션과 RLS로 읽는다. layout에서 cookie를 읽으면 모든 정적 페이지가 동적으로 바뀌기 때문이다.
-- 도감과 컬렉션은 서버가 카드를 렌더링해 prop으로 넘기고, 클라이언트는 어떤 카드를 어떤 순서로 보일지만 정한다. 필터 상태는 URL(`?q=&type=&sort=`)과 동기화한다.
-- OG 이미지는 사이트 기본 + 포켓몬별(151 × 3)로 빌드 때 만든다.
-- i18n: next-intl, `ko`(기본)·`en`·`ja`, URL에 항상 locale이 붙는다. UI 문구는 `messages/*.json`에만 있고, 서버는 `code`만 돌려준다. 언어별 키가 같은지 테스트한다.
+- The first screen is the game's title screen. The dex moved to `/pokedex`, and the redirects in `next.config.ts` catch the old addresses (`/[locale]/quiz` → `/[locale]`, and `/[locale]?type=…` with filters → `/[locale]/pokedex`).
+- The dex and detail pages are read with a cookie-less client (`lib/supabase/public.ts`) and built at build time. With `dynamicParams = false`, ids outside the list return 404 without a database query.
+- The UI is mobile-first. Even on wide screens, every page, the header and the footer share the same narrow, centered column (`max-w-page`, 42rem). The column is a card running from top to bottom (background color + a soft shadow), and on wide screens the area outside it is `--backdrop`, one shade darker, so the app looks like a screen floating in the middle (on a phone the column fills the width and this does not show). This removes the varying widths pages used to have, and most users are on phones. On every screen the header is one row of logo, language and account plus a menu tab bar (Game → Battle → Pokédex → Collection → Ranking). The language picker opens a list from a globe + code button (no flags: a language is not a country, and Windows renders flag emoji as letters). Header popovers attach directly below their button (`components/anchored-popover.ts`). The game device and the battle device are the width of this column too, and the battle screen sits centered inside it at an integer scale.
+- The header account menu and the "My stickers" badge are read in the browser with the session and RLS, because reading cookies in the layout would turn every static page dynamic.
+- On the dex and the collection, the server renders the cards and passes them as props; the client only decides which cards to show and in what order. Filter state is synced with the URL (`?q=&type=&sort=`).
+- OG images (a site default + one per Pokémon, 151 × 3) are generated at build time.
+- i18n: next-intl with `ko` (default), `en` and `ja`; the URL always carries the locale. UI copy lives only in `messages/*.json`, and the server returns only a `code`. A test checks that every language has the same keys.
 
-## 5. 게임
+## 5. Game
 
-**규칙** (`features/quiz/rules.ts`의 상수와 순수 함수)
+**Rules** (constants and pure functions in `features/quiz/rules.ts`)
 
 ```
 Run   : score, combo, skips_left = 3
-Round : hp = 3, 힌트 1회
+Round : hp = 3, one hint
 
-싸우다(정답)  → 점수 + 스티커 → 다음 round
-싸우다(오답)  → hp −1, combo = 0.  hp 0이면 정답 공개 후 run 종료(fainted)
-힌트          → 이름 앞 절반 공개, combo = 0, 이번 round 점수 ×0.5
-넘기기(스킵)  → skips_left −1, combo = 0, 점수·스티커 없음
-도망치다      → run 종료(fled)
+Fight (correct) → points + sticker → next round
+Fight (wrong)   → hp −1, combo = 0. At hp 0 the answer is revealed and the run ends (fainted)
+Hint            → reveals the first half of the name, combo = 0, this round's points ×0.5
+Skip            → skips_left −1, combo = 0, no points or sticker
+Run away        → the run ends (fled)
 ```
 
-- 점수: `base[hp] × 힌트 배율 × 콤보 배율`. `base = {3: 100, 2: 60, 1: 30}`, 콤보 배율은 최대 ×2.0.
-- 색이 다른 스티커 확률: 콤보 1–4 → 5%, 5–9 → 10%, 10 이상 → 20%. 힌트를 쓴 round는 5%.
-- 한 글자 이름(뮤)은 힌트로 아무것도 공개하지 않는다.
-- 정답은 세 언어 이름을 모두 받는다. 입력과 정답 키를 같은 규칙으로 정규화한다(대소문자, 전각/반각, 히라가나→가타카나, 공백·기호 제거).
-- 다음 포켓몬은 이번 run에서 안 나온 것 중에서 서버 CSPRNG로 고른다.
-- **첫 포켓몬**: 피카츄 띠부씰(일반·색이 다른 무엇이든)이 없는 플레이어는 새 run의 첫 문제가 피카츄다. 맞히면 그 띠부씰로 배틀할 수 있어서(아래 배틀), 획득 화면에 "내 피카츄로 배틀" 버튼을 둔다. 처음 얻을 때는 첫 경험을 배틀로 잇기 위해 금빛 테두리 버튼 하나만 보여 주고(진행 중인 run은 남아 돌아오면 이어서 한다), 다시 얻을 때는 "다음 포켓몬"과 함께 둔다. 따로 저장하는 값 없이 `user_sticker`로 판단하므로 기기가 바뀌어도 같고 조작할 수 없다. 이 조회는 run을 새로 만들 때만 카탈로그 조회와 함께 하므로 순차 왕복이 늘지 않는다.
+- Points: `base[hp] × hint multiplier × combo multiplier`. `base = {3: 100, 2: 60, 1: 30}`; the combo multiplier caps at ×2.0.
+- Shiny sticker odds: combo 1–4 → 5%, 5–9 → 10%, 10 or more → 20%. A round that used the hint → 5%.
+- One-character names (Mew in Korean) reveal nothing with the hint.
+- Names in all three languages are accepted. Input and answer keys are normalized by the same rules (case, full-width/half-width, hiragana → katakana, spaces and symbols removed).
+- The next Pokémon is chosen by a server-side CSPRNG from those not yet shown in this run.
+- **First Pokémon**: a player without a Pikachu sticker (normal or shiny) gets Pikachu as the first question of a new run. Answering it unlocks battling with that sticker (see Battle below), so the reward screen has a "Battle with my Pikachu" button. The first time, to lead the first experience into a battle, only that one gold-bordered button is shown (the run in progress stays, and resumes on return); on later rewards it sits next to "Next Pokémon". This is decided from `user_sticker` with no extra stored value, so it is the same on every device and cannot be tampered with. The lookup happens only when a new run is created, together with the catalog query, so it adds no sequential round trip.
 
-**API** (`features/quiz/actions.ts`): `startQuiz`, `submitAnswer`, `requestHint`, `skipQuizRound`, `fleeQuiz`. 입력은 Zod로 검증하고, 사용자는 항상 세션에서 정한다. 세션이 없으면 `startQuiz`가 익명 로그인한다.
+**API** (`features/quiz/actions.ts`): `startQuiz`, `submitAnswer`, `requestHint`, `skipQuizRound`, `fleeQuiz`. Input is validated with Zod, and the user always comes from the session. Without a session, `startQuiz` signs in anonymously.
 
-- **판단은 TS, 커밋은 SQL**: `service.ts`가 신뢰할 수 있는 상태를 읽고 `rules.ts`로 결과를 계산한다. 반영은 RPC `quiz_commit` 하나가 한 트랜잭션으로 한다(round 갱신 → run 갱신 → 스티커 → 다음 round). `version` 낙관적 잠금으로 같은 답을 두 번 보내도 한 번만 반영된다.
-- 진행 중 run과 round는 한 SQL 조회의 같은 스냅샷에서 읽는다. 다른 탭의 정답 제출과 도망치기가 겹쳐도 이전 점수가 새 round의 버전과 섞여 저장되지 않고, 변경된 round는 충돌로 처리한다.
-- **정답 비노출**: 브라우저로 가는 round에는 포켓몬 id와 이름이 없다. 실루엣 파일명과 이름 마스크뿐이고, 진행 중 round는 RLS로도 숨긴다.
-- **DB 왕복**: 정답 한 번에 순차 왕복 3번, 오답·힌트는 2번(§1 지역). 테스트로 늘지 않게 지킨다.
-- **화면**: Zustand `useQuizStore`가 액션을 호출하고, phase(`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`)는 서버 결과를 어떤 순서로 연출할지만 정한다. 새로고침하면 로비로 돌아오고, 시작하면 진행 중 run을 이어한다. 이름을 입력하는 중에도 다른 명령을 누를 수 있다(입력창이 닫힌다). 휴대폰에서는 배틀이 시작되면 기기가 한 화면에 들어오게 스크롤하고, 기기 위의 터치로는 페이지가 스크롤되지 않게 한다.
-- **배틀**: 배틀은 별도 저장소 `pokepedia-unity`의 Unity 웹 게임이고 `https://battle.pokepedia.dev`(Cloudflare Pages)에서 iframe으로 띄운다. `/battle` 페이지가 서버에서 세션의 `user_sticker`를 읽어 두고, 게임이 보내는 `ready`(origin 확인)에 보유 스티커 전체를 `init`으로 답한다(`features/battle/host.ts`). 어떤 포켓몬으로 배틀할 수 있는지는 게임이 정한다(지금은 피카츄만, 없으면 게임이 안내와 데모 체험을 보여 준다). 컬렉션에서 배틀할 수 있는 띠부씰은 금색 테두리(색이 다른 스티커의 노란 테두리와 구분)와 "배틀하기" 배지로 게임에 들어가는 입구가 된다. 배틀할 수 있는 포켓몬 ID는 게임의 `roster.json` `playable`과 같은 값을 `BATTLE_PLAYABLE_IDS`에 둔다. 배틀 결과는 저장하지 않고 보상·랭킹도 없어서 DB 변경이 없다. 메시지 규약의 단일 출처는 `pokepedia-unity`의 `docs/PROJECT.md` §9.2다.
-- **복구**: 충돌 시 `startQuiz({ resumeOnly: true })`로 진행 중 run만 다시 읽는다. 다른 탭에서 종료했거나 재동기화가 실패하면 오류와 함께 타이틀로 돌아가 START로 재시도하며, 자동으로 새 게임이나 게스트를 만들지 않는다. 로그아웃·사용자 변경은 클라이언트 게임 상태를 초기화하며, 초기화 전에 시작한 요청의 늦은 결과는 무시한다.
+- **Decide in TS, commit in SQL**: `service.ts` reads the trusted state and computes the outcome with `rules.ts`. A single RPC, `quiz_commit`, applies it in one transaction (update round → update run → sticker → next round). Optimistic locking on `version` means sending the same answer twice applies it once.
+- The current run and round are read from the same snapshot of a single SQL query. Even if a correct answer and running away in another tab overlap, an old score is never saved mixed with a new round's version, and a round that changed is treated as a conflict.
+- **Answers never exposed**: the round sent to the browser carries no Pokémon id or name, only the silhouette file name and the name mask, and RLS hides the round in progress as well.
+- **Database round trips**: 3 sequential round trips for a correct answer, 2 for a wrong answer or hint (§1 Region). Tests keep this from growing.
+- **Screen**: the Zustand `useQuizStore` calls the actions, and the phase (`lobby → intro → menu ⇄ answering → judging → hit | reveal → reward → … → gameover`) only decides in what order to present the server's result. Reloading returns to the lobby, and starting resumes the run in progress. Other commands can be pressed while typing a name (the input closes). On phones, when a battle starts the page scrolls so the device fits on one screen, and touches on the device do not scroll the page.
+- **Battle**: the battle is a Unity web game in a separate repository, `pokepedia-unity`, loaded in an iframe from `https://battle.pokepedia.dev` (Cloudflare Pages). The `/battle` page reads the session's `user_sticker` on the server, and answers the game's `ready` message (origin checked) with every owned sticker in `init` (`features/battle/host.ts`). The game decides which Pokémon can battle (only Pikachu for now; without it, the game explains and offers a demo). In the collection, stickers that can battle get a gold border (distinct from the yellow border of shiny stickers) and a "Battle" badge, making them an entrance to the game. The battle-ready Pokémon ids live in `BATTLE_PLAYABLE_IDS`, matching `playable` in the game's `roster.json`. Battle results are not saved and carry no rewards or ranking, so there are no database changes. The single source of truth for the message protocol is §9.2 of `docs/PROJECT.md` in `pokepedia-unity`.
+- **Recovery**: on a conflict, `startQuiz({ resumeOnly: true })` re-reads only the run in progress. If another tab ended it or the resync fails, the game returns to the title screen with an error and the player retries with START; it never creates a new game or guest automatically. Signing out or a user change resets the client game state, and late results of requests started before the reset are ignored.
 
-## 6. 계정
+## 6. Accounts
 
-- 도감은 로그인 없이 쓴다. 게임을 시작하면 게스트(익명 로그인)가 된다.
-- **Google 연결**: 비로그인은 `signInWithOAuth`, 게스트는 `linkIdentity`로 같은 user id에 Google을 붙여 기록을 유지한다. `/auth/callback`은 같은 origin 경로로만 돌려보낸다.
-- **게스트 기록 병합**: 이미 가입한 Google 계정이면 `linkIdentity`가 실패한다. 이때 게스트 기록을 그 계정으로 합칠 수 있다.
-  1. `prepareGuestMerge`가 1회용 티켓을 만든다. DB에는 토큰의 해시만(10분), 원본은 httpOnly 쿠키로만 보낸다.
-  2. Google로 로그인한 뒤 `/auth/callback`이 RPC `guest_merge_redeem`으로 한 트랜잭션에 티켓 소비, 게임 기록 이동, 스티커 합산을 한다.
-  3. 이동이 성공한 뒤에만 게스트 user를 지운다.
-- **비활성 게스트 정리**: pg_cron이 매일 `cleanup_inactive_guests()`를 돈다. 게스트이고, 60일 넘게 활동이 없고, 스티커가 0장이고, 진행 중 게임이 없는 계정만 지운다.
-- 정리 RPC의 `p_user_ids` 오버로드는 지정한 사용자만 검사한다. 빈 배열은 아무도 지우지 않고, 기존 인자와 cron 호출은 전체 범위를 유지한다. 테스트는 자신이 만든 사용자 ID만 넘긴다.
-- **프로필**: 가입 trigger가 무작위 형용사(게임의 "성격" 위주 30개)와 포켓몬을 골라 "용감한 피카츄" 같은 생성 이름을 준다. 형용사·포켓몬 번호만 저장하고 보는 사람 언어로 읽는다(실제 이름처럼 보이지 않고, 한 계정이 세 언어로 자연스럽게 읽힌다). 그 포켓몬은 기본 프로필 사진이기도 하다(올린 사진 > Google 사진 > 포켓몬). 닉네임(2–20자, 본인만)을 직접 정하면 trigger가 형용사를 비워 그 닉네임이 보이고 포켓몬 사진은 남는다. `nickname` 컬럼에는 새 계정도 `Trainer-XXXX`가 들어가 생성 이름이 없을 때의 대체 이름이 된다.
-- 브라우저의 로그인·로그아웃·사용자 갱신 이벤트는 계정 표시와 개인 위젯을 다시 읽고 현재 RSC 페이지를 갱신한다. 다른 탭에서 로그아웃해도 마이페이지의 이전 기록이 남지 않으며, 이전 계정 조회의 늦은 결과는 무시한다.
-- **아바타**(Google 계정만): 브라우저가 256px 정사각형 webp로 만들어 `avatars/{user_id}/…`에 직접 올리고, `setAvatar`가 경로를 다시 확인한 뒤 `profile.avatar_path`를 바꾼다. 리더보드에는 보여 주지 않는다.
-- **리더보드**: 사용자마다 한 판 최고 점수 하나. 공개 정보는 이름(생성 이름이면 보는 사람 언어의 형용사·포켓몬 이름), 프로필 포켓몬 번호, 점수, 그 판의 최고 콤보뿐이다(`leaderboard_entries`).
-- 원격 Auth 설정(익명 로그인, Manual linking, Google, Site URL, Redirect URLs)은 Supabase 대시보드에서 한다. `config.toml`은 로컬에만 적용된다.
+- The dex works without signing in. Starting the game makes the player a guest (anonymous sign-in).
+- **Linking Google**: signed-out users use `signInWithOAuth`; guests use `linkIdentity` to attach Google to the same user id and keep their records. `/auth/callback` only redirects to same-origin paths.
+- **Merging guest records**: `linkIdentity` fails if the Google account is already registered. In that case the guest's records can be merged into that account.
+  1. `prepareGuestMerge` creates a one-time ticket. The database stores only a hash of the token (10 minutes); the raw token is sent only as an httpOnly cookie.
+  2. After signing in with Google, `/auth/callback` calls the RPC `guest_merge_redeem`, which consumes the ticket, moves the game records and adds up the stickers in one transaction.
+  3. The guest user is deleted only after the move succeeds.
+- **Cleaning up inactive guests**: pg_cron runs `cleanup_inactive_guests()` daily. It deletes only accounts that are guests, have been inactive for more than 60 days, own zero stickers and have no game in progress.
+- The cleanup RPC's `p_user_ids` overload checks only the given users. An empty array deletes nobody, and the existing signature and the cron call keep the full scope. Tests pass only the user ids they created.
+- **Profile**: the sign-up trigger picks a random adjective (30 of them, mostly the games' "natures") and a Pokémon, giving a generated name like "Brave Pikachu". Only the adjective and Pokémon number are stored, and they are read in the viewer's language (it doesn't look like a real name, and one account reads naturally in all three languages). That Pokémon is also the default profile picture (uploaded photo > Google photo > Pokémon). When users set their own nickname (2–20 characters, only their own), the trigger clears the adjective so the nickname shows, and the Pokémon picture stays. The `nickname` column holds `Trainer-XXXX` even for new accounts, as the fallback when there is no generated name.
+- Sign-in, sign-out and user-update events in the browser re-read the account display and personal widgets and refresh the current RSC page. Signing out in another tab leaves no old records on the My page, and late results of the previous account's queries are ignored.
+- **Avatar** (Google accounts only): the browser makes a 256 px square webp and uploads it straight to `avatars/{user_id}/…`; `setAvatar` re-checks the path and then updates `profile.avatar_path`. It is not shown on the leaderboard.
+- **Leaderboard**: one entry per user, their best single-run score. The only public information is the name (for a generated name, the adjective and Pokémon name in the viewer's language), the profile Pokémon number, the score, and that run's best combo (`leaderboard_entries`).
+- Remote Auth settings (anonymous sign-in, manual linking, Google, Site URL, Redirect URLs) are set in the Supabase dashboard. `config.toml` applies only locally.
 
-## 7. 개발과 배포
+## 7. Development and deployment
 
 ```
 feature branch → PR ─┬─ GitHub CI (check / db)
                      └─ Vercel Preview
-main ─┬─ Vercel Production 자동 배포
-      └─ Supabase GitHub integration: 새 migration 자동 적용
+main ─┬─ Vercel Production deploys automatically
+      └─ Supabase GitHub integration: applies new migrations automatically
 ```
 
-- 머지 조건과 위험도 분류는 `CLAUDE.md` § Merge policy가 기준이다.
-- CI: `check`(lint, typecheck, format, 단위 테스트), `db`(로컬 Supabase에 migration 적용, schema lint, 생성 타입 drift, RLS·RPC 테스트). 문서만 바뀐 PR은 돌지 않는다. E2E(Playwright)는 CI에서 돌리지 않고, 큰 변경 전에 로컬에서 직접 실행한다.
-- **DB 변경**: migration은 로컬에서 검증한 뒤 머지하면 자동 배포된다. Vercel과 Supabase가 동시에 배포되므로 migration은 현재 코드와 호환돼야 한다(expand → 코드 전환 → contract). 롤백하지 않고 새 migration으로 고친다. migration 뒤에는 `pnpm db:types`.
-- **환경변수**
+- Merge conditions and risk classes are defined in `CLAUDE.md` § Merge policy.
+- CI: `check` (lint, typecheck, format, unit tests) and `db` (apply migrations to local Supabase, schema lint, generated-type drift, RLS and RPC tests). It does not run for docs-only PRs. E2E (Playwright) does not run in CI; run it locally by hand before bigger changes.
+- **Database changes**: migrations are verified locally and deploy automatically on merge. Vercel and Supabase deploy at the same time, so a migration must be compatible with the current code (expand → switch code → contract). Never roll back; fix forward with a new migration. Run `pnpm db:types` after a migration.
+- **Environment variables**
 
-| 변수                                   | 노출              | 비고                                              |
-| -------------------------------------- | ----------------- | ------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`             | public            |                                                   |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public            | `sb_publishable_…`                                |
-| `SUPABASE_SECRET_KEY`                  | 서버 전용         | `sb_secret_…`. legacy `anon`/`service_role` 안 씀 |
-| `SILHOUETTE_SECRET`                    | 동기화 스크립트만 | Vercel에는 없음                                   |
+| Variable                               | Exposure         | Notes                                                     |
+| -------------------------------------- | ---------------- | --------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`             | public           |                                                           |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | public           | `sb_publishable_…`                                        |
+| `SUPABASE_SECRET_KEY`                  | server only      | `sb_secret_…`. Legacy `anon`/`service_role` keys not used |
+| `SILHOUETTE_SECRET`                    | sync script only | Not set on Vercel                                         |
 
-env schema(Zod)가 키 종류를 검사해서, secret key를 public 변수에 넣으면 실행되지 않는다.
+The env schema (Zod) checks the key type, so putting the secret key in a public variable stops the app from running.
 
-- **UI**: 색은 `app/globals.css`의 토큰과 `features/pokemon/types.ts`(타입 18색)가 기준이다. 다크모드 코드는 남아 있지만 `lib/theme.ts`의 `DARK_MODE_ENABLED = false`로 꺼 두었다. 상세 페이지 카드는 마우스를 따라 기울고(터치는 기울이지 않음), 탭·클릭하면 한 바퀴 돈다. 모든 페이지 푸터에 비공식 팬 프로젝트이며 권리자와 관련이 없다는 고지를 둔다(`SiteFooter`). 원작 게임 에셋은 쓰지 않는다. 트레이너 도트, 타이틀 화면, 효과음은 SVG·CSS·Web Audio로 직접 만들었고(AI 도움), 포켓몬 아트워크만 PokeAPI 이미지다.
+- **UI**: colors are defined by the tokens in `app/globals.css` and by `features/pokemon/types.ts` (18 type colors). The dark mode code remains but is switched off with `DARK_MODE_ENABLED = false` in `lib/theme.ts`. On the detail page the card tilts to follow the mouse (not on touch) and spins once on tap or click. Every page's footer notes that this is an unofficial fan project, not affiliated with the rights holders (`SiteFooter`). No original game assets are used: the trainer sprite, the title screen and the sound effects were made by hand in SVG, CSS and Web Audio (with AI help), and only the Pokémon artwork comes from PokeAPI.
 
-## 8. 테스트
+## 8. Testing
 
-깨지면 곤란한 것만 테스트한다. 정적 렌더링·문구·DOM 구조만 검사하는 테스트는 두지 않는다. 브라우저 테스트는 실제 사용자 흐름을 검증하고, 화면 디자인은 Vercel Preview로 본다.
+Only what would hurt to break is tested. There are no tests that only check static rendering, copy or DOM structure. Browser tests verify real user flows, and visual design is checked on Vercel Preview.
 
-| 도구                   | 대상                                                                                            |
-| ---------------------- | ----------------------------------------------------------------------------------------------- |
-| Vitest                 | 게임 규칙·정규화, `service.ts`(정답 비노출, 남의 round 거부, 동시 제출, DB 왕복 횟수)           |
-| Vitest                 | 보안 경계(병합 티켓·콜백, open redirect, 아바타 경로, env 키 종류, 닉네임), 번역 키 일치        |
-| Vitest + RTL           | 요청·재동기화 실패 뒤 재시도, 로그아웃 뒤 상태 초기화와 늦은 응답 차단                          |
-| Vitest + 로컬 Supabase | RLS·RPC 권한, 게스트 병합·정리, 리더보드 공개 범위, 아바타 권한, 동시 정답·도망치기의 점수 보존 |
-| Playwright (로컬 수동) | 도감·언어·보상·컬렉션, 힌트·넘기기·이어하기, 게임오버·기록·재시작, 로그아웃·다중 탭 복구        |
+| Tool                       | Covers                                                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vitest                     | Game rules and normalization, `service.ts` (answers never exposed, others' rounds rejected, concurrent submits, DB round-trip counts)       |
+| Vitest                     | Security boundaries (merge ticket and callback, open redirect, avatar path, env key type, nickname), matching translation keys              |
+| Vitest + RTL               | Retry after a failed request or resync, state reset after sign-out and blocking late responses                                              |
+| Vitest + local Supabase    | RLS and RPC permissions, guest merge and cleanup, leaderboard exposure, avatar permissions, score kept under concurrent answer and run-away |
+| Playwright (local, manual) | Dex, language, rewards, collection; hint, skip, resume; game over, records, restart; sign-out and multi-tab recovery                        |
 
-- `pnpm test`, `pnpm test:db`(로컬 DB에 fixture를 쓴다), `pnpm test:e2e`(`pnpm dev`를 :3200에 띄운다).
-- E2E는 필수 흐름 6개로 유지하고 CI에서 실행하지 않는다. 현재 탭 로그아웃은 게임 재시작 시나리오에서 확인하고, 마이페이지 갱신은 다른 탭 로그아웃으로 확인한다. 게임·인증 변경 및 배포 전에 로컬에서 수동 실행한다. 실제 Google 로그인은 수동 검증하며, 콜백 보안·게스트 병합 규칙과 DB 권한은 기존 단위·DB 테스트로 검증한다.
-- DB·E2E 테스트는 요청 전에 Supabase URL을 검사하고, HTTP loopback(`localhost`, `127.0.0.1`, `::1`)만 허용한다. 원격 주소·잘못된 URL은 즉시 실행을 거부한다.
-- E2E는 검증한 환경변수로 전용 개발 서버를 띄운다. :3200의 기존 서버는 재사용하지 않으며, 포트가 사용 중이면 중단한다.
-- E2E는 진행 중 round의 정답이 RLS로 가려져 있어서 secret key로 로컬 DB를 직접 읽되, 브라우저 세션에서 확인한 사용자로 조회를 제한한다. 다른 사용자의 더 최근 문제가 있어도 정답은 바뀌지 않는다. 테스트가 만든 사용자만 종료 시 삭제한다.
+- `pnpm test`, `pnpm test:db` (writes fixtures to the local DB), `pnpm test:e2e` (starts `pnpm dev` on :3200).
+- E2E stays at six essential flows and does not run in CI. Sign-out in the current tab is checked in the game-restart scenario, and the My page refresh is checked by signing out in another tab. Run it locally by hand before game or auth changes and before deploying. Real Google sign-in is verified by hand; callback security, guest-merge rules and database permissions are covered by the existing unit and DB tests.
+- DB and E2E tests check the Supabase URL before any request and allow only HTTP loopback (`localhost`, `127.0.0.1`, `::1`). A remote or malformed URL is refused immediately.
+- E2E starts its own dev server with validated environment variables. It never reuses an existing server on :3200, and aborts if the port is taken.
+- Because RLS hides the answer of the round in progress, E2E reads the local DB directly with the secret key, but limits the query to the user confirmed from the browser session. A newer question from another user does not change the answer. Only users the test created are deleted at the end.
