@@ -136,7 +136,8 @@ in the same PR).
 - Secrets, environment variables, domains, billing, third-party integrations
 - New dependencies not planned in `docs/system_design.md`; major-version upgrades
 
-**After merge:**
+**After merge** (skip for documentation-only PRs, `**/*.md` and `docs/**`: they change
+nothing the site serves):
 
 1. Confirm the Vercel Production deployment for the merge commit succeeded.
 2. If the PR had migrations, confirm the Supabase deployment succeeded.
