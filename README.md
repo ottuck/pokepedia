@@ -63,15 +63,10 @@ because it was fun.
 Next.js 16 (App Router, RSC, Server Actions) · React 19 · TypeScript · Tailwind CSS v4 · Motion ·
 Zustand · Zod · next-intl · Supabase (Postgres, Auth, Storage) · Vitest · Playwright · Vercel
 
-```mermaid
-flowchart LR
-  User((Player)) --> Next["Next.js on Vercel<br/>(Tokyo, hnd1)"]
-  Next -- "RSC · static pages<br/>(publishable key + RLS)" --> DB[(Supabase Postgres<br/>Tokyo)]
-  Next -- "Server Actions<br/>(secret key → RPC)" --> DB
-  User -- images --> Storage[(Supabase Storage)]
-  PokeAPI[(PokeAPI)] --> Sync[Sync script<br/>run once by hand]
-  Sync --> DB & Storage
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/architecture-dark.svg" />
+  <img src="docs/architecture.svg" alt="Architecture: players use a Next.js app on Vercel that talks to Supabase in Tokyo and hosts the Unity battle in an iframe; a sync script copied Pokémon data and artwork from PokeAPI into Supabase once" />
+</picture>
 
 - Pokémon data and artwork are pulled from PokeAPI once and stored in Supabase; nothing calls an outside API at runtime.
 - The dex and all detail pages (151 × 3 languages) are prerendered at build time.

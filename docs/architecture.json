@@ -1,0 +1,80 @@
+{
+  "title": "Pokepedia",
+  "width": 940,
+  "height": 440,
+  "summary": "Players use one Next.js app on Vercel that reads and writes Supabase in Tokyo; the Unity battle runs in an iframe from its own repo. Pokémon data was copied from PokeAPI once by a script, so nothing outside is called at runtime.",
+  "groups": [
+    {
+      "title": "pokepedia-unity · separate repo",
+      "x": 180,
+      "y": 186,
+      "w": 360,
+      "h": 118
+    }
+  ],
+  "nodes": [
+    { "id": "player", "x": 100, "y": 80, "title": "Player", "tone": "accent" },
+    {
+      "id": "next",
+      "x": 400,
+      "y": 80,
+      "title": "Next.js · Vercel",
+      "note": "Tokyo · pages, Server Actions"
+    },
+    {
+      "id": "pg",
+      "x": 790,
+      "y": 80,
+      "title": "Supabase",
+      "note": "Tokyo · Postgres, Auth, RPC"
+    },
+    {
+      "id": "battle",
+      "x": 400,
+      "y": 256,
+      "title": "Unity battle",
+      "note": "WebGL · Cloudflare Pages"
+    },
+    {
+      "id": "sync",
+      "x": 790,
+      "y": 256,
+      "title": "Sync script",
+      "note": "Run once by hand"
+    },
+    {
+      "id": "pokeapi",
+      "x": 560,
+      "y": 386,
+      "title": "PokeAPI",
+      "tone": "outside"
+    },
+    {
+      "id": "storage",
+      "x": 790,
+      "y": 386,
+      "title": "Supabase Storage",
+      "note": "Artwork · avatars"
+    }
+  ],
+  "edges": [
+    { "from": "player", "to": "next", "label": "Play" },
+    { "from": "next", "to": "pg", "label": "Queries · RPC", "both": true },
+    {
+      "from": "next",
+      "to": "battle",
+      "label": "iframe · postMessage",
+      "both": true
+    },
+    {
+      "from": "pokeapi",
+      "to": "sync",
+      "label": "Pokémon data",
+      "dashed": true,
+      "route": "vh",
+      "labelAt": 1
+    },
+    { "from": "sync", "to": "pg", "label": "Stats · names", "dashed": true },
+    { "from": "sync", "to": "storage", "label": "Artwork", "dashed": true }
+  ]
+}
